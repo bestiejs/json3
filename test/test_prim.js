@@ -121,7 +121,7 @@ exports["Test Array Literals"] = function () {
   exports.parses([{}], "[{}]", "Array containing empty object literal");
   exports.parses([100, true, false, null, {"a": ["hello"], "b": ["world"]}, [0.01]], "[1e2, true, false, null, {\"a\": [\"hello\"], \"b\": [\"world\"]}, [1e-2]]", "Mixed array");
   exports.parses([1, 2, 3, 4], "[1, 2, /* Block Comment */ 3, 4]// Line Comment", "Array literal with comments", { "extensions": true });
-  exports.parses([1, 2, 3], "[1, 2, 3,]", "Trailing comma in array literal; extensions enabled", { "extensions": true });
+  exports.parseError("[1, 2, 3,]", "Trailing comma in array literal; extensions enabled", { "extensions": true });
 };
 
 exports["Test Object Literals"] = function () {
@@ -146,7 +146,7 @@ exports["Test Object Literals"] = function () {
   exports.parses({1: 2, 3: 4}, "{1: 2, 3: 4}", "Numeric keys; extensions enabled", { "extensions": true });
 
   exports.parseError("{\"hello\": \"world\", \"foo\": \"bar\",}", "Trailing comma in object literal");
-  exports.parses({"hello": "world", "foo": "bar", 1: 2, 3: 4}, "{\"hello\": \"world\", \"foo\": \"bar\", 1: 2, 3: 4,}", "Trailing comma in object literal; extensions enabled", { "extensions": true });
+  exports.parseError("{\"hello\": \"world\", \"foo\": \"bar\", 1: 2, 3: 4,}", "Trailing comma in object literal; extensions enabled", { "extensions": true });
 };
 
 // JavaScript expressions should never be evaluated, as Prim does not use
