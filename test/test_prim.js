@@ -37,11 +37,11 @@ exports["Test Whitespace"] = function () {
     "{\u2029}"].forEach(function (value) {
       exports.parseError(value, "Source string containing an invalid Unicode whitespace character");
   });
-  
+
   exports.parseError("{\u000b}", "Source string containing a vertical tab");
   exports.parseError("{\u000c}", "Source string containing a form feed");
   exports.parseError("{\ufeff}", "Source string containing a byte-order mark");
-  
+
   exports.parses({}, "{\r\n}", "Source string containing a CRLF line ending");
   exports.parses({}, "{\n\n\r\n}", "Source string containing multiple line terminators");
   exports.parses({}, "{\t}", "Source string containing a tab character");
@@ -70,7 +70,7 @@ exports["Test Numeric Literals"] = function () {
   exports.parses(-0.01, "-1e-2", "Negative exponential");
   exports.parses(3125, "0.03125e+5", "Decimalized exponential");
   exports.parses(100, "1E2", "Case-insensitive exponential delimiter");
-  
+
   exports.parseError("+1", "Leading `+`");
   exports.parseError("1.", "Trailing decimal point");
   exports.parseError(".1", "Leading decimal point");
@@ -79,7 +79,7 @@ exports["Test Numeric Literals"] = function () {
   exports.parseError("--1", "Leading `--`");
   exports.parseError("1-+", "Trailing `-+`");
   exports.parseError("0xaf", "Hex literal");
-  
+
   // `Infinity` and `NaN`.
   exports.parseError("Infinity", "`Infinity` with extensions disabled");
   exports.parseError("NaN", "`NaN` with extensions disabled");
@@ -102,7 +102,7 @@ exports["Test String Literals"] = function () {
   exports.parses("\n", '"\\n"', "String containing an escaped line feed");
   exports.parses("\r", '"\\r"', "String containing an escaped carriage return");
   exports.parses("\t", '"\\t"', "String containing an escaped tab");
-  
+
   exports.parseError("'hello'", "Single-quoted string literal");
   exports.parseError('"\\x61"', "String containing a hex escape sequence");
   exports.parseError('"hello \r\n world"', "String containing an unescaped CRLF line ending");
@@ -127,24 +127,24 @@ exports["Test Array Literals"] = function () {
 exports["Test Object Literals"] = function () {
   exports.parses({"hello": "world"}, "{\"hello\": \"world\"}", "Object literal containing one member");
   exports.parses({"hello": "world", "foo": ["bar", true], "fox": {"quick": true, "purple": false}}, "{\"hello\": \"world\", \"foo\": [\"bar\", true], \"fox\": {\"quick\": true, \"purple\": false}}", "Object literal containing multiple members");
-  
+
   exports.parseError("{key: 1}", "Unquoted identifier used as a property name; extensions disabled");
   exports.parseError("{key: 1}", "Unquoted identifier used as a property name; extensions enabled", { "extensions": true });
-  
+
   exports.parseError("{false: 1}", "`false` used as a property name; extensions disabled");
   exports.parseError("{false: 1}", "`false` used as a property name; extensions enabled", { "extensions": true });
-  
+
   exports.parseError("{true: 1}", "`true` used as a property name; extensions disabled");
   exports.parseError("{true: 1}", "`true` used as a property name; extensions enabled", { "extensions": true });
-  
+
   exports.parseError("{null: 1}", "`null` used as a property name; extensions disabled");
   exports.parseError("{null: 1}", "`null` used as a property name; extensions enabled", { "extensions": true });
-  
+
   exports.parseError("{'key': 1}", "Single-quoted string used as a property name");
-  
+
   exports.parseError("{1: 2, 3: 4}", "Numeric keys; extensions disabled");
   exports.parses({1: 2, 3: 4}, "{1: 2, 3: 4}", "Numeric keys; extensions enabled", { "extensions": true });
-  
+
   exports.parseError("{\"hello\": \"world\", \"foo\": \"bar\",}", "Trailing comma in object literal");
   exports.parses({"hello": "world", "foo": "bar", 1: 2, 3: 4}, "{\"hello\": \"world\", \"foo\": \"bar\", 1: 2, 3: 4,}", "Trailing comma in object literal; extensions enabled", { "extensions": true });
 };
