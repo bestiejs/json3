@@ -1,0 +1,30 @@
+{
+  "name": "prim",
+  "version": "0.0.1",
+  "description": "A practical JSON implementation.",
+  "homepage": "http://github.com/kitcambridge/prim",
+  "main": "./lib/prim",
+  "keywords": ["json", "lexer", "parser", "lint", "ecma"],
+  "licenses": [{
+    "type": "MIT",
+    "url": "http://kit.mit-license.org/"
+  }],
+  "author": {
+    "name": "Kit Cambridge",
+    "web": "http://kitcambridge.github.com"
+  },
+  "maintainers": [{
+    "name": "Kit Cambridge",
+    "web": "http://kitcambridge.github.com"
+  }],
+  "bugs": {
+    "url": "http://github.com/kitcambridge/prim/issues"
+  },
+  "scripts": {
+    "test": "node test/test_*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kitcambridge/prim.git"
+  }
+}
