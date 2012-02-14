@@ -143,7 +143,7 @@ exports["Test Object Literals"] = function () {
   exports.parseError("{'key': 1}", "Single-quoted string used as a property name");
 
   exports.parseError("{1: 2, 3: 4}", "Numeric keys; extensions disabled");
-  exports.parses({1: 2, 3: 4}, "{1: 2, 3: 4}", "Numeric keys; extensions enabled", { "extensions": true });
+  exports.parseError("{1: 2, 3: 4}", "Numeric keys; extensions enabled", { "extensions": true });
 
   exports.parseError("{\"hello\": \"world\", \"foo\": \"bar\",}", "Trailing comma in object literal");
   exports.parseError("{\"hello\": \"world\", \"foo\": \"bar\", 1: 2, 3: 4,}", "Trailing comma in object literal; extensions enabled", { "extensions": true });
