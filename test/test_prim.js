@@ -157,6 +157,12 @@ exports["Test Invalid Expressions"] = function () {
   });
 };
 
+exports["Test Callback Function"] = function () {
+  assert.ok(_.isEqual({"a": 1, "b": 16}, prim.parse('{"a": 1, "b": "10000"}', null, function (key, value) {
+    return typeof value == "string" ? parseInt(value, 2) : value;
+  })), "Callback function provided");
+};
+
 // Run the unit tests.
 if (module == require.main) {
   Object.keys(exports).forEach(function (value) {
