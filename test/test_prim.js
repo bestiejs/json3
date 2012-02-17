@@ -7,23 +7,22 @@ var assert = require("assert"), _ = require("./vendor/underscore"), prim = requi
 
 // Ensures that Prim throws an exception when parsing the given JSON `source`
 // string.
-exports.parseError = function (source, message, options) {
+exports.parseError = function (source, message, callback) {
   assert.throws(function () {
-    prim.parse(source, options);
+    prim.parse(source, callback);
   }, /SyntaxError/, message);
 };
 
 // Ensure that Prim parses the given source string correctly.
-exports.parses = function (expected, source, message, options) {
-  assert.ok(_.isEqual(expected, prim.parse(source, options)), message);
+exports.parses = function (expected, source, message, callback) {
+  assert.ok(_.isEqual(expected, prim.parse(source, callback)), message);
 };
 
 exports["Test Empty Source String"] = function () {
   exports.parseError("", "Empty JSON source string");
   exports.parseError("\n\n\r\n", "Source string containing only line terminators");
-  exports.parseError("/* Block Comment */", "Source string containing only a block comment", { "extensions": true });
-  exports.parseError("// Line Comment", "Source string containing only a line comment", { "extensions": true });
-  exports.parseError("/* Block Comment */\n// Line Comment", "Source string containing only comments and line terminators", { "extensions": true });
+  exports.parseError(" ", "Source string containing a single space character");
+  exports.parseError(" ", "Source string containing multiple space characters");
 };
 
 exports["Test Whitespace"] = function () {
@@ -79,19 +78,13 @@ exports["Test Numeric Literals"] = function () {
   exports.parseError("--1", "Leading `--`");
   exports.parseError("1-+", "Trailing `-+`");
   exports.parseError("0xaf", "Hex literal");
-
-  // `Infinity` and `NaN`.
-  exports.parseError("Infinity", "`Infinity` with extensions disabled");
-  exports.parseError("NaN", "`NaN` with extensions disabled");
-  exports.parses(1 / 0, "Infinity", "`Infinity` with extensions enabled.", { "extensions": true });
-  exports.parses(-1 / 0, "-Infinity", "`-Infinity` with extensions enabled.", { "extensions": true });
-  exports.parses(0 / 0, "NaN", "`NaN` with extensions enabled", { "extensions": true });
-  exports.parseError("-NaN", "`-NaN` with extensions enabled", { "extensions": true });
+  exports.parseError("- 5", "Invalid negative sign");
 };
 
 exports["Test String Literals"] = function () {
   exports.parses("value", '"value"', "Double-quoted string literal");
   exports.parses("", '""', "Empty string literal");
+
   exports.parses("\u2028", '"\\u2028"', "String containing an escaped Unicode line separator");
   exports.parses("\u2029", '"\\u2029"', "String containing an escaped Unicode paragraph separator");
   exports.parses("\ud834\udf06", '"\\ud834\\udf06"', "String containing an escaped Unicode surrogate pair");
@@ -103,11 +96,15 @@ exports["Test String Literals"] = function () {
   exports.parses("\r", '"\\r"', "String containing an escaped carriage return");
   exports.parses("\t", '"\\t"', "String containing an escaped tab");
 
+  exports.parses("hello/world", '"hello\\/world"', "String containing an escaped solidus");
+  exports.parses("hello\\world", '"hello\\\\world"', "String containing an escaped reverse solidus");
+  exports.parses("hello\"world", '"hello\\"world"', "String containing an escaped double-quote character");
+
   exports.parseError("'hello'", "Single-quoted string literal");
   exports.parseError('"\\x61"', "String containing a hex escape sequence");
   exports.parseError('"hello \r\n world"', "String containing an unescaped CRLF line ending");
   ["\u0000", "\u0001", "\u0002", "\u0003", "\u0004", "\u0005", "\u0006",
-    "\u0007", "\b", "\t", "\n", "\u000b", "\f", "\r", "\u000e", "\u000f",
+    "\u0007", "\b", "\n", "\u000b", "\f", "\r", "\u000e", "\u000f",
     "\u0010", "\u0011", "\u0012", "\u0013", "\u0014", "\u0015", "\u0016",
     "\u0017", "\u0018", "\u0019", "\u001a", "\u001b", "\u001c", "\u001d",
     "\u001e", "\u001f"].forEach(function (value) {
@@ -120,33 +117,20 @@ exports["Test Array Literals"] = function () {
   exports.parses([1, 2, [3, [4, 5]], 6, [true, false], [null], [[]]], "[1, 2, [3, [4, 5]], 6, [true, false], [null], [[]]]", "Nested arrays");
   exports.parses([{}], "[{}]", "Array containing empty object literal");
   exports.parses([100, true, false, null, {"a": ["hello"], "b": ["world"]}, [0.01]], "[1e2, true, false, null, {\"a\": [\"hello\"], \"b\": [\"world\"]}, [1e-2]]", "Mixed array");
-  exports.parses([1, 2, 3, 4], "[1, 2, /* Block Comment */ 3, 4]// Line Comment", "Array literal with comments", { "extensions": true });
-  exports.parseError("[1, 2, 3,]", "Trailing comma in array literal; extensions enabled", { "extensions": true });
 };
 
 exports["Test Object Literals"] = function () {
   exports.parses({"hello": "world"}, "{\"hello\": \"world\"}", "Object literal containing one member");
   exports.parses({"hello": "world", "foo": ["bar", true], "fox": {"quick": true, "purple": false}}, "{\"hello\": \"world\", \"foo\": [\"bar\", true], \"fox\": {\"quick\": true, \"purple\": false}}", "Object literal containing multiple members");
 
-  exports.parseError("{key: 1}", "Unquoted identifier used as a property name; extensions disabled");
-  exports.parseError("{key: 1}", "Unquoted identifier used as a property name; extensions enabled", { "extensions": true });
-
-  exports.parseError("{false: 1}", "`false` used as a property name; extensions disabled");
-  exports.parseError("{false: 1}", "`false` used as a property name; extensions enabled", { "extensions": true });
-
-  exports.parseError("{true: 1}", "`true` used as a property name; extensions disabled");
-  exports.parseError("{true: 1}", "`true` used as a property name; extensions enabled", { "extensions": true });
-
-  exports.parseError("{null: 1}", "`null` used as a property name; extensions disabled");
-  exports.parseError("{null: 1}", "`null` used as a property name; extensions enabled", { "extensions": true });
-
+  exports.parseError("{key: 1}", "Unquoted identifier used as a property name");
+  exports.parseError("{false: 1}", "`false` used as a property name");
+  exports.parseError("{true: 1}", "`true` used as a property name");
+  exports.parseError("{null: 1}", "`null` used as a property name");
   exports.parseError("{'key': 1}", "Single-quoted string used as a property name");
-
-  exports.parseError("{1: 2, 3: 4}", "Numeric keys; extensions disabled");
-  exports.parseError("{1: 2, 3: 4}", "Numeric keys; extensions enabled", { "extensions": true });
+  exports.parseError("{1: 2, 3: 4}", "Number used as a property name");
 
   exports.parseError("{\"hello\": \"world\", \"foo\": \"bar\",}", "Trailing comma in object literal");
-  exports.parseError("{\"hello\": \"world\", \"foo\": \"bar\", 1: 2, 3: 4,}", "Trailing comma in object literal; extensions enabled", { "extensions": true });
 };
 
 // JavaScript expressions should never be evaluated, as Prim does not use
@@ -158,9 +142,9 @@ exports["Test Invalid Expressions"] = function () {
 };
 
 exports["Test Callback Function"] = function () {
-  assert.ok(_.isEqual({"a": 1, "b": 16}, prim.parse('{"a": 1, "b": "10000"}', null, function (key, value) {
+  exports.parses({"a": 1, "b": 16}, '{"a": 1, "b": "10000"}', "Callback function provided", function (key, value) {
     return typeof value == "string" ? parseInt(value, 2) : value;
-  })), "Callback function provided");
+  });
 };
 
 // Run the unit tests.
