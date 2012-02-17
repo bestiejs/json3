@@ -1,10 +1,10 @@
 {
   "name": "prim",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A practical JSON implementation.",
   "homepage": "http://github.com/kitcambridge/prim",
   "main": "./lib/prim",
-  "keywords": ["json", "lexer", "parser", "lint", "ecma"],
+  "keywords": ["json", "lexer", "parser", "recursive descent", "lint", "ecma"],
   "licenses": [{
     "type": "MIT",
     "url": "http://kit.mit-license.org/"
