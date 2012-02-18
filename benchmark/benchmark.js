@@ -14,6 +14,9 @@ json_parse = require("./vendor/json_parse"),
 // Crockford's state machine parser.
 json_parse_state = require("./vendor/json_parse_state"),
 
+// Crockford's `eval`-based `json2` parser.
+json2 = require("./vendor/json2").parse,
+
 // Bozhilov's JSON parser.
 evalJSON = require("./vendor/json"),
 
@@ -32,6 +35,10 @@ suite.add("Crockford's recursive descent parser", function () {
 
 suite.add("Crockford's state machine parser", function () {
   json_parse_state('{"a": [1, 2, {"b": 3, "c": 4}], "d": 123, "e": "hello"}');
+});
+
+suite.add("Crockford's `json2`", function () {
+  json2('{"a": [1, 2, {"b": 3, "c": 4}], "d": 123, "e": "hello"}');
 });
 
 suite.add("Bozhilov's JSON parser", function () {
