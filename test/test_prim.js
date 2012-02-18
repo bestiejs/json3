@@ -147,6 +147,18 @@ exports["Test Callback Function"] = function () {
   });
 };
 
+exports["Test Serialization"] = function () {
+  var sparse = [];
+  assert.equal(prim.stringify([1, 2, 3, [4, 5]], null, "  "), "[\n  1,\n  2,\n  3,\n  [\n    4,\n    5\n  ]\n]", "Nested arrays");
+  sparse[5] = 1;
+  assert.equal(prim.stringify(sparse), "[null,null,null,null,null,1]", "Sparse array");
+  assert.equal(prim.stringify([], null, " "), "[]", "Empty array; optional `whitespace` argument");
+  assert.equal(prim.stringify([1], null, "  "), "[\n  1\n]", "Single-element array; optional `whitespace` argument");
+  assert.equal(prim.stringify({"foo": {"bar": [123]}}), "{\"foo\":{\"bar\":[123]}}", "Nested objects");
+  assert.equal(prim.stringify({"foo": 123}, null, "  "), "{\n  \"foo\": 123\n}", "Single-member object; optional `whitespace` argument");
+  assert.equal(prim.stringify({"foo": 123, "bar": 456}, ["bar"], "  "), "{\n  \"bar\": 456\n}", "Object; optional `select` and `whitespace` arguments");
+};
+
 // Run the unit tests.
 if (module == require.main) {
   Object.keys(exports).forEach(function (value) {
