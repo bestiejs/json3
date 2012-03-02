@@ -257,7 +257,11 @@
 
     value = new Date(8.64e15);
     value.toJSON = null;
-    this.equal(prim.stringify(value), '"+275760-09-13T00:00:00.000Z"', "The maximum valid date value should serialize correctly");
+    this.serializes('"+275760-09-13T00:00:00.000Z"', value, "The maximum valid date value should serialize correctly");
+
+    value = new Date("Kit");
+    value.toJSON = null;
+    this.serializes("null", value, "Invalid dates should serialize as `null`");
 
     this.serializes("[\n  1,\n  2,\n  3,\n  [\n    4,\n    5\n  ]\n]", [1, 2, 3, [4, 5]], "Nested arrays; optional `whitespace` argument", null, "  ");
     this.serializes("[]", [], "Empty array; optional string `whitespace` argument", null, "  ");
@@ -266,7 +270,8 @@
     this.serializes("{\n  \"foo\": 123\n}", { "foo": 123 }, "Single-member object; optional string `whitespace` argument", null, "  ");
     this.serializes("{\n  \"foo\": {\n    \"bar\": [\n      123\n    ]\n  }\n}", {"foo": {"bar": [123]}}, "Nested objects; optional numeric `whitespace` argument", null, 2);
     this.serializes("{\n  \"bar\": 456\n}", {"foo": 123, "bar": 456}, "Object; optional `filter` and `whitespace` arguments", ["bar"], 2);
-    this.done(23);
+
+    this.done(24);
   });
 
   /*
