@@ -248,7 +248,7 @@
     this.serializes('"1994-07-03T06:00:00.000Z"', value, "Dates are serialized using the simplified date time string format");
 
     value = new Date(1993, 5, 2, 2, 10, 28, 224);
-    value.toJSON = null
+    value.toJSON = null;
     this.serializes('"1993-06-02T08:10:28.224Z"', value, "The date time string should conform to the format outlined in the spec");
 
     value = new Date(-8.64e15);
