@@ -17,7 +17,7 @@
   },
 
   // Load Spec, Newton, and Prim.
-  Spec = load("Spec", "./vendor/spec"), Newton = load("Newton", "./vendor/newton"), prim = load("Prim", "../lib/prim"),
+  Spec = load("Spec", "./../vendor/spec"), Newton = load("Newton", "./../vendor/newton"), prim = load("Prim", "../lib/prim"),
 
   // Create the test suite.
   testSuite = new Spec.Suite("Prim Unit Tests");

@@ -3,7 +3,7 @@
  * Requires Node.
 */
 
-var prim = require("../lib/prim").parse, Benchmark = require("./vendor/benchmark"),
+var prim = require("../lib/prim").parse, Benchmark = require("../vendor/benchmark"),
 
 // Load the various JSON implementations.
 // --------------------------------------
