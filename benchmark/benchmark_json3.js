@@ -1,9 +1,9 @@
 /*
- * Prim benchmark suite.
+ * JSON 3 benchmark suite.
  * Requires Node.
 */
 
-var prim = require("../lib/prim").parse, Benchmark = require("../vendor/benchmark"),
+var JSON3 = require("../lib/json3").parse, Benchmark = require("../vendor/benchmark"),
 
 // Load the various JSON implementations.
 // --------------------------------------
@@ -23,10 +23,10 @@ evalJSON = require("./vendor/json"),
 // Samuel's `json-sans-eval`.
 jsonParse = require("./vendor/json_sans_eval"),
 
-suite = new Benchmark.Suite("Prim Benchmark Suite");
+suite = new Benchmark.Suite("JSON 3 Benchmark Suite");
 
-suite.add("Prim", function () {
-  prim('{"a": [1, 2, {"b": 3, "c": 4}], "d": 123, "e": "hello"}');
+suite.add("JSON 3", function () {
+  JSON3('{"a": [1, 2, {"b": 3, "c": 4}], "d": 123, "e": "hello"}');
 });
 
 suite.add("Crockford's recursive descent parser", function () {

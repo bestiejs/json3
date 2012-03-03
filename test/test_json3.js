@@ -1,6 +1,6 @@
 /*
- * Prim unit test suite.
- * http://github.com/kitcambridge/prim
+ * JSON 3 unit test suite.
+ * http://github.com/kitcambridge/json3
 */
 
 (function (root) {
@@ -16,11 +16,11 @@
       (root.load(path.replace(/\.js$/, "") + ".js"), root[module]) : null);
   },
 
-  // Load Spec, Newton, and Prim.
-  Spec = load("Spec", "./../vendor/spec"), Newton = load("Newton", "./../vendor/newton"), prim = load("Prim", "../lib/prim"),
+  // Load Spec, Newton, and JSON 3.
+  Spec = load("Spec", "./../vendor/spec"), Newton = load("Newton", "./../vendor/newton"), JSON3 = load("JSON3", "../lib/JSON3"),
 
   // Create the test suite.
-  testSuite = new Spec.Suite("Prim Unit Tests");
+  testSuite = new Spec.Suite("JSON 3 Unit Tests");
 
   // Create and attach the logger event handler.
   testSuite.on("all", isBrowser ? Newton.createReport("suite") : Newton.createConsole(function (value) {
@@ -34,31 +34,31 @@
     }
   }));
 
-  // Ensures that Prim throws an exception when parsing the given JSON `source`
-  // string.
+  // Ensures that `JSON.parse` throws an exception when parsing the given
+  // `source` string.
   Spec.Test.prototype.parseError = function (source, message, callback) {
     return this.error(function () {
-      prim.parse(source, callback);
+      JSON3.parse(source, callback);
     }, function (exception) {
       return exception.name == "SyntaxError";
     }, message);
   };
 
-  // Ensures that Prim parses the given source string correctly.
+  // Ensures that `JSON.parse` parses the given source string correctly.
   Spec.Test.prototype.parses = function (expected, source, message, callback) {
-    return this.deepEqual(prim.parse(source, callback), expected, message);
+    return this.deepEqual(JSON3.parse(source, callback), expected, message);
   };
 
-  // Ensures that Prim serializes the given object correctly.
+  // Ensures that `JSON.stringify` serializes the given object correctly.
   Spec.Test.prototype.serializes = function (expected, value, message, filter, width) {
-    return this.strictEqual(prim.stringify(value, filter, width), expected, message);
+    return this.strictEqual(JSON3.stringify(value, filter, width), expected, message);
   };
 
-  // Ensures that Prim throws a `TypeError` if the given object contains a
-  // circular reference.
+  // Ensures that `JSON.stringify` throws a `TypeError` if the given object
+  // contains a circular reference.
   Spec.Test.prototype.cyclicError = function (value, message) {
     return this.error(function () {
-      prim.stringify(value);
+      JSON3.stringify(value);
     }, function (exception) {
       return exception.name == "TypeError";
     }, message);
@@ -196,7 +196,7 @@
     this.done(9);
   });
 
-  // JavaScript expressions should never be evaluated, as Prim does not use
+  // JavaScript expressions should never be evaluated, as JSON 3 does not use
   // `eval`.
   testSuite.addTest("Invalid Expressions", function (test) {
     Spec.forEach(["1 + 1", "1 * 2", "var value = 123;", "{});value = 123;({}", "call()", "1, 2, 3, \"value\""], function (expression) {
@@ -231,7 +231,7 @@
       "kitcambridge": ["Kit", 18],
       "mathias": ["Mathias", 23]
     };
-    this.parses(value, prim.stringify(value), "Objects are serialized recursively");
+    this.parses(value, JSON3.stringify(value), "Objects are serialized recursively");
 
     value = { "foo": { "b": { "foo": { "c": { "foo": null} } } } };
     this.serializes('{"foo":{"b":{"foo":{"c":{"foo":null}}}}}', value, "Nested objects containing identically-named properties should serialize correctly");
@@ -309,8 +309,8 @@
     // --------------------------------
 
     // Test 15.12.2-0-1 and 15.12.2-0-2. 15.12.2-0-3 is inapplicable to ES 3.
-    this.equal("function", typeof prim.parse, "`Prim.parse` should be a function");
-    this.equal(2, prim.parse.length, "`Prim.parse` should accept two arguments");
+    this.equal("function", typeof JSON3.parse, "`JSON3.parse` should be a function");
+    this.equal(2, JSON3.parse.length, "`JSON3.parse` should accept two arguments");
 
     // Section 15.12.1.1: The JSON Grammar.
     // ------------------------------------
@@ -377,8 +377,8 @@
     // ------------------------------------
 
     // Test 15.12.3-0-1 and 15.12.3-0-2. 15.12.3-0-3 is inapplicable.
-    this.equal("function", typeof prim.stringify, "`Prim.stringify` should be a function");
-    this.equal(3, prim.stringify.length, "`Prim.stringify` should accept three arguments");
+    this.equal("function", typeof JSON3.stringify, "`JSON3.stringify` should be a function");
+    this.equal(3, JSON3.stringify.length, "`JSON3.stringify` should accept three arguments");
 
     // Test 15.12.3-11-1 thru 5.12.3-11-15.
     this.serializes(void 0, void 0, "`JSON.stringify(undefined)` should return `undefined`");
@@ -413,28 +413,28 @@
     this.serializes("[42]", [42], "`JSON.stringify` should ignore `filter` arguments that are not functions or arrays", {});
 
     // Test 15.12.3-5-a-i-1 and 15.12.3-5-b-i-1.
-    this.equal(prim.stringify(value, null, new Number(5)), prim.stringify(value, null, 5), "Optional `width` argument: Number object and primitive width values should produce identical results");
-    this.equal(prim.stringify(value, null, new String("xxx")), prim.stringify(value, null, "xxx"), "Optional `width` argument: String object and primitive width values should produce identical results");
+    this.equal(JSON3.stringify(value, null, new Number(5)), JSON3.stringify(value, null, 5), "Optional `width` argument: Number object and primitive width values should produce identical results");
+    this.equal(JSON3.stringify(value, null, new String("xxx")), JSON3.stringify(value, null, "xxx"), "Optional `width` argument: String object and primitive width values should produce identical results");
 
     // Test 15.12.3-6-a-1 and 15.12.3-6-a-2.
-    this.equal(prim.stringify(value, null, 10), prim.stringify(value, null, 100), "Optional `width` argument: The maximum numeric width value should be 10");
-    this.equal(prim.stringify(value, null, 5.99999), prim.stringify(value, null, 5), "Optional `width` argument: Numeric values should be converted to integers");
+    this.equal(JSON3.stringify(value, null, 10), JSON3.stringify(value, null, 100), "Optional `width` argument: The maximum numeric width value should be 10");
+    this.equal(JSON3.stringify(value, null, 5.99999), JSON3.stringify(value, null, 5), "Optional `width` argument: Numeric values should be converted to integers");
 
     // Test 15.12.3-6-b-1 and 15.12.3-6-b-4.
-    this.equal(prim.stringify(value, null, 0.999999), prim.stringify(value), "Optional `width` argument: Numeric width values between 0 and 1 should be ignored");
-    this.equal(prim.stringify(value, null, 0), prim.stringify(value), "Optional `width` argument: Zero should be ignored");
-    this.equal(prim.stringify(value, null, -5), prim.stringify(value), "Optional `width` argument: Negative numeric values should be ignored");
-    this.equal(prim.stringify(value, null, 5), prim.stringify(value, null, "     "), "Optional `width` argument: Numeric width values in the range [1, 10] should produce identical results to that of string values containing `width` spaces");
+    this.equal(JSON3.stringify(value, null, 0.999999), JSON3.stringify(value), "Optional `width` argument: Numeric width values between 0 and 1 should be ignored");
+    this.equal(JSON3.stringify(value, null, 0), JSON3.stringify(value), "Optional `width` argument: Zero should be ignored");
+    this.equal(JSON3.stringify(value, null, -5), JSON3.stringify(value), "Optional `width` argument: Negative numeric values should be ignored");
+    this.equal(JSON3.stringify(value, null, 5), JSON3.stringify(value, null, "     "), "Optional `width` argument: Numeric width values in the range [1, 10] should produce identical results to that of string values containing `width` spaces");
 
     // Test 15.12.3-7-a-1.
-    this.equal(prim.stringify(value, null, "0123456789xxxxxxxxx"), prim.stringify(value, null, "0123456789"), "Optional `width` argument: String width values longer than 10 characters should be truncated");
+    this.equal(JSON3.stringify(value, null, "0123456789xxxxxxxxx"), JSON3.stringify(value, null, "0123456789"), "Optional `width` argument: String width values longer than 10 characters should be truncated");
 
     // Test 15.12.3-8-a-1 thru 15.12.3-8-a-5.
-    this.equal(prim.stringify(value, null, ""), prim.stringify(value), "Empty string `width` arguments should be ignored");
-    this.equal(prim.stringify(value, null, true), prim.stringify(value), "Boolean primitive `width` arguments should be ignored");
-    this.equal(prim.stringify(value, null, null), prim.stringify(value), "`null` `width` arguments should be ignored");
-    this.equal(prim.stringify(value, null, new Boolean(false)), prim.stringify(value), "Boolean object `width` arguments should be ignored");
-    this.equal(prim.stringify(value, null, value), prim.stringify(value), "Object literal `width` arguments should be ignored");
+    this.equal(JSON3.stringify(value, null, ""), JSON3.stringify(value), "Empty string `width` arguments should be ignored");
+    this.equal(JSON3.stringify(value, null, true), JSON3.stringify(value), "Boolean primitive `width` arguments should be ignored");
+    this.equal(JSON3.stringify(value, null, null), JSON3.stringify(value), "`null` `width` arguments should be ignored");
+    this.equal(JSON3.stringify(value, null, new Boolean(false)), JSON3.stringify(value), "Boolean object `width` arguments should be ignored");
+    this.equal(JSON3.stringify(value, null, value), JSON3.stringify(value), "Object literal `width` arguments should be ignored");
 
     // Test 15.12.3@2-2-b-i-1.
     this.serializes('["fortytwo objects"]', [{
