@@ -43,7 +43,7 @@ JSON 3...
 * Throws a `TypeError` for cyclic structures (JSON 2 will recurse until the stack overflows).
 * Utilizes feature tests to detect broken or incomplete **native** JSON implementations (JSON 2 only checks for the presence of the native functions). The tests are only executed once, so there is no runtime delay when parsing or serializing values.
 
-In contrast to [JSON 2](http://json.org/js/), JSON 3 **does *not***...
+In contrast to [JSON 2](http://json.org/js), JSON 3 **does *not***...
 
 * Add `toJSON` methods to the `Boolean`, `Number`, and `String` prototypes. These are not part of any standard, and are made redundant by the design of the `stringify` implementation.
 * Add `Date#toJSON` or `Date#toISOString`. See the note about date serialization below.
@@ -56,21 +56,21 @@ In contrast to [JSON 2](http://json.org/js/), JSON 3 **does *not***...
 
 ### Known Incompatibilities
 
-JSON 3 is **not compatible with [Prototype](http://prototypejs.org) 1.6.0.3 and older**. If you *must* use this version of Prototype, use `Object.toJSON` and `String#evalJSON(true)` instead of `JSON.stringify` and `JSON.parse`, respectively. This is **not** a bug in JSON 3 itself; because Prototype adds several non-standard `toJSON` methods that return serialized values instead of objects, *using the native JSON implementation will yield the same results*.
+JSON 3 is **not compatible with [Prototype](http://prototypejs.org) 1.6.1 and older**. If you *must* use this version of Prototype, use `Object.toJSON` and `String#evalJSON(true)` instead of `JSON.stringify` and `JSON.parse`, respectively. This is **not** a bug in JSON 3 itself; because Prototype adds several non-standard `toJSON` methods that return serialized values instead of objects, *using the native JSON implementation will yield the same results*.
 
 JSON 3 also assumes that the following methods exist and function as described in the ECMAScript specification:
 
-* **`String.prototype` Methods**: `indexOf`, `charAt`, `slice`.
-* **`Object.prototype` Methods**: `toString`, `hasOwnProperty` (a fallback is provided for Safari 2).
-* **`Date.prototype` Methods**: `getUTC{FullYear, Month, Date, Hours, Minutes, Seconds, Milliseconds}`.
-* **`Array.prototype` Methods**: `push`, `pop`, `join`.
-* `Function#call`
+- **`String.prototype` Methods**: `indexOf`, `charAt`, `slice`.
+- **`Object.prototype` Methods**: `toString`, `hasOwnProperty` (a fallback is provided for Safari 2).
+- **`Date.prototype` Methods**: `getUTC{FullYear, Month, Date, Hours, Minutes, Seconds, Milliseconds}`.
+- **`Array.prototype` Methods**: `push`, `pop`, `join`.
+- `Function#call`
 
-* The `Number`, `String`, `Array`, `Object`, `SyntaxError`, and `TypeError` constructors.
-* `Math.abs`
-* `String.fromCharCode`
-* `parseInt`
-* `isFinite`
+- The `Number`, `String`, `Array`, `Object`, `SyntaxError`, and `TypeError` constructors.
+- `Math.abs`
+- `String.fromCharCode`
+- `parseInt`
+- `isFinite`
 
 ## Contributing
 
