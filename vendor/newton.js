@@ -107,7 +107,7 @@
         case "[object Boolean]":
           // JSON numbers must be finite. `Infinity` and `NaN` are converted
           // to `"null"`.
-          return isEmpty(value) ? "null" : String(value);
+          return isEmpty(value) ? "null" : "" + value;
         case "[object String]":
           // Strings are double-quoted and escaped.
           return quote(value);
@@ -207,7 +207,7 @@
   // successively interpolating the provided replacement arguments.
   substitute = exports.substitute = function substitute(value) {
     var result, argument, index, length, symbol, directive;
-    value = String(value);
+    value = "" + value;
     if (value.indexOf("%") < 0 || arguments.length < 2) {
       return value;
     }
@@ -322,7 +322,7 @@
       // Internal: Returns an attribute string comprising the given attribute
       // `name` and `value`.
       serializeAttribute = function serializeAttribute(name, value) {
-        textNode.data = String(value);
+        textNode.data = "" + value;
         return name + '="' + textElement.innerHTML.replace(/"/g, "&quot;") + '"';
       },
 
