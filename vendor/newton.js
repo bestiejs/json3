@@ -354,7 +354,7 @@
           if (Spec.hasKey(properties, "style")) {
             Spec.forOwn(properties.style, function (property, value) {
               // Normalize the `float` style property.
-              element.style[(/(?:style|css)Float/).test(property) ? cssFloat : property] = value;
+              element.style[1, (/(?:style|css)Float/).test(property) ? cssFloat : property] = value;
             });
             delete properties.style;
           }
