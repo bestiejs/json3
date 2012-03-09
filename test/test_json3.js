@@ -244,23 +244,18 @@
     this.serializes("[null,null,null,null,null,1]", value, "Sparse arrays should serialize correctly");
 
     value = new Date(1994, 6, 3);
-    value.toJSON = null;
     this.serializes('"1994-07-03T06:00:00.000Z"', value, "Dates are serialized using the simplified date time string format");
 
     value = new Date(1993, 5, 2, 2, 10, 28, 224);
-    value.toJSON = null;
     this.serializes('"1993-06-02T08:10:28.224Z"', value, "The date time string should conform to the format outlined in the spec");
 
     value = new Date(-8.64e15);
-    value.toJSON = null;
     this.serializes('"-271821-04-20T00:00:00.000Z"', value, "The minimum valid date value should serialize correctly");
 
     value = new Date(8.64e15);
-    value.toJSON = null;
     this.serializes('"+275760-09-13T00:00:00.000Z"', value, "The maximum valid date value should serialize correctly");
 
     value = new Date("Kit");
-    value.toJSON = null;
     this.serializes("null", value, "Invalid dates should serialize as `null`");
 
     this.serializes("[\n  1,\n  2,\n  3,\n  [\n    4,\n    5\n  ]\n]", [1, 2, 3, [4, 5]], "Nested arrays; optional `whitespace` argument", null, "  ");
