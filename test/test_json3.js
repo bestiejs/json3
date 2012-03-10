@@ -17,7 +17,7 @@
   },
 
   // Load Spec, Newton, and JSON 3.
-  Spec = load("Spec", "./../vendor/spec"), Newton = load("Newton", "./../vendor/newton"), JSON3 = load("JSON3", "../lib/JSON3"),
+  Spec = load("Spec", "./../vendor/spec/lib/spec"), Newton = load("Newton", "./../vendor/spec/lib/newton"), JSON3 = load("JSON3", "../lib/JSON3"),
 
   // Create the test suite.
   testSuite = new Spec.Suite("JSON 3 Unit Tests");

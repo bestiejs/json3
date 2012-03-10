@@ -3,7 +3,7 @@
  * Requires Node.
 */
 
-var JSON3 = require("../lib/json3").parse, Benchmark = require("../vendor/benchmark"),
+var JSON3 = require("../lib/json3").parse, Benchmark = require("../vendor/benchmark/benchmark"),
 
 // Load the various JSON implementations.
 // --------------------------------------
@@ -54,8 +54,8 @@ suite.add("Native `JSON.parse`", function () {
 });
 
 // Register event handlers for logging results.
-suite.on("cycle", function (event, results) {
-  console.log(String(results));
+suite.on("cycle", function (event) {
+  console.log(String(event.target));
 }).on("complete", function () {
   var results = this.filter("successful"), fastest = results.filter("fastest"), slowest = results.filter("slowest");
   results.forEach(function (result) {
