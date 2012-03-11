@@ -58,6 +58,11 @@ In contrast to [JSON 2](http://json.org/js), JSON 3 **does *not***...
 
 JSON 3 is **not compatible with [Prototype](http://prototypejs.org) 1.6.1 and older**. If you *must* use this version of Prototype, use `Object.toJSON` and `String#evalJSON(true)` instead of `JSON.stringify` and `JSON.parse`, respectively. This is **not** a bug in JSON 3 itself; because Prototype adds several non-standard `toJSON` methods that return serialized values instead of objects, *using the native JSON implementation will yield the same results*.
 
+Two unit tests currently fail in Opera 7. These failures are due to implementation bugs in the JavaScript engine, not JSON 3.
+
+  * Dates with invalid time values (e.g., `new Date("Kit")`) are normalized to represent the current date.
+  * Null characters (`\0`) in strings are discarded (e.g., `"a\0b".length == 2`).
+
 JSON 3 also assumes that the following methods exist and function as described in the ECMAScript specification:
 
 - **`String.prototype` Methods**: `indexOf`, `charAt`, `slice`.
