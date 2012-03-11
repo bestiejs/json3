@@ -300,13 +300,6 @@
   testSuite.addTest("ECMAScript 5 Conformance", function () {
     var value = { "a1": { "b1": [1, 2, 3, 4], "b2": { "c1": 1, "c2": 2 } }, "a2": "a2" };
 
-    // Section 15.12.2: `JSON.parse()`.
-    // --------------------------------
-
-    // Test 15.12.2-0-1 and 15.12.2-0-2. 15.12.2-0-3 is inapplicable to ES 3.
-    this.equal("function", typeof JSON3.parse, "`JSON3.parse` should be a function");
-    this.equal(2, JSON3.parse.length, "`JSON3.parse` should accept two arguments");
-
     // Section 15.12.1.1: The JSON Grammar.
     // ------------------------------------
 
@@ -370,10 +363,6 @@
 
     // Section 15.12.3: `JSON.stringify()`.
     // ------------------------------------
-
-    // Test 15.12.3-0-1 and 15.12.3-0-2. 15.12.3-0-3 is inapplicable.
-    this.equal("function", typeof JSON3.stringify, "`JSON3.stringify` should be a function");
-    this.equal(3, JSON3.stringify.length, "`JSON3.stringify` should accept three arguments");
 
     // Test 15.12.3-11-1 thru 5.12.3-11-15.
     this.serializes(void 0, void 0, "`JSON.stringify(undefined)` should return `undefined`");
@@ -480,7 +469,7 @@
     value = { "p1": { "p2": {} } };
     value.p1.p2.prop = value;
     this.cyclicError(value, "A nested cyclic structure should throw a `TypeError`");
-    this.done(78);
+    this.done(74);
   });
 
   testSuite.shuffle();
