@@ -1,7 +1,7 @@
 JSON 3
 ======
 
-**JSON 3** is an [ECMAScript 5](http://es5.github.com/)-compliant JSON implementation. Its objective is to provide a reasonably fast library compatible with a variety of older environments, including Internet Explorer 6, Opera 7, and Safari 2.
+**JSON 3** is an [ECMAScript 5](http://es5.github.com/)-compliant JSON implementation. Its objective is to provide a reasonably fast library compatible with a variety of older environments, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6.
 
 [JSON](http://json.org/) is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by [Douglas Crockford](http://www.crockford.com/), JSON was standardized in the fifth edition of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
 
@@ -35,7 +35,7 @@ Finally, you can load it directly in Mozilla Rhino, SpiderMonkey, or another Jav
     JSON3.stringify([1, 2, 3]);
     // => "[1,2,3]"
 
-### Changes from JSON 2
+## Changes from JSON 2
 
 JSON 3...
 
@@ -48,20 +48,39 @@ In contrast to [JSON 2](http://json.org/js), JSON 3 **does *not***...
 * Add `toJSON` methods to the `Boolean`, `Number`, and `String` prototypes. These are not part of any standard, and are made redundant by the design of the `stringify` implementation.
 * Add `Date#toJSON` or `Date#toISOString`. See the note about date serialization below.
 
-### Date Serialization
+## Date Serialization
 
 **JSON 3 deviates from the specification in one important way**: it does not define `Date#toISOString()` or `Date#toJSON()`. This is to preserve CommonJS compatibility, as well as avoid polluting native prototypes. Instead, date serialization is performed internally by the `stringify()` function: if a date object does not define a `toJSON()` method, it is serialized as a simplified ISO 8601 date-time string. **This is expected to change in the future, but it's an important incompatibility to be aware of**.
 
 **Several native `Date#toJSON()` implementations produce date time strings that do *not* conform to the grammar outlined in the spec**. For example, all versions of Safari, as well as JSON 2, fail to serialize extended years correctly. Furthermore, JSON 2 and older implementations omit the milliseconds from the date-time string (optional in ES 5, but required in 5.1). Finally, in all versions of Safari, serializing an invalid date will produce the string `"Invalid Date"`, rather than `null`. However, since the `stringify()` and `parse()` implementations in these environments **are** spec-compliant, JSON 3 will not override them.
 
-### Known Incompatibilities
+## Compatibility
+
+JSON 3 has been **tested** with the following web browsers, CommonJS environments, and JavaScript engines.
+
+### Web Browsers
+
+- Windows [Internet Explorer](http://www.microsoft.com/windows/internet-explorer), version 6.0 and higher
+- Mozilla [Firefox](http://www.mozilla.com/firefox), version 1.0 and higher
+- Apple [Safari](http://www.apple.com/safari), version 2.0 and higher
+- [Opera](http://www.opera.com) 7.02 and higher
+- [Mozilla](http://www.mozilla.org/projects/browsers.html) 1.0, [Netscape](http://browser.netscape.com/releases) 6.2.3, and [SeaMonkey](http://www.seamonkey-project.org/) 1.0 and higher
+
+### JavaScript Engines
+
+- Mozilla [Rhino](http://www.mozilla.org/rhino) 1.5R5 and higher
+- WebKit [JSC](https://trac.webkit.org/wiki/JSC)
+
+## Known Incompatibilities
 
 JSON 3 is **not compatible with [Prototype](http://prototypejs.org) 1.6.1 and older**. If you *must* use this version of Prototype, use `Object.toJSON` and `String#evalJSON(true)` instead of `JSON.stringify` and `JSON.parse`, respectively. This is **not** a bug in JSON 3 itself; because Prototype adds several non-standard `toJSON` methods that return serialized values instead of objects, *using the native JSON implementation will yield the same results*.
 
-Two unit tests currently fail in Opera 7. These failures are due to implementation bugs in the JavaScript engine, not JSON 3.
+Two unit tests currently fail in **Opera 7**. These failures are due to implementation bugs in the JavaScript engine, not JSON 3:
 
   * Dates with invalid time values (e.g., `new Date("Kit")`) are normalized to represent the current date.
   * Null characters (`\0`) in strings are discarded (e.g., `"a\0b".length == 2`).
+
+**Safari 2** restricts date time values to the range `[(-2 ** 31), (2 ** 31) - 1]`, which respectively correspond to the minimum and maximum [Unix time](http://en.wikipedia.org/wiki/Unix_time) values. As such, two date serialization tests are expected to fail. Once again, this is an implementation bug.
 
 JSON 3 also assumes that the following methods exist and function as described in the ECMAScript specification:
 
