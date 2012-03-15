@@ -82,7 +82,11 @@ Two unit tests currently fail in **Opera 7**. These failures are due to implemen
 
 **Safari 2** restricts date time values to the range `[(-2 ** 31), (2 ** 31) - 1]`, which respectively correspond to the minimum and maximum [Unix time](http://en.wikipedia.org/wiki/Unix_time) values. As such, two date serialization tests are expected to fail. Once again, this is an implementation bug.
 
-JSON 3 also assumes that the following methods exist and function as described in the ECMAScript specification:
+Finally, the date serialization tests may fail entirely if the system clock is set incorrectly.
+
+### Required Native Methods
+
+JSON 3 assumes that the following methods exist and function as described in the ECMAScript specification:
 
 - **`String.prototype` Methods**: `indexOf`, `charAt`, `slice`.
 - **`Object.prototype` Methods**: `toString`, `hasOwnProperty` (a fallback is provided for Safari 2).
@@ -93,7 +97,6 @@ JSON 3 also assumes that the following methods exist and function as described i
 - The `Number`, `String`, `Array`, `Object`, `SyntaxError`, and `TypeError` constructors.
 - `Math.abs`
 - `String.fromCharCode`
-- `parseInt`
 - `isFinite`
 
 ## Contributing
