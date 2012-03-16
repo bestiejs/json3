@@ -138,11 +138,17 @@
   });
 
   testSuite.addTest("String Literals", function (test) {
-    var controlCharacters = ["\u0000", "\u0001", "\u0002", "\u0003", "\u0004", "\u0005",
-      "\u0006", "\u0007", "\b", "\t", "\n", "\u000b", "\f", "\r", "\u000e",
-      "\u000f", "\u0010", "\u0011", "\u0012", "\u0013", "\u0014", "\u0015",
-      "\u0016", "\u0017", "\u0018", "\u0019", "\u001a", "\u001b", "\u001c",
-      "\u001d", "\u001e", "\u001f"];
+    var expected = 49, controlCharacters = ["\u0001", "\u0002", "\u0003",
+      "\u0004", "\u0005", "\u0006", "\u0007", "\b", "\t", "\n", "\u000b", "\f",
+      "\r", "\u000e", "\u000f", "\u0010", "\u0011", "\u0012", "\u0013",
+      "\u0014", "\u0015", "\u0016", "\u0017", "\u0018", "\u0019", "\u001a",
+      "\u001b", "\u001c", "\u001d", "\u001e", "\u001f"];
+
+    // Opera 7 discards null characters in strings.
+    if ("\0".length) {
+      expected += 1;
+      controlCharacters.push("\u0000");
+    }
 
     this.parses("value", '"value"', "Double-quoted string literal");
     this.parses("", '""', "Empty string literal");
@@ -170,7 +176,7 @@
       test.parseError('"' + value + '"', "String containing an unescaped ASCII control character");
     });
 
-    this.done(50);
+    this.done(expected);
   });
 
   testSuite.addTest("Array Literals", function () {
@@ -213,7 +219,7 @@
   });
 
   testSuite.addTest("Serialization", function () {
-    var value;
+    var expected = 21, value;
 
     this.serializes("null", null, "`null` is represented literally");
     this.serializes("null", 1 / 0, "`Infinity` is serialized as `null`");
@@ -249,14 +255,23 @@
     value = new Date(1993, 5, 2, 2, 10, 28, 224);
     this.serializes('"1993-06-02T08:10:28.224Z"', value, "The date time string should conform to the format outlined in the spec");
 
+    // Safari 2 restricts date time values to the range `[(-2 ** 31),
+    // (2 ** 31) - 1]`, which respectively correspond to the minimum and
+    // maximum Unix time values.
     value = new Date(-8.64e15);
-    this.serializes('"-271821-04-20T00:00:00.000Z"', value, "The minimum valid date value should serialize correctly");
+    if (value.getUTCFullYear() == -271821) {
+      expected += 2;
+      this.serializes('"-271821-04-20T00:00:00.000Z"', value, "The minimum valid date value should serialize correctly");
+      this.serializes('"+275760-09-13T00:00:00.000Z"', new Date(8.64e15), "The maximum valid date value should serialize correctly");
+    }
 
-    value = new Date(8.64e15);
-    this.serializes('"+275760-09-13T00:00:00.000Z"', value, "The maximum valid date value should serialize correctly");
-
+    // Opera 7 normalizes dates with invalid time values to represent the
+    // current date.
     value = new Date("Kit");
-    this.serializes("null", value, "Invalid dates should serialize as `null`");
+    if (!isFinite(value)) {
+      expected += 1;
+      this.serializes("null", value, "Invalid dates should serialize as `null`");
+    }
 
     this.serializes("[\n  1,\n  2,\n  3,\n  [\n    4,\n    5\n  ]\n]", [1, 2, 3, [4, 5]], "Nested arrays; optional `whitespace` argument", null, "  ");
     this.serializes("[]", [], "Empty array; optional string `whitespace` argument", null, "  ");
@@ -266,7 +281,7 @@
     this.serializes("{\n  \"foo\": {\n    \"bar\": [\n      123\n    ]\n  }\n}", {"foo": {"bar": [123]}}, "Nested objects; optional numeric `whitespace` argument", null, 2);
     this.serializes("{\n  \"bar\": 456\n}", {"foo": 123, "bar": 456}, "Object; optional `filter` and `whitespace` arguments", ["bar"], 2);
 
-    this.done(24);
+    this.done(expected);
   });
 
   /*
