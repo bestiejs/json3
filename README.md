@@ -75,14 +75,7 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 
 JSON 3 is **not compatible with [Prototype](http://prototypejs.org) 1.6.1 and older**. If you *must* use this version of Prototype, use `Object.toJSON` and `String#evalJSON(true)` instead of `JSON.stringify` and `JSON.parse`, respectively. This is **not** a bug in JSON 3 itself; because Prototype adds several non-standard `toJSON` methods that return serialized values instead of objects, *using the native JSON implementation will yield the same results*.
 
-Two unit tests currently fail in **Opera 7**. These failures are due to implementation bugs in the JavaScript engine, not JSON 3:
-
-  * Dates with invalid time values (e.g., `new Date("Kit")`) are normalized to represent the current date.
-  * Null characters (`\0`) in strings are discarded (e.g., `"a\0b".length == 2`).
-
-**Safari 2** restricts date time values to the range `[(-2 ** 31), (2 ** 31) - 1]`, which respectively correspond to the minimum and maximum [Unix time](http://en.wikipedia.org/wiki/Unix_time) values. As such, two date serialization tests are expected to fail. Once again, this is an implementation bug.
-
-Finally, the date serialization tests may fail entirely if the system clock is set incorrectly.
+The four date serialization unit tests may fail if the system clock is set incorrectly.
 
 ### Required Native Methods
 
@@ -92,12 +85,10 @@ JSON 3 assumes that the following methods exist and function as described in the
 - **`Object.prototype` Methods**: `toString`, `hasOwnProperty` (a fallback is provided for Safari 2).
 - **`Date.prototype` Methods**: `getUTC{FullYear, Month, Date, Hours, Minutes, Seconds, Milliseconds}`.
 - **`Array.prototype` Methods**: `push`, `pop`, `join`.
-- `Function#call`
 
 - The `Number`, `String`, `Array`, `Object`, `SyntaxError`, and `TypeError` constructors.
-- `Math.abs`
 - `String.fromCharCode`
-- `isFinite`
+- `Function#call`
 
 ## Contributing
 
