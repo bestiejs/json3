@@ -4,8 +4,6 @@
 */
 
 (function (root) {
-  "use strict";
-
   var isLoader = typeof define == "function" && !!define.amd,
   isModule = typeof require == "function" && typeof exports == "object" && exports && !isLoader,
   isBrowser = "window" in root && root.window == root && typeof root.navigator != "undefined",
