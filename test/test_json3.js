@@ -17,10 +17,10 @@
   },
 
   // Load Spec, Newton, and JSON 3.
-  Spec = load("Spec", "./../vendor/spec/lib/spec"), Newton = load("Newton", "./../vendor/spec/lib/newton"), JSON3 = load("JSON3", "../lib/json3"),
+  Spec = load("Spec", "./../vendor/spec/lib/spec"), Newton = load("Newton", "./../vendor/spec/lib/newton"), JSON = load("JSON", "../lib/json3"),
 
   // Create the test suite.
-  testSuite = JSON3.testSuite = new Spec.Suite("JSON 3 Unit Tests");
+  testSuite = JSON.testSuite = new Spec.Suite("JSON 3 Unit Tests");
 
   // Create and attach the logger event handler.
   testSuite.on("all", isBrowser ? Newton.createReport("suite") : Newton.createConsole(function (value) {
@@ -38,7 +38,7 @@
   // `source` string.
   Spec.Test.prototype.parseError = function (source, message, callback) {
     return this.error(function () {
-      JSON3.parse(source, callback);
+      JSON.parse(source, callback);
     }, function (exception) {
       return exception.name == "SyntaxError";
     }, message);
@@ -46,19 +46,19 @@
 
   // Ensures that `JSON.parse` parses the given source string correctly.
   Spec.Test.prototype.parses = function (expected, source, message, callback) {
-    return this.deepEqual(JSON3.parse(source, callback), expected, message);
+    return this.deepEqual(JSON.parse(source, callback), expected, message);
   };
 
   // Ensures that `JSON.stringify` serializes the given object correctly.
   Spec.Test.prototype.serializes = function (expected, value, message, filter, width) {
-    return this.strictEqual(JSON3.stringify(value, filter, width), expected, message);
+    return this.strictEqual(JSON.stringify(value, filter, width), expected, message);
   };
 
   // Ensures that `JSON.stringify` throws a `TypeError` if the given object
   // contains a circular reference.
   Spec.Test.prototype.cyclicError = function (value, message) {
     return this.error(function () {
-      JSON3.stringify(value);
+      JSON.stringify(value);
     }, function (exception) {
       return exception.name == "TypeError";
     }, message);
@@ -237,7 +237,7 @@
       "kitcambridge": ["Kit", 18],
       "mathias": ["Mathias", 23]
     };
-    this.parses(value, JSON3.stringify(value), "Objects are serialized recursively");
+    this.parses(value, JSON.stringify(value), "Objects are serialized recursively");
 
     value = { "foo": { "b": { "foo": { "c": { "foo": null} } } } };
     this.serializes('{"foo":{"b":{"foo":{"c":{"foo":null}}}}}', value, "Nested objects containing identically-named properties should serialize correctly");
@@ -412,28 +412,28 @@
     this.serializes("[42]", [42], "`JSON.stringify` should ignore `filter` arguments that are not functions or arrays", {});
 
     // Test 15.12.3-5-a-i-1 and 15.12.3-5-b-i-1.
-    this.equal(JSON3.stringify(value, null, new Number(5)), JSON3.stringify(value, null, 5), "Optional `width` argument: Number object and primitive width values should produce identical results");
-    this.equal(JSON3.stringify(value, null, new String("xxx")), JSON3.stringify(value, null, "xxx"), "Optional `width` argument: String object and primitive width values should produce identical results");
+    this.equal(JSON.stringify(value, null, new Number(5)), JSON.stringify(value, null, 5), "Optional `width` argument: Number object and primitive width values should produce identical results");
+    this.equal(JSON.stringify(value, null, new String("xxx")), JSON.stringify(value, null, "xxx"), "Optional `width` argument: String object and primitive width values should produce identical results");
 
     // Test 15.12.3-6-a-1 and 15.12.3-6-a-2.
-    this.equal(JSON3.stringify(value, null, 10), JSON3.stringify(value, null, 100), "Optional `width` argument: The maximum numeric width value should be 10");
-    this.equal(JSON3.stringify(value, null, 5.99999), JSON3.stringify(value, null, 5), "Optional `width` argument: Numeric values should be converted to integers");
+    this.equal(JSON.stringify(value, null, 10), JSON.stringify(value, null, 100), "Optional `width` argument: The maximum numeric width value should be 10");
+    this.equal(JSON.stringify(value, null, 5.99999), JSON.stringify(value, null, 5), "Optional `width` argument: Numeric values should be converted to integers");
 
     // Test 15.12.3-6-b-1 and 15.12.3-6-b-4.
-    this.equal(JSON3.stringify(value, null, 0.999999), JSON3.stringify(value), "Optional `width` argument: Numeric width values between 0 and 1 should be ignored");
-    this.equal(JSON3.stringify(value, null, 0), JSON3.stringify(value), "Optional `width` argument: Zero should be ignored");
-    this.equal(JSON3.stringify(value, null, -5), JSON3.stringify(value), "Optional `width` argument: Negative numeric values should be ignored");
-    this.equal(JSON3.stringify(value, null, 5), JSON3.stringify(value, null, "     "), "Optional `width` argument: Numeric width values in the range [1, 10] should produce identical results to that of string values containing `width` spaces");
+    this.equal(JSON.stringify(value, null, 0.999999), JSON.stringify(value), "Optional `width` argument: Numeric width values between 0 and 1 should be ignored");
+    this.equal(JSON.stringify(value, null, 0), JSON.stringify(value), "Optional `width` argument: Zero should be ignored");
+    this.equal(JSON.stringify(value, null, -5), JSON.stringify(value), "Optional `width` argument: Negative numeric values should be ignored");
+    this.equal(JSON.stringify(value, null, 5), JSON.stringify(value, null, "     "), "Optional `width` argument: Numeric width values in the range [1, 10] should produce identical results to that of string values containing `width` spaces");
 
     // Test 15.12.3-7-a-1.
-    this.equal(JSON3.stringify(value, null, "0123456789xxxxxxxxx"), JSON3.stringify(value, null, "0123456789"), "Optional `width` argument: String width values longer than 10 characters should be truncated");
+    this.equal(JSON.stringify(value, null, "0123456789xxxxxxxxx"), JSON.stringify(value, null, "0123456789"), "Optional `width` argument: String width values longer than 10 characters should be truncated");
 
     // Test 15.12.3-8-a-1 thru 15.12.3-8-a-5.
-    this.equal(JSON3.stringify(value, null, ""), JSON3.stringify(value), "Empty string `width` arguments should be ignored");
-    this.equal(JSON3.stringify(value, null, true), JSON3.stringify(value), "Boolean primitive `width` arguments should be ignored");
-    this.equal(JSON3.stringify(value, null, null), JSON3.stringify(value), "`null` `width` arguments should be ignored");
-    this.equal(JSON3.stringify(value, null, new Boolean(false)), JSON3.stringify(value), "Boolean object `width` arguments should be ignored");
-    this.equal(JSON3.stringify(value, null, value), JSON3.stringify(value), "Object literal `width` arguments should be ignored");
+    this.equal(JSON.stringify(value, null, ""), JSON.stringify(value), "Empty string `width` arguments should be ignored");
+    this.equal(JSON.stringify(value, null, true), JSON.stringify(value), "Boolean primitive `width` arguments should be ignored");
+    this.equal(JSON.stringify(value, null, null), JSON.stringify(value), "`null` `width` arguments should be ignored");
+    this.equal(JSON.stringify(value, null, new Boolean(false)), JSON.stringify(value), "Boolean object `width` arguments should be ignored");
+    this.equal(JSON.stringify(value, null, value), JSON.stringify(value), "Object literal `width` arguments should be ignored");
 
     // Test 15.12.3@2-2-b-i-1.
     this.serializes('["fortytwo objects"]', [{

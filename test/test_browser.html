@@ -27,7 +27,7 @@
     </script>
     <script>
     (function () {
-      var JSON3 = this.JSON3 || {};
+      var JSON = this.JSON || {};
       if (typeof this.require == "function" && typeof this.define == "function") {
         this.require({
           // RequireJS accepts relative paths in the module name; `curl.js` does
@@ -47,7 +47,7 @@
       } else {
         this.document.write('<script src="test_json3.js"><\/script>');
         this.onload = function () {
-          JSON3.testSuite.run();
+          JSON.testSuite.run();
         };
       }
     }).call(this);
