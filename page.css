@@ -1,0 +1,51 @@
+html {
+  font: 16px/24px "Palatino Linotype", "Book Antiqua", Palatino, FreeSerif, serif;
+  margin: 15px;
+}
+
+body {
+  width: 75%;
+}
+
+a {
+  padding: 1px;
+  color: inherit;
+  text-decoration: underline;
+}
+
+a:hover, a:focus {
+  text-decoration: none;
+}
+
+h1, h2, h3 {
+  margin: 15px 0 15px;
+  border-bottom: 1px solid #eee;
+}
+
+h1 {
+  font-size: 36px;
+  padding: 15px 0 15px;
+}
+
+h2 {
+  font-size: 28px;
+  padding: 10px 0 10px;
+}
+
+h3 {
+  font-size: 24px;
+  padding: 5px 0 5px;
+  border-bottom-style: dotted;
+}
+
+pre, code, tt {
+  font: normal 14px/24px Menlo, Monaco, Consolas, "Lucida Console", monospace;
+}
+
+pre {
+  background-color: #f8f8ff;
+  padding: 10px;
+  border: 1px solid #eee;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
