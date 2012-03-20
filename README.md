@@ -71,7 +71,7 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 
 ## Known Incompatibilities
 
-JSON 3 is not compatible with [Prototype](http://prototypejs.org) 1.6.1 and older. If you *must* use this version of Prototype, use `Object.toJSON()` and `String#evalJSON(true)` instead of `JSON.stringify` and `JSON.parse`, respectively. This is **not** a bug in JSON 3 itself; because Prototype adds several non-standard `toJSON()` methods that return serialized values instead of objects, *using the native JSON implementation will yield the same results*.
+JSON 3 is not compatible with [Prototype](http://prototypejs.org) 1.6.1 and older. If you must use this version of Prototype, use `Object.toJSON()` and `String#evalJSON(true)` instead of `JSON.stringify` and `JSON.parse`, respectively. This is **not** a bug in JSON 3 itself; because Prototype adds several non-standard `toJSON()` methods that return serialized values instead of objects, using the native JSON implementation will yield the same results.
 
 The four date serialization unit tests may fail if the system clock is set incorrectly.
 
@@ -79,14 +79,13 @@ The four date serialization unit tests may fail if the system clock is set incor
 
 JSON 3 assumes that the following methods exist and function as described in the ECMAScript specification:
 
-- **`String.prototype` Methods**: `indexOf`, `charAt`, `slice`.
-- **`Object.prototype` Methods**: `toString`, `hasOwnProperty` (a fallback is provided for Safari 2).
-- **`Date.prototype` Methods**: `getUTC{FullYear, Month, Date, Hours, Minutes, Seconds, Milliseconds}`.
-- **`Array.prototype` Methods**: `push`, `pop`, `join`.
-
 - The `Number`, `String`, `Array`, `Object`, `SyntaxError`, and `TypeError` constructors.
 - `String.fromCharCode`
 - `Function#call`
+- `String.prototype`: `indexOf`, `charAt`, `slice`.
+- `Object.prototype`: `toString`, `hasOwnProperty` (a fallback is provided for Safari 2).
+- `Date.prototype`: `getUTC{FullYear, Month, Date, Hours, Minutes, Seconds, Milliseconds}`.
+- `Array.prototype`: `push`, `pop`, `join`.
 
 ## Contributing
 
