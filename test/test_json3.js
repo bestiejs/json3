@@ -1,6 +1,6 @@
 /*
  * JSON 3 unit test suite.
- * http://github.com/kitcambridge/json3
+ * http://bestiejs.github.com/json3
 */
 
 (function (root) {

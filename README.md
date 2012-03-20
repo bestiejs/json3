@@ -96,6 +96,6 @@ Check out a working copy of the JSON 3 source code with [Git](http://git-scm.com
 
 If you'd like to contribute a feature or bug fix, you can [fork](http://help.github.com/fork-a-repo/) JSON 3, commit your changes, and [send a pull request](http://help.github.com/send-pull-requests/). Please make sure to update the unit tests in the `test` directory as well.
 
-Alternatively, you can use the [GitHub issue tracker](http://github.com/kitcambridge/json3/issues) to submit bug reports and feature requests.
+Alternatively, you can use the [GitHub issue tracker](http://github.com/bestiejs/json3/issues) to submit bug reports and feature requests.
 
 JSON 3 is released under the [MIT License](http://kit.mit-license.org/).
