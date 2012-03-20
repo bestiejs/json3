@@ -9,13 +9,13 @@ The JSON 3 parser does **not** use `eval` or regular expressions. This provides 
 
 JSON 3 exposes two functions: `stringify()` for [serializing](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/stringify) a JavaScript value to JSON, and `parse()` for [parsing](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/parse) a JSON source string into a JavaScript value. The functions behave exactly as described in the spec, **except** for the date serialization deviation noted below.
 
-[Unit tests](http://kitcambridge.github.com/json3/test/test_browser.html) are also available.
+[Unit tests](http://bestiejs.github.com/json3/test/test_browser.html) are also available.
 
 ## Usage
 
 JSON 3 is a drop-in replacement for [JSON 2](http://json.org/js). You can include it in your HTML source like so:
 
-    <script src="http://kitcambridge.github.com/json3/lib/json3.min.js"></script>
+    <script src="http://bestiejs.github.com/json3/lib/json3.min.js"></script>
     <script>
       JSON.stringify({"Hello": 123});
       // => '{"Hello":123}'
