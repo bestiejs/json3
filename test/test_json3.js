@@ -65,7 +65,7 @@
   // Tests
   // -----
 
-  testSuite.addTest("Empty Source String", function () {
+  testSuite.addTest("`parse`: Empty Source Strings", function () {
     this.parseError("", "Empty JSON source string");
     this.parseError("\n\n\r\n", "Source string containing only line terminators");
     this.parseError(" ", "Source string containing a single space character");
@@ -73,7 +73,7 @@
     this.done(4);
   });
 
-  testSuite.addTest("Whitespace", function (test) {
+  testSuite.addTest("`parse`: Whitespace", function (test) {
     // The only valid JSON whitespace characters are tabs, spaces, and line
     // terminators. All other Unicode category `Z` (`Zs`, `Zl`, and `Zp`)
     // characters are invalid (note that the `Zs` category includes the
@@ -98,7 +98,7 @@
     this.done(26);
   });
 
-  testSuite.addTest("Octal Values", function (test) {
+  testSuite.addTest("`parse`: Octal Values", function (test) {
     // `08` and `018` are invalid octal values.
     Spec.forEach(["00", "01", "02", "03", "04", "05", "06", "07", "010", "011", "08", "018"], function (value) {
       test.parseError(value, "Octal literal");
@@ -109,7 +109,7 @@
     this.done(48);
   });
 
-  testSuite.addTest("Numeric Literals", function () {
+  testSuite.addTest("`parse`: Numeric Literals", function () {
     this.parses(100, "100", "Integer");
     this.parses(-100, "-100", "Negative integer");
     this.parses(10.5, "10.5", "Float");
@@ -135,7 +135,7 @@
     this.done(20);
   });
 
-  testSuite.addTest("String Literals", function (test) {
+  testSuite.addTest("`parse`: String Literals", function (test) {
     var expected = 49, controlCharacters = ["\u0001", "\u0002", "\u0003",
       "\u0004", "\u0005", "\u0006", "\u0007", "\b", "\t", "\n", "\u000b", "\f",
       "\r", "\u000e", "\u000f", "\u0010", "\u0011", "\u0012", "\u0013",
@@ -177,7 +177,7 @@
     this.done(expected);
   });
 
-  testSuite.addTest("Array Literals", function () {
+  testSuite.addTest("`parse`: Array Literals", function () {
     this.parseError("[1, 2, 3,]", "Trailing comma in array literal");
     this.parses([1, 2, [3, [4, 5]], 6, [true, false], [null], [[]]], "[1, 2, [3, [4, 5]], 6, [true, false], [null], [[]]]", "Nested arrays");
     this.parses([{}], "[{}]", "Array containing empty object literal");
@@ -185,7 +185,7 @@
     this.done(4);
   });
 
-  testSuite.addTest("Object Literals", function () {
+  testSuite.addTest("`parse`: Object Literals", function () {
     this.parses({"hello": "world"}, "{\"hello\": \"world\"}", "Object literal containing one member");
     this.parses({"hello": "world", "foo": ["bar", true], "fox": {"quick": true, "purple": false}}, "{\"hello\": \"world\", \"foo\": [\"bar\", true], \"fox\": {\"quick\": true, \"purple\": false}}", "Object literal containing multiple members");
 
@@ -202,22 +202,26 @@
 
   // JavaScript expressions should never be evaluated, as JSON 3 does not use
   // `eval`.
-  testSuite.addTest("Invalid Expressions", function (test) {
+  testSuite.addTest("`parse`: Invalid Expressions", function (test) {
     Spec.forEach(["1 + 1", "1 * 2", "var value = 123;", "{});value = 123;({}", "call()", "1, 2, 3, \"value\""], function (expression) {
       test.parseError(expression, "Source string containing a JavaScript expression");
     });
     this.done(6);
   });
 
-  testSuite.addTest("Callback Function", function (test) {
+  testSuite.addTest("`stringify` and `parse`: Optional Arguments", function () {
     this.parses({"a": 1, "b": 16}, '{"a": 1, "b": "10000"}', "Callback function provided", function (key, value) {
       return typeof value == "string" ? parseInt(value, 2) : value;
     });
-    this.done(1);
+    this.serializes("{\n  \"bar\": 456\n}", {"foo": 123, "bar": 456}, "Object; optional `filter` and `whitespace` arguments", ["bar"], 2);
+    // Test adapted from the Opera JSON test suite via Ken Snyder.
+    // See http://testsuites.opera.com/JSON/correctness/scripts/045.js
+    this.serializes('{"PI":3.141592653589793}', Math, "List of non-enumerable property names specified as the `filter` argument", ["PI"]);
+    this.done(3);
   });
 
-  testSuite.addTest("Serialization", function () {
-    var expected = 21, value;
+  testSuite.addTest("`stringify`", function () {
+    var expected = 20, value;
 
     this.serializes("null", null, "`null` is represented literally");
     this.serializes("null", 1 / 0, "`Infinity` is serialized as `null`");
@@ -277,7 +281,6 @@
     this.serializes("[\n  1\n]", [1], "Single-element array; optional numeric `whitespace` argument", null, 2);
     this.serializes("{\n  \"foo\": 123\n}", { "foo": 123 }, "Single-member object; optional string `whitespace` argument", null, "  ");
     this.serializes("{\n  \"foo\": {\n    \"bar\": [\n      123\n    ]\n  }\n}", {"foo": {"bar": [123]}}, "Nested objects; optional numeric `whitespace` argument", null, 2);
-    this.serializes("{\n  \"bar\": 456\n}", {"foo": 123, "bar": 456}, "Object; optional `filter` and `whitespace` arguments", ["bar"], 2);
 
     this.done(expected);
   });
