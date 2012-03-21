@@ -91,7 +91,7 @@ JSON 3 assumes that the following methods exist and function as described in the
 
 Check out a working copy of the JSON 3 source code with [Git](http://git-scm.com/):
 
-    $ git clone git://github.com/kitcambridge/json3.git
+    $ git clone git://github.com/bestiejs/json3.git
 
 If you'd like to contribute a feature or bug fix, you can [fork](http://help.github.com/fork-a-repo/) JSON 3, commit your changes, and [send a pull request](http://help.github.com/send-pull-requests/). Please make sure to update the unit tests in the `test` directory as well.
 
