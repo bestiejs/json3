@@ -33,6 +33,15 @@ Finally, you can load it directly in Mozilla Rhino, SpiderMonkey, or another Jav
     JSON.stringify([1, 2, 3]);
     // => "[1,2,3]"
 
+## Downloads
+
+The **development** version is commented and uncompressed; the **production** version has been compressed using [Closure Compiler](http://closure-compiler.appspot.com/home).
+
+**Current Version**: 3.1
+
+- [Development Version](http://bestiejs.github.com/json3/lib/json3.js)
+- [Production Version](http://bestiejs.github.com/json3/lib/json3.min.js)
+
 ## Changes from JSON 2
 
 JSON 3...
@@ -41,7 +50,7 @@ JSON 3...
 * Throws a `TypeError` for cyclic structures (JSON 2 will recurse until the stack overflows).
 * Utilizes **feature tests** to detect broken or incomplete **native** JSON implementations (JSON 2 only checks for the presence of the native functions). The tests are only executed once, so there is no runtime delay when parsing or serializing values.
 
-In contrast to JSON 2, JSON 3 **does *not***...
+In contrast to JSON 2, JSON 3 **does not**...
 
 * Add `toJSON()` methods to the `Boolean`, `Number`, and `String` prototypes. These are not part of any standard, and are made redundant by the design of the `stringify()` implementation.
 * Add `Date#toJSON()` or `Date#toISOString()`. See the note about date serialization below.
@@ -62,7 +71,7 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 - Mozilla [Firefox](http://www.mozilla.com/firefox), version 1.0 and higher
 - Apple [Safari](http://www.apple.com/safari), version 2.0 and higher
 - [Opera](http://www.opera.com) 7.02 and higher
-- [Mozilla](http://www.mozilla.org/projects/browsers.html) 1.0, [Netscape](http://browser.netscape.com/releases) 6.2.3, and [SeaMonkey](http://www.seamonkey-project.org/) 1.0 and higher
+- [Mozilla](http://sillydog.org/narchive/gecko.php) 1.0, [Netscape](http://sillydog.org/narchive/) 6.2.3, and [SeaMonkey](http://www.seamonkey-project.org/) 1.0 and higher
 
 ### JavaScript Engines
 
@@ -92,6 +101,8 @@ JSON 3 assumes that the following methods exist and function as described in the
 Check out a working copy of the JSON 3 source code with [Git](http://git-scm.com/):
 
     $ git clone git://github.com/bestiejs/json3.git
+    $ cd json3
+    $ git submodule update --init
 
 If you'd like to contribute a feature or bug fix, you can [fork](http://help.github.com/fork-a-repo/) JSON 3, commit your changes, and [send a pull request](http://help.github.com/send-pull-requests/). Please make sure to update the unit tests in the `test` directory as well.
 
