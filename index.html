@@ -100,9 +100,11 @@ JSON.stringify([1, 2, 3]);
 
 <h2>Known Incompatibilities</h2>
 
-<p>JSON 3 is not compatible with <a href="http://prototypejs.org">Prototype</a> 1.6.1 and older. If you must use this version of Prototype, use <code>Object.toJSON()</code> and <code>String#evalJSON(true)</code> instead of <code>JSON.stringify</code> and <code>JSON.parse</code>, respectively. This is <strong>not</strong> a bug in JSON 3 itself; because Prototype adds several non-standard <code>toJSON()</code> methods that return serialized values instead of objects, using the native JSON implementation will yield the same results.</p>
-
-<p>The four date serialization unit tests may fail if the system clock is set incorrectly.</p>
+<ul>
+<li><p>JSON 3 is not compatible with <a href="http://prototypejs.org">Prototype</a> 1.6.1 and older. If you must use this version of Prototype, please use <code>Object.toJSON()</code> and <code>String#evalJSON(true)</code> instead of <code>JSON.stringify</code> and <code>JSON.parse</code>, respectively. This is <strong>not</strong> a JSON 3 bug; because Prototype adds several non-standard <code>toJSON()</code> methods that <a href="http://prototypejs.org/learn/json">return serialized values instead of objects</a>, using the native JSON implementation will yield identical results.</p></li>
+<li><p>Attempting to serialize the <code>arguments</code> object may produce inconsistent results due to specification and environment differences. As a workaround, please convert the <code>arguments</code> object to an array first: <code>JSON.stringify([].slice.call(arguments))</code>.</p></li>
+<li><p>The four date serialization unit tests may fail if the system clock is set incorrectly.</p></li>
+</ul>
 
 <h3>Required Native Methods</h3>
 

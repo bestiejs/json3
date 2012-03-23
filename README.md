@@ -80,9 +80,11 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 
 ## Known Incompatibilities
 
-JSON 3 is not compatible with [Prototype](http://prototypejs.org) 1.6.1 and older. If you must use this version of Prototype, use `Object.toJSON()` and `String#evalJSON(true)` instead of `JSON.stringify` and `JSON.parse`, respectively. This is **not** a bug in JSON 3 itself; because Prototype adds several non-standard `toJSON()` methods that return serialized values instead of objects, using the native JSON implementation will yield the same results.
+* JSON 3 is not compatible with [Prototype](http://prototypejs.org) 1.6.1 and older. If you must use this version of Prototype, please use `Object.toJSON()` and `String#evalJSON(true)` instead of `JSON.stringify` and `JSON.parse`, respectively. This is **not** a JSON 3 bug; because Prototype adds several non-standard `toJSON()` methods that [return serialized values instead of objects](http://prototypejs.org/learn/json), using the native JSON implementation will yield identical results.
 
-The four date serialization unit tests may fail if the system clock is set incorrectly.
+* Attempting to serialize the `arguments` object may produce inconsistent results due to specification and environment differences. As a workaround, please convert the `arguments` object to an array first: `JSON.stringify([].slice.call(arguments))`.
+
+* The four date serialization unit tests may fail if the system clock is set incorrectly.
 
 ### Required Native Methods
 
