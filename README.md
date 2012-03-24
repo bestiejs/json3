@@ -84,8 +84,6 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 
 * Attempting to serialize the `arguments` object may produce inconsistent results due to specification and environment differences. As a workaround, please convert the `arguments` object to an array first: `JSON.stringify([].slice.call(arguments))`.
 
-* The four date serialization unit tests may fail if the system clock is set incorrectly.
-
 ### Required Native Methods
 
 JSON 3 assumes that the following methods exist and function as described in the ECMAScript specification:
