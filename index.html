@@ -1,88 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>JSON 3</title>
-  <link rel="stylesheet" href="page.css" media="screen">
+<meta charset="utf-8">
+<title>JSON 3</title>
+<link rel="stylesheet" href="page.css" media="screen">
 </head>
 <body>
 <h1>JSON 3</h1>
+<p><strong>JSON 3</strong> is an <a href="http://es5.github.com/">ECMAScript 5</a>-compliant JSON implementation. Its objective is to provide a reasonably fast library compatible with a variety of older environments, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6.
 
-<p><strong>JSON 3</strong> is an <a href="http://es5.github.com/">ECMAScript 5</a>-compliant JSON implementation. Its objective is to provide a reasonably fast library compatible with a variety of older environments, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6.</p>
+</p>
+<p><a href="http://json.org/">JSON</a> is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by <a href="http://www.crockford.com/">Douglas Crockford</a>, JSON was standardized in the fifth edition of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
 
-<p><a href="http://json.org/">JSON</a> is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by <a href="http://www.crockford.com/">Douglas Crockford</a>, JSON was standardized in the fifth edition of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.</p>
+</p>
+<p>The JSON 3 parser does <strong>not</strong> use <code>eval</code> or regular expressions. This provides security and performance benefits in obsolete and mobile environments, where the margin is particularly significant. Informal benchmarks have shown that JSON 3 is slower than Crockford&#39;s recursive descent parser and Mike Samuel&#39;s <code>json-sans-eval</code>, but approximates the speed of the <code>eval</code>-based JSON 2 parser.
 
-<p>The JSON 3 parser does <strong>not</strong> use <code>eval</code> or regular expressions. This provides security and performance benefits in obsolete and mobile environments, where the margin is particularly significant. Informal benchmarks have shown that JSON 3 is slower than Crockford&#39;s recursive descent parser and Mike Samuel&#39;s <code>json-sans-eval</code>, but approximates the speed of the <code>eval</code>-based JSON 2 parser.</p>
+</p>
+<p>JSON 3 exposes two functions: <code>stringify()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/stringify">serializing</a> a JavaScript value to JSON, and <code>parse()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/parse">parsing</a> a JSON source string into a JavaScript value. The functions behave exactly as described in the spec, <strong>except</strong> for the date serialization deviation noted below.
 
-<p>JSON 3 exposes two functions: <code>stringify()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/stringify">serializing</a> a JavaScript value to JSON, and <code>parse()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/parse">parsing</a> a JSON source string into a JavaScript value. The functions behave exactly as described in the spec, <strong>except</strong> for the date serialization deviation noted below.</p>
+</p>
+<p>The project is <a href="http://github.com/bestiejs/json3">hosted on GitHub</a>, along with the <a href="http://bestiejs.github.com/json3/test/test_browser.html">unit tests</a>. It is part of the <a href="http://github.com/bestiejs">BestieJS</a> family, a collection of &quot;best in class&quot; JavaScript libraries that promote cross-platform support, specification precedents, unit testing, and plenty of documentation.
 
-<p>The project is <a href="http://github.com/bestiejs/json3">hosted on GitHub</a>, along with the <a href="http://bestiejs.github.com/json3/test/test_browser.html">unit tests</a>. It is part of the <a href="http://github.com/bestiejs">BestieJS</a> family, a collection of &quot;best in class&quot; JavaScript libraries that promote cross-platform support, specification precedents, unit testing, and plenty of documentation.</p>
-
+</p>
 <h2>Usage</h2>
+<p>JSON 3 is a drop-in replacement for <a href="http://json.org/js">JSON 2</a>. You can include it in your HTML source like so:
 
-<p>JSON 3 is a drop-in replacement for <a href="http://json.org/js">JSON 2</a>. You can include it in your HTML source like so:</p>
-
+</p>
 <pre><code>&lt;script src=&quot;http://bestiejs.github.com/json3/lib/json3.min.js&quot;&gt;&lt;/script&gt;
 &lt;script&gt;
   JSON.stringify({&quot;Hello&quot;: 123});
   // =&gt; &#39;{&quot;Hello&quot;:123}&#39;
-&lt;/script&gt;
-</code></pre>
+&lt;/script&gt;</code></pre>
+<p>You can also use JSON 3 as a CommonJS module, though most CommonJS environments natively support JSON serialization and parsing:
 
-<p>You can also use JSON 3 as a CommonJS module, though most CommonJS environments natively support JSON serialization and parsing:</p>
-
+</p>
 <pre><code>var JSON3 = require(&quot;path/to/json3&quot;);
 JSON3.parse(&quot;[1, 2, 3]&quot;);
-// =&gt; [1, 2, 3]
-</code></pre>
+// =&gt; [1, 2, 3]</code></pre>
+<p>Finally, you can load it directly in Mozilla Rhino, SpiderMonkey, or another JavaScript engine:
 
-<p>Finally, you can load it directly in Mozilla Rhino, SpiderMonkey, or another JavaScript engine:</p>
-
+</p>
 <pre><code>load(&quot;path/to/json3&quot;);
 JSON.stringify([1, 2, 3]);
-// =&gt; &quot;[1,2,3]&quot;
-</code></pre>
-
+// =&gt; &quot;[1,2,3]&quot;</code></pre>
 <h2>Downloads</h2>
+<p>The <strong>development</strong> version is commented and uncompressed; the <strong>production</strong> version has been compressed using <a href="http://closure-compiler.appspot.com/home">Closure Compiler</a>.
 
-<p>The <strong>development</strong> version is commented and uncompressed; the <strong>production</strong> version has been compressed using <a href="http://closure-compiler.appspot.com/home">Closure Compiler</a>.</p>
+</p>
+<p><strong>Current Version</strong>: 3.1
 
-<p><strong>Current Version</strong>: 3.1</p>
-
+</p>
 <ul>
 <li><a href="http://bestiejs.github.com/json3/lib/json3.js">Development Version</a></li>
 <li><a href="http://bestiejs.github.com/json3/lib/json3.min.js">Production Version</a></li>
 </ul>
-
 <h2>Changes from JSON 2</h2>
+<p>JSON 3...
 
-<p>JSON 3...</p>
-
+</p>
 <ul>
 <li>Correctly serializes primitive wrapper objects (<em><a href="https://github.com/douglascrockford/JSON-js/issues/28">Issue #28</a></em>).</li>
 <li>Throws a <code>TypeError</code> for cyclic structures (JSON 2 will recurse until the stack overflows).</li>
 <li>Utilizes <strong>feature tests</strong> to detect broken or incomplete <strong>native</strong> JSON implementations (JSON 2 only checks for the presence of the native functions). The tests are only executed once, so there is no runtime delay when parsing or serializing values.</li>
 </ul>
+<p>In contrast to JSON 2, JSON 3 <strong>does not</strong>...
 
-<p>In contrast to JSON 2, JSON 3 <strong>does not</strong>...</p>
-
+</p>
 <ul>
 <li>Add <code>toJSON()</code> methods to the <code>Boolean</code>, <code>Number</code>, and <code>String</code> prototypes. These are not part of any standard, and are made redundant by the design of the <code>stringify()</code> implementation.</li>
 <li>Add <code>Date#toJSON()</code> or <code>Date#toISOString()</code>. See the note about date serialization below.</li>
 </ul>
-
 <h2>Date Serialization</h2>
+<p><strong>JSON 3 deviates from the specification in one important way</strong>: it does not define <code>Date#toISOString()</code> or <code>Date#toJSON()</code>. This is to preserve CommonJS compatibility, as well as avoid polluting native prototypes. Instead, date serialization is performed internally by the <code>stringify()</code> function: if a date object does not directly define a <code>toJSON()</code> method, it is serialized as a simplified ISO 8601 date-time string.
 
-<p><strong>JSON 3 deviates from the specification in one important way</strong>: it does not define <code>Date#toISOString()</code> or <code>Date#toJSON()</code>. This is to preserve CommonJS compatibility, as well as avoid polluting native prototypes. Instead, date serialization is performed internally by the <code>stringify()</code> function: if a date object does not directly define a <code>toJSON()</code> method, it is serialized as a simplified ISO 8601 date-time string.</p>
+</p>
+<p><strong>Several native <code>Date#toJSON()</code> implementations produce date time strings that do <em>not</em> conform to the grammar outlined in the spec</strong>. For example, all versions of Safari 4, as well as JSON 2, fail to serialize extended years correctly. Furthermore, JSON 2 and older implementations omit the milliseconds from the date-time string (optional in ES 5, but required in 5.1). Finally, in all versions of Safari 4 and 5, serializing an invalid date will produce the string <code>&quot;Invalid Date&quot;</code>, rather than <code>null</code>. Because these environments exhibit other serialization bugs, however, JSON 3 will override the native <code>stringify()</code> implementation.
 
-<p><strong>Several native <code>Date#toJSON()</code> implementations produce date time strings that do <em>not</em> conform to the grammar outlined in the spec</strong>. For example, all versions of Safari 4, as well as JSON 2, fail to serialize extended years correctly. Furthermore, JSON 2 and older implementations omit the milliseconds from the date-time string (optional in ES 5, but required in 5.1). Finally, in all versions of Safari 4 and 5, serializing an invalid date will produce the string <code>&quot;Invalid Date&quot;</code>, rather than <code>null</code>. Because these environments exhibit other serialization bugs, however, JSON 3 will override the native <code>stringify()</code> implementation.</p>
-
+</p>
 <h2>Compatibility</h2>
+<p>JSON 3 has been <strong>tested</strong> with the following web browsers, CommonJS environments, and JavaScript engines.
 
-<p>JSON 3 has been <strong>tested</strong> with the following web browsers, CommonJS environments, and JavaScript engines.</p>
-
+</p>
 <h3>Web Browsers</h3>
-
 <ul>
 <li>Windows <a href="http://www.microsoft.com/windows/internet-explorer">Internet Explorer</a>, version 6.0 and higher</li>
 <li>Mozilla <a href="http://www.mozilla.com/firefox">Firefox</a>, version 1.0 and higher</li>
@@ -90,26 +89,24 @@ JSON.stringify([1, 2, 3]);
 <li><a href="http://www.opera.com">Opera</a> 7.02 and higher</li>
 <li><a href="http://sillydog.org/narchive/gecko.php">Mozilla</a> 1.0, <a href="http://sillydog.org/narchive/">Netscape</a> 6.2.3, and <a href="http://www.seamonkey-project.org/">SeaMonkey</a> 1.0 and higher</li>
 </ul>
-
 <h3>JavaScript Engines</h3>
-
 <ul>
 <li>Mozilla <a href="http://www.mozilla.org/rhino">Rhino</a> 1.5R5 and higher</li>
 <li>WebKit <a href="https://trac.webkit.org/wiki/JSC">JSC</a></li>
 </ul>
-
 <h2>Known Incompatibilities</h2>
-
 <ul>
-<li><p>JSON 3 is not compatible with <a href="http://prototypejs.org">Prototype</a> 1.6.1 and older. If you must use this version of Prototype, please use <code>Object.toJSON()</code> and <code>String#evalJSON(true)</code> instead of <code>JSON.stringify</code> and <code>JSON.parse</code>, respectively. This is <strong>not</strong> a JSON 3 bug; because Prototype adds several non-standard <code>toJSON()</code> methods that <a href="http://prototypejs.org/learn/json">return serialized values instead of objects</a>, using the native JSON implementation will yield identical results.</p></li>
-<li><p>Attempting to serialize the <code>arguments</code> object may produce inconsistent results due to specification and environment differences. As a workaround, please convert the <code>arguments</code> object to an array first: <code>JSON.stringify([].slice.call(arguments))</code>.</p></li>
-<li><p>The four date serialization unit tests may fail if the system clock is set incorrectly.</p></li>
+<li><p>JSON 3 is not compatible with <a href="http://prototypejs.org">Prototype</a> 1.6.1 and older. If you must use this version of Prototype, please use <code>Object.toJSON()</code> and <code>String#evalJSON(true)</code> instead of <code>JSON.stringify</code> and <code>JSON.parse</code>, respectively. This is <strong>not</strong> a JSON 3 bug; because Prototype adds several non-standard <code>toJSON()</code> methods that <a href="http://prototypejs.org/learn/json">return serialized values instead of objects</a>, using the native JSON implementation will yield identical results.</p>
+</li>
+<li><p>Attempting to serialize the <code>arguments</code> object may produce inconsistent results due to specification and environment differences. As a workaround, please convert the <code>arguments</code> object to an array first: <code>JSON.stringify([].slice.call(arguments))</code>.</p>
+</li>
+<li><p>The four date serialization unit tests may fail if the system clock is set incorrectly.</p>
+</li>
 </ul>
-
 <h3>Required Native Methods</h3>
+<p>JSON 3 assumes that the following methods exist and function as described in the ECMAScript specification:
 
-<p>JSON 3 assumes that the following methods exist and function as described in the ECMAScript specification:</p>
-
+</p>
 <ul>
 <li>The <code>Number</code>, <code>String</code>, <code>Array</code>, <code>Object</code>, <code>SyntaxError</code>, and <code>TypeError</code> constructors.</li>
 <li><code>String.fromCharCode</code></li>
@@ -119,20 +116,19 @@ JSON.stringify([1, 2, 3]);
 <li><code>Date.prototype</code>: <code>getUTC{FullYear, Month, Date, Hours, Minutes, Seconds, Milliseconds}</code>.</li>
 <li><code>Array.prototype</code>: <code>push</code>, <code>pop</code>, <code>join</code>.</li>
 </ul>
-
 <h2>Contributing</h2>
+<p>Check out a working copy of the JSON 3 source code with <a href="http://git-scm.com/">Git</a>:
 
-<p>Check out a working copy of the JSON 3 source code with <a href="http://git-scm.com/">Git</a>:</p>
-
+</p>
 <pre><code>$ git clone git://github.com/bestiejs/json3.git
 $ cd json3
-$ git submodule update --init
-</code></pre>
+$ git submodule update --init</code></pre>
+<p>If you&#39;d like to contribute a feature or bug fix, you can <a href="http://help.github.com/fork-a-repo/">fork</a> JSON 3, commit your changes, and <a href="http://help.github.com/send-pull-requests/">send a pull request</a>. Please make sure to update the unit tests in the <code>test</code> directory as well.
 
-<p>If you&#39;d like to contribute a feature or bug fix, you can <a href="http://help.github.com/fork-a-repo/">fork</a> JSON 3, commit your changes, and <a href="http://help.github.com/send-pull-requests/">send a pull request</a>. Please make sure to update the unit tests in the <code>test</code> directory as well.</p>
+</p>
+<p>Alternatively, you can use the <a href="http://github.com/bestiejs/json3/issues">GitHub issue tracker</a> to submit bug reports and feature requests.
 
-<p>Alternatively, you can use the <a href="http://github.com/bestiejs/json3/issues">GitHub issue tracker</a> to submit bug reports and feature requests.</p>
-
+</p>
 <p>JSON 3 is released under the <a href="http://kit.mit-license.org/">MIT License</a>.</p>
 
 <script src="lib/json3.js"></script>
