@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang=en>
 <head>
-<meta charset="utf-8">
+<meta charset=utf-8>
 <title>JSON 3</title>
-<link rel="stylesheet" href="page.css" media="screen">
+<link rel=stylesheet href=page.css media=screen>
 </head>
 <body>
 <h1>JSON 3</h1>
@@ -100,8 +100,6 @@ JSON.stringify([1, 2, 3]);
 </li>
 <li><p>Attempting to serialize the <code>arguments</code> object may produce inconsistent results due to specification and environment differences. As a workaround, please convert the <code>arguments</code> object to an array first: <code>JSON.stringify([].slice.call(arguments))</code>.</p>
 </li>
-<li><p>The four date serialization unit tests may fail if the system clock is set incorrectly.</p>
-</li>
 </ul>
 <h3>Required Native Methods</h3>
 <p>JSON 3 assumes that the following methods exist and function as described in the ECMAScript specification:
@@ -131,6 +129,6 @@ $ git submodule update --init</code></pre>
 </p>
 <p>JSON 3 is released under the <a href="http://kit.mit-license.org/">MIT License</a>.</p>
 
-<script src="lib/json3.js"></script>
+<script src=lib/json3.js></script>
 </body>
 </html>
