@@ -1,8 +1,4 @@
-/*
- * JSON 3 unit test suite.
- * http://bestiejs.github.com/json3
-*/
-
+/* JSON 3 Unit Test Suite | http://bestiejs.github.com/json3 */
 (function (root) {
   var isLoader = typeof define == "function" && !!define.amd,
   isModule = typeof require == "function" && typeof exports == "object" && exports && !isLoader,
