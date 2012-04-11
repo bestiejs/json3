@@ -13,7 +13,7 @@ JSON 3 exposes two functions: `stringify()` for [serializing](https://developer.
 
 The JSON 3 parser does **not** use `eval` or regular expressions. This provides security and performance benefits in obsolete and mobile environments, where the margin is particularly significant. Informal benchmarks have shown that JSON 3 is slower than Crockford's [recursive descent parser](https://github.com/douglascrockford/JSON-js) and Mike Samuel's [`json-sans-eval`](http://code.google.com/p/json-sans-eval/), but approximates the speed of the `eval`-based JSON 2 parser.
 
-The project is [hosted on GitHub](https://github.com/bestiejs/json3), along with the [unit tests](http://bestiejs.github.com/json3/test/test_browser.html). It is part of the [BestieJS](https://github.com/bestiejs) family, a collection of best-in-class JavaScript libraries that promote cross-platform support, specification precedents, unit testing, and plenty of documentation.
+The project is [hosted on GitHub](http://git.io/json3), along with the [unit tests](http://bestiejs.github.com/json3/test/test_browser.html). It is part of the [BestieJS](https://github.com/bestiejs) family, a collection of best-in-class JavaScript libraries that promote cross-platform support, specification precedents, unit testing, and plenty of documentation.
 
 # Changes from JSON 2 #
 
@@ -97,7 +97,7 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 
 JSON 3 assumes that the following methods exist and function as described in the ECMAScript specification:
 
-- The `Number`, `String`, `Array`, `Object`, `SyntaxError`, and `TypeError` constructors.
+- The `Number`, `String`, `Array`, `Object`, `Date`, `SyntaxError`, and `TypeError` constructors.
 - `String.fromCharCode`
 - `Function#call`
 - `String.prototype`: `indexOf`, `charAt`, `slice`.
