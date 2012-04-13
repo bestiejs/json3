@@ -217,8 +217,9 @@
   });
 
   testSuite.addTest("`stringify`", function () {
-    var expected = 20, value, pattern;
+    var expected = 23, value, pattern;
 
+    // Special values.
     this.serializes("null", null, "`null` is represented literally");
     this.serializes("null", 1 / 0, "`Infinity` is serialized as `null`");
     this.serializes("null", 0 / 0, "`NaN` is serialized as `null`");
@@ -237,19 +238,33 @@
     };
     this.parses(value, JSON.stringify(value), "Objects are serialized recursively");
 
+    // Complex cyclic structures.
     value = { "foo": { "b": { "foo": { "c": { "foo": null} } } } };
     this.serializes('{"foo":{"b":{"foo":{"c":{"foo":null}}}}}', value, "Nested objects containing identically-named properties should serialize correctly");
 
     value.foo.b.foo.c.foo = value;
     this.cyclicError(value, "Objects containing complex circular references should throw a `TypeError`");
 
+    // Sparse arrays.
     value = [];
     value[5] = 1;
     this.serializes("[null,null,null,null,null,1]", value, "Sparse arrays should serialize correctly");
 
-    pattern = /^"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z"$/;
-    this.ok(pattern.test(JSON.stringify(new Date(1994, 6, 3))), "Dates are serialized using the simplified date time string format");
-    this.ok(pattern.test(JSON.stringify(new Date(1993, 5, 2, 2, 10, 28, 224))), "The date time string should conform to the format outlined in the spec");
+    // Dates.
+    this.serializes('"1994-07-03T00:00:00.000Z"', new Date(Date.UTC(1994, 6, 3)), "Dates should be serialized according to the simplified date time string format");
+    this.serializes('"1993-06-02T02:10:28.224Z"', new Date(Date.UTC(1993, 5, 2, 2, 10, 28, 224)), "The date time string should conform to the format outlined in the spec");
+
+    // Tests based on research by @Yaffle. See kriskowal/es5-shim#111.
+    this.serializes('"1969-12-31T23:59:59.999Z"', new Date(-1), "Millisecond values < 1000 should be serialized correctly");
+    this.serializes('"-000001-01-01T00:00:00.000Z"', new Date(-621987552e5), "Years prior to 0 should be serialized as extended years");
+    this.serializes('"+010000-01-01T00:00:00.000Z"', new Date(2534023008e5), "Years after 9999 should be serialized as extended years");
+
+    value = new Date(-3509827334573292);
+    if (value.getUTCFullYear() == -109252) {
+      // This test will fail in Opera >= 10.53. See issue #4.
+      expected += 1;
+      this.serializes('"-109252-01-01T10:37:06.708Z"', value, "Opera <= 9.64 should correctly serialize a date with a year of `-109252`");
+    }
 
     // Safari 2 restricts date time values to the range `[(-2 ** 31),
     // (2 ** 31) - 1]`, which respectively correspond to the minimum and
@@ -269,6 +284,7 @@
       this.serializes("null", value, "Invalid dates should serialize as `null`");
     }
 
+    // Additional arguments.
     this.serializes("[\n  1,\n  2,\n  3,\n  [\n    4,\n    5\n  ]\n]", [1, 2, 3, [4, 5]], "Nested arrays; optional `whitespace` argument", null, "  ");
     this.serializes("[]", [], "Empty array; optional string `whitespace` argument", null, "  ");
     this.serializes("{}", {}, "Empty object; optional numeric `whitespace` argument", null, 2);
