@@ -23,7 +23,7 @@
 
 </p>
 <ul>
-<li><a href="http://bestiejs.github.com/json3/lib/json3.js">Development Version</a> <em>(8.2 KB; uncompressed with comments)</em></li>
+<li><a href="http://bestiejs.github.com/json3/lib/json3.js">Development Version</a> <em>(37 KB; uncompressed with comments)</em></li>
 <li><a href="http://bestiejs.github.com/json3/lib/json3.min.js">Production Version</a> <em>(3.0 KB; compressed)</em></li>
 </ul>
 <p><a href="http://json.org/">JSON</a> is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by <a href="http://www.crockford.com/">Douglas Crockford</a>, the format was standardized in the <a href="http://es5.github.com/">fifth edition</a> of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
@@ -35,7 +35,7 @@
 <p>The JSON 3 parser does <strong>not</strong> use <code>eval</code> or regular expressions. This provides security and performance benefits in obsolete and mobile environments, where the margin is particularly significant. Informal benchmarks have shown that JSON 3 is slower than Crockford&#39;s <a href="https://github.com/douglascrockford/JSON-js">recursive descent parser</a> and Mike Samuel&#39;s <a href="http://code.google.com/p/json-sans-eval/"><code>json-sans-eval</code></a>, but approximates the speed of the <code>eval</code>-based JSON 2 parser.
 
 </p>
-<p>The project is <a href="https://github.com/bestiejs/json3">hosted on GitHub</a>, along with the <a href="http://bestiejs.github.com/json3/test/test_browser.html">unit tests</a>. It is part of the <a href="https://github.com/bestiejs">BestieJS</a> family, a collection of best-in-class JavaScript libraries that promote cross-platform support, specification precedents, unit testing, and plenty of documentation.
+<p>The project is <a href="http://git.io/json3">hosted on GitHub</a>, along with the <a href="http://bestiejs.github.com/json3/test/test_browser.html">unit tests</a>. It is part of the <a href="https://github.com/bestiejs">BestieJS</a> family, a collection of best-in-class JavaScript libraries that promote cross-platform support, specification precedents, unit testing, and plenty of documentation.
 
 </p>
 <h1><a name="section_2"></a>Changes from JSON 2</h1>
@@ -119,12 +119,13 @@ JSON.stringify({&quot;Hello&quot;: 123, &quot;Good-bye&quot;: 456}, [&quot;Hello
 
 </p>
 <ul>
-<li>The <code>Number</code>, <code>String</code>, <code>Array</code>, <code>Object</code>, <code>SyntaxError</code>, and <code>TypeError</code> constructors.</li>
+<li>The <code>Number</code>, <code>String</code>, <code>Array</code>, <code>Object</code>, <code>Date</code>, <code>SyntaxError</code>, and <code>TypeError</code> constructors.</li>
 <li><code>String.fromCharCode</code></li>
 <li><code>Function#call</code></li>
+<li><code>Math.floor</code></li>
 <li><code>String.prototype</code>: <code>indexOf</code>, <code>charAt</code>, <code>slice</code>.</li>
 <li><code>Object.prototype</code>: <code>toString</code>, <code>hasOwnProperty</code> (a fallback is provided for Safari 2).</li>
-<li><code>Date.prototype</code>: <code>getUTC{FullYear, Month, Date, Hours, Minutes, Seconds, Milliseconds}</code>.</li>
+<li><code>Date.prototype</code>: <code>getUTC{Hours, Minutes, Seconds, Milliseconds}</code>.</li>
 <li><code>Array.prototype</code>: <code>push</code>, <code>pop</code>, <code>join</code>.</li>
 </ul>
 <h1><a name="section_5"></a>Contribute</h1>
