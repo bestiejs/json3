@@ -100,9 +100,10 @@ JSON 3 assumes that the following methods exist and function as described in the
 - The `Number`, `String`, `Array`, `Object`, `Date`, `SyntaxError`, and `TypeError` constructors.
 - `String.fromCharCode`
 - `Function#call`
+- `Math.floor`
 - `String.prototype`: `indexOf`, `charAt`, `slice`.
 - `Object.prototype`: `toString`, `hasOwnProperty` (a fallback is provided for Safari 2).
-- `Date.prototype`: `getUTC{FullYear, Month, Date, Hours, Minutes, Seconds, Milliseconds}`.
+- `Date.prototype`: `getUTC{Hours, Minutes, Seconds, Milliseconds}`.
 - `Array.prototype`: `push`, `pop`, `join`.
 
 # Contribute #
