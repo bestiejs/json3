@@ -217,7 +217,7 @@
   });
 
   testSuite.addTest("`stringify`", function () {
-    var expected = 23, value, pattern;
+    var expected = 24, value, pattern;
 
     // Special values.
     this.serializes("null", null, "`null` is represented literally");
@@ -258,13 +258,7 @@
     this.serializes('"1969-12-31T23:59:59.999Z"', new Date(-1), "Millisecond values < 1000 should be serialized correctly");
     this.serializes('"-000001-01-01T00:00:00.000Z"', new Date(-621987552e5), "Years prior to 0 should be serialized as extended years");
     this.serializes('"+010000-01-01T00:00:00.000Z"', new Date(2534023008e5), "Years after 9999 should be serialized as extended years");
-
-    value = new Date(-3509827334573292);
-    if (value.getUTCFullYear() == -109252) {
-      // This test will fail in Opera >= 10.53. See issue #4.
-      expected += 1;
-      this.serializes('"-109252-01-01T10:37:06.708Z"', value, "Opera <= 9.64 should correctly serialize a date with a year of `-109252`");
-    }
+    this.serializes('"-109252-01-01T10:37:06.708Z"', new Date(-3509827334573292), "Issue #4: Opera > 9.64 should correctly serialize a date with a year of `-109252`");
 
     // Safari 2 restricts date time values to the range `[(-2 ** 31),
     // (2 ** 31) - 1]`, which respectively correspond to the minimum and
