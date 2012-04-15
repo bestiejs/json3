@@ -91,7 +91,7 @@ fs.readFile("lib/json3.js", "utf8", function (exception, source) {
       // Remove the leading `!` character from YUI-style comments.
       results += comment.type == "comment1" ? "//" + comment.value + "\n" : ("/*" + comment.value.slice(comment.value.charAt(0) == "!" ? 1 : 0) + "*/");
     });
-    results += "\n" + compressor.uglify.gen_code(
+    results += "\n;" + compressor.uglify.gen_code(
       // Enable unsafe transformations.
       compressor.uglify.ast_squeeze_more(
         compressor.uglify.ast_squeeze(
