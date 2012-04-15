@@ -104,7 +104,7 @@ JSON 3 assumes that the following methods exist and function as described in the
 - `Function#call`
 - `Math.floor`
 - `String.prototype`: `indexOf`, `charAt`, `slice`.
-- `Object.prototype`: `toString`, `hasOwnProperty` (a fallback is provided for Safari 2).
+- `Object.prototype`: `toString`.
 - `Date.prototype`: `getUTC{Hours, Minutes, Seconds, Milliseconds}`.
 - `Array.prototype`: `push`, `pop`, `join`.
 
