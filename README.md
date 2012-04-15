@@ -101,12 +101,13 @@ JSON 3 assumes that the following methods exist and function as described in the
 
 - The `Number`, `String`, `Array`, `Object`, `Date`, `SyntaxError`, and `TypeError` constructors.
 - `String.fromCharCode`
+- `Object#toString`
 - `Function#call`
 - `Math.floor`
-- `String.prototype`: `indexOf`, `charAt`, `slice`.
-- `Object.prototype`: `toString`.
-- `Date.prototype`: `getUTC{Hours, Minutes, Seconds, Milliseconds}`.
-- `Array.prototype`: `push`, `pop`, `join`.
+- `Number#toString`
+- `String.prototype`: `indexOf`, `charCodeAt`, `charAt`, `slice`.
+- `Date.prototype`: `getUTC{Hours, Minutes, Seconds, Milliseconds}`, `valueOf`.
+- `Array.prototype`: `push`, `pop`, `join`, `splice`.
 
 # Contribute #
 
