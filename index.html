@@ -19,12 +19,12 @@
 <p><img src="http://bestiejs.github.com/json3/page/logo.png" alt="JSON 3 Logo">
 
 </p>
-<p><strong>JSON 3</strong> is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is <strong>3.1</strong>.
+<p><strong>JSON 3</strong> is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is <strong>3.2</strong>.
 
 </p>
 <ul>
 <li><a href="http://bestiejs.github.com/json3/lib/json3.js">Development Version</a> <em>(37 KB; uncompressed with comments)</em></li>
-<li><a href="http://bestiejs.github.com/json3/lib/json3.min.js">Production Version</a> <em>(3.0 KB; compressed)</em></li>
+<li><a href="http://bestiejs.github.com/json3/lib/json3.min.js">Production Version</a> <em>(3.4 KB; compressed)</em></li>
 </ul>
 <p><a href="http://json.org/">JSON</a> is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by <a href="http://www.crockford.com/">Douglas Crockford</a>, the format was standardized in the <a href="http://es5.github.com/">fifth edition</a> of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
 
@@ -59,6 +59,9 @@
 
 </p>
 <p><strong>Several native <code>Date#toJSON()</code> implementations produce date time strings that do <em>not</em> conform to the grammar outlined in the spec</strong>. For instance, all versions of Safari 4, as well as JSON 2, fail to serialize extended years correctly. Furthermore, JSON 2 and older implementations omit the milliseconds from the date-time string (optional in ES 5, but required in 5.1). Finally, in all versions of Safari 4 and 5, serializing an invalid date will produce the string <code>&quot;Invalid Date&quot;</code>, rather than <code>null</code>. Because these environments exhibit other serialization bugs, however, JSON 3 will override the native <code>stringify()</code> implementation.
+
+</p>
+<p>Portions of the date serialization code are adapted from the <a href="https://github.com/Yaffle/date-shim"><code>date-shim</code></a> project.
 
 </p>
 <h1><a name="section_3"></a>Usage</h1>
@@ -121,12 +124,13 @@ JSON.stringify({&quot;Hello&quot;: 123, &quot;Good-bye&quot;: 456}, [&quot;Hello
 <ul>
 <li>The <code>Number</code>, <code>String</code>, <code>Array</code>, <code>Object</code>, <code>Date</code>, <code>SyntaxError</code>, and <code>TypeError</code> constructors.</li>
 <li><code>String.fromCharCode</code></li>
+<li><code>Object#toString</code></li>
 <li><code>Function#call</code></li>
 <li><code>Math.floor</code></li>
-<li><code>String.prototype</code>: <code>indexOf</code>, <code>charAt</code>, <code>slice</code>.</li>
-<li><code>Object.prototype</code>: <code>toString</code>, <code>hasOwnProperty</code> (a fallback is provided for Safari 2).</li>
-<li><code>Date.prototype</code>: <code>getUTC{Hours, Minutes, Seconds, Milliseconds}</code>.</li>
-<li><code>Array.prototype</code>: <code>push</code>, <code>pop</code>, <code>join</code>.</li>
+<li><code>Number#toString</code></li>
+<li><code>String.prototype</code>: <code>indexOf</code>, <code>charCodeAt</code>, <code>charAt</code>, <code>slice</code>.</li>
+<li><code>Date.prototype</code>: <code>getUTC{Hours, Minutes, Seconds, Milliseconds}</code>, <code>valueOf</code>.</li>
+<li><code>Array.prototype</code>: <code>push</code>, <code>pop</code>, <code>join</code>, <code>splice</code>.</li>
 </ul>
 <h1><a name="section_5"></a>Contribute</h1>
 <p>Check out a working copy of the JSON 3 source code with <a href="http://git-scm.com/">Git</a>:
