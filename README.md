@@ -34,6 +34,8 @@ In contrast to JSON 2, JSON 3 **does not**...
 
 **Several native `Date#toJSON()` implementations produce date time strings that do *not* conform to the grammar outlined in the spec**. For instance, all versions of Safari 4, as well as JSON 2, fail to serialize extended years correctly. Furthermore, JSON 2 and older implementations omit the milliseconds from the date-time string (optional in ES 5, but required in 5.1). Finally, in all versions of Safari 4 and 5, serializing an invalid date will produce the string `"Invalid Date"`, rather than `null`. Because these environments exhibit other serialization bugs, however, JSON 3 will override the native `stringify()` implementation.
 
+Portions of the date serialization code are adapted from the [`date-shim`](https://github.com/Yaffle/date-shim) project.
+
 # Usage #
 
 ## Web Browsers
