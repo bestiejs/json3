@@ -1,16 +1,18 @@
+#!/usr/bin/env node
+
 /* JSON 3 Builder | http://bestiejs.github.com/json3 */
-var fs = require("fs"), marked = require("./vendor/marked"), compressor = require("./vendor/uglifyjs/uglify-js");
+var path = require("path"), fs = require("fs"), marked = require(path.join(__dirname, "vendor", "marked")), compressor = require(path.join(__dirname, "vendor", "uglifyjs", "uglify-js"));
 
 // Enable GitHub-Flavored Markdown.
 marked.setOptions({ "gfm": true });
 
 // Generate the GitHub project page.
-fs.readFile("README.md", "utf8", function readSource(exception, source) {
+fs.readFile(path.join(__dirname, "README.md"), "utf8", function readSource(exception, source) {
   if (exception) {
     console.log(exception);
   } else {
     // Read the project page template.
-    fs.readFile("page/page.html", "utf8", function readPage(exception, page) {
+    fs.readFile(path.join(__dirname, "page", "page.html"), "utf8", function readPage(exception, page) {
       var headers, lines, lastSection, lastLevel, navigation;
       if (exception) {
         console.log(exception);
@@ -61,7 +63,7 @@ fs.readFile("README.md", "utf8", function readSource(exception, source) {
         });
         navigation.push("");
         // Write the page source to disk.
-        fs.writeFile("index.html", page.replace(/<%=\s*(.+?)\s*%>/g, function (match, data) {
+        fs.writeFile(path.join(__dirname, "index.html"), page.replace(/<%=\s*(.+?)\s*%>/g, function (match, data) {
           switch (data) {
             case "navigation":
               // Insert the table of contents directly into the template.
@@ -80,7 +82,7 @@ fs.readFile("README.md", "utf8", function readSource(exception, source) {
 });
 
 // Compress JSON 3 using UglifyJS.
-fs.readFile("lib/json3.js", "utf8", function (exception, source) {
+fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function (exception, source) {
   var results;
   if (exception) {
     console.log(exception);
@@ -104,7 +106,7 @@ fs.readFile("lib/json3.js", "utf8", function (exception, source) {
       "ascii_only": true
     });
     // Older environments, Safari, and Chrome choke on excessively long lines.
-    fs.writeFile("lib/json3.min.js", compressor.uglify.split_lines(results, 4096), function (exception) {
+    fs.writeFile(path.join(__dirname, "lib", "json3.min.js"), compressor.uglify.split_lines(results, 4096), function (exception) {
       console.log(exception || "Compressed version generated successfully.");
     });
   }
