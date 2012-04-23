@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /* JSON 3 Builder | http://bestiejs.github.com/json3 */
-var path = require("path"), fs = require("fs"), marked = require(path.join(__dirname, "vendor", "marked")), compressor = require(path.join(__dirname, "vendor", "uglifyjs", "uglify-js"));
+var path = require("path"), fs = require("fs"), marked = require(path.join(__dirname, "vendor", "marked")), ugly = require(path.join(__dirname, "vendor", "uglifyjs", "uglify-js"));
 
 // Enable GitHub-Flavored Markdown.
 marked.setOptions({ "gfm": true });
@@ -89,24 +89,24 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function (exception
   } else {
     results = "";
     // Preserve the copyright header.
-    compressor.parser.tokenizer(source)().comments_before.forEach(function (comment) {
+    ugly.parser.tokenizer(source)().comments_before.forEach(function (comment) {
       // Remove the leading `!` character from YUI-style comments.
       results += comment.type == "comment1" ? "//" + comment.value + "\n" : ("/*" + comment.value.slice(comment.value.charAt(0) == "!" ? 1 : 0) + "*/");
     });
-    results += "\n;" + compressor.uglify.gen_code(
+    results += "\n;" + ugly.uglify.gen_code(
       // Enable unsafe transformations.
-      compressor.uglify.ast_squeeze_more(
-        compressor.uglify.ast_squeeze(
+      ugly.uglify.ast_squeeze_more(
+        ugly.uglify.ast_squeeze(
           // Munge variable and function names, excluding the special `define`
           // function exposed by asynchronous module loaders.
-          compressor.uglify.ast_mangle(compressor.parser.parse(source), {
+          ugly.uglify.ast_mangle(ugly.parser.parse(source), {
             "except": ["define"]
           }
       ))), {
       "ascii_only": true
-    });
-    // Older environments, Safari, and Chrome choke on excessively long lines.
-    fs.writeFile(path.join(__dirname, "lib", "json3.min.js"), compressor.uglify.split_lines(results, 4096), function (exception) {
+    }) + ";";
+    // Split lines at 500 characters for consistency with Closure Compiler.
+    fs.writeFile(path.join(__dirname, "lib", "json3.min.js"), ugly.uglify.split_lines(results, 500), function (exception) {
       console.log(exception || "Compressed version generated successfully.");
     });
   }
