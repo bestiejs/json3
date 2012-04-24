@@ -217,7 +217,7 @@
   });
 
   testSuite.addTest("`stringify`", function () {
-    var expected = 24, value, pattern;
+    var expected = 26, value, pattern;
 
     // Special values.
     this.serializes("null", null, "`null` is represented literally");
@@ -253,22 +253,14 @@
     // Dates.
     this.serializes('"1994-07-03T00:00:00.000Z"', new Date(Date.UTC(1994, 6, 3)), "Dates should be serialized according to the simplified date time string format");
     this.serializes('"1993-06-02T02:10:28.224Z"', new Date(Date.UTC(1993, 5, 2, 2, 10, 28, 224)), "The date time string should conform to the format outlined in the spec");
+    this.serializes('"-271821-04-20T00:00:00.000Z"', new Date(-8.64e15), "The minimum valid date value should serialize correctly");
+    this.serializes('"+275760-09-13T00:00:00.000Z"', new Date(8.64e15), "The maximum valid date value should serialize correctly");
 
     // Tests based on research by @Yaffle. See kriskowal/es5-shim#111.
     this.serializes('"1969-12-31T23:59:59.999Z"', new Date(-1), "Millisecond values < 1000 should be serialized correctly");
     this.serializes('"-000001-01-01T00:00:00.000Z"', new Date(-621987552e5), "Years prior to 0 should be serialized as extended years");
     this.serializes('"+010000-01-01T00:00:00.000Z"', new Date(2534023008e5), "Years after 9999 should be serialized as extended years");
     this.serializes('"-109252-01-01T10:37:06.708Z"', new Date(-3509827334573292), "Issue #4: Opera > 9.64 should correctly serialize a date with a year of `-109252`");
-
-    // Safari 2 restricts date time values to the range `[(-2 ** 31),
-    // (2 ** 31) - 1]`, which respectively correspond to the minimum and
-    // maximum Unix time values.
-    value = new Date(-8.64e15);
-    if (value.getUTCFullYear() == -271821) {
-      expected += 2;
-      this.serializes('"-271821-04-20T00:00:00.000Z"', value, "The minimum valid date value should serialize correctly");
-      this.serializes('"+275760-09-13T00:00:00.000Z"', new Date(8.64e15), "The maximum valid date value should serialize correctly");
-    }
 
     // Opera 7 normalizes dates with invalid time values to represent the
     // current date.
