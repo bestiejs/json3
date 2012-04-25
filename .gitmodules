@@ -4,6 +4,3 @@
 [submodule "vendor/marked"]
 	path = vendor/marked
 	url = git://github.com/chjj/marked.git
-[submodule "vendor/uglifyjs"]
-	path = vendor/uglifyjs
-	url = git://github.com/mishoo/UglifyJS.git
