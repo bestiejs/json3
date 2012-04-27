@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 /* JSON 3 Builder | http://bestiejs.github.com/json3 */
-var path = require("path"), fs = require("fs"), spawn = require("child_process").spawn, marked = require(path.join(__dirname, "vendor", "marked")),
+var path = require("path"), fs = require("fs"), gzip = require("zlib").gzip, spawn = require("child_process").spawn, marked = require(path.join(__dirname, "vendor", "marked")),
 
 // The path to the Closure Compiler `.jar` file.
 closurePath = path.join(__dirname, "vendor", "closure-compiler.jar"),
 
 // The Closure Compiler options: enable advanced optimizations and suppress all
 // warnings apart from syntax and optimization errors.
-closureOptions = ["--compilation_level=advanced_optimizations", "--warning_level=quiet"];
+closureOptions = ["--compilation_level=ADVANCED_OPTIMIZATIONS", "--warning_level=QUIET"];
 
 // Enable GitHub-Flavored Markdown.
 marked.setOptions({ "gfm": true });
@@ -93,12 +93,32 @@ fs.readFile(path.join(__dirname, "README.md"), "utf8", function readInfo(excepti
 
 // Compress JSON 3 using the Closure Compiler.
 fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource(exception, source) {
-  var results;
+  var error, output, compiler, results;
   if (exception) {
     console.log(exception);
   } else {
-    // Shell out to the Closure Compiler executable. Requires Java 6 or higher.
-    invoke("java", ["-jar", closurePath].concat(closureOptions), source, compressSource);
+    // Shell out to the Closure Compiler. Requires Java 6 or higher.
+    error = output = "";
+    compiler = spawn("java", ["-jar", closurePath].concat(closureOptions));
+    compiler.stdout.on("data", function onData(data) {
+      // Append the data to the output stream.
+      output += data;
+    });
+    compiler.stderr.on("data", function onError(data) {
+      // Append the error message to the error stream.
+      error += data;
+    });
+    compiler.on("exit", function onExit(status) {
+      var exception;
+      // `status` specifies the process exit code.
+      if (status) {
+        exception = new Error(error);
+        exception.status = status;
+      }
+      compressSource(exception, output);
+    });
+    // Proxy the source to the Closure Compiler.
+    compiler.stdin.end(source);
   }
 
   // Post-processes the compressed source and writes the result to disk.
@@ -119,49 +139,12 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource
     function writeSource(exception) {
       console.log(exception || "Compressed version generated successfully.");
       // Automatically check the `gzip`-ped size of the compressed version.
-      // This requires shelling out to the Unix `gzip` executable.
-      invoke("gzip", ["-9f", "-c"], compressed, "binary", function checkSize(exception, results) {
-        if (!exception) {
-          console.log("Compressed version size: %d KB.", results.length);
-        }
+      gzip(compressed, function (exception, results) {
+        console.log("Compressed version size: %d KB.", results.length);
       });
     }
   }
 });
-
-// Internal: Invokes a process with the given `name`, `parameters,` and standard
-// `input`. Yields the result to a `callback` function. The optional `encoding`
-// argument specifies the output stream encoding.
-function invoke(name, parameters, input, encoding, callback) {
-  // The standard output stream, error stream, and process instance.
-  var error = "", output = "", process = spawn(name, parameters);
-  if (typeof encoding == "string") {
-    // Explicitly set the encoding of the output stream if one is specified.
-    process.stdout.setEncoding(encoding);
-  } else {
-    callback = encoding;
-    encoding = null;
-  }
-  process.stdout.on("data", function onData(data) {
-    // Append the data to the output stream.
-    output += data;
-  });
-  process.stderr.on("data", function onError(data) {
-    // Append the error message to the error stream.
-    error += data;
-  });
-  process.on("exit", function onExit(status) {
-    var exception;
-    // `status` specifies the process exit code.
-    if (status) {
-      exception = new Error(error);
-      exception.status = status;
-    }
-    callback(exception, output);
-  });
-  // Proxy the standard input to the process.
-  process.stdin.end(input);
-}
 
 // Internal: Extracts line and block comments from a JavaScript `source`
 // string. Returns an array containing the comments.
