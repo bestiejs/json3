@@ -117,8 +117,10 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource
       }
       compressSource(exception, output);
     });
-    // Proxy the source to the Closure Compiler.
-    compiler.stdin.end(source);
+    // Proxy the source to the Closure Compiler. The top-level
+    // immediately-invoked function expression is removed, as the output is
+    // automatically wrapped in one.
+    compiler.stdin.end(source.replace(/^;?\(function\s*\(\)\s*\{([\s\S]*?)}\)\.call\(this\);*?/m, "$1"));
   }
 
   // Post-processes the compressed source and writes the result to disk.
@@ -127,8 +129,8 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource
       console.log(exception);
     } else {
       // Extract the JSON 3 header and wrap the compressed source in an
-      // immediately-invoked function expression (enabling advanced
-      // optimizations causes the Compiler to add global variables).
+      // IIFE (enabling advanced optimizations causes the Compiler to add
+      // variables to the global scope).
       compressed = extractComments(source)[0] + "\n;(function(){" + compressed + "}());";
       // Write the compressed version to disk.
       fs.writeFile(path.join(__dirname, "lib", "json3.min.js"), compressed, writeSource);
