@@ -142,7 +142,7 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource
       console.log(exception || "Compressed version generated successfully.");
       // Automatically check the `gzip`-ped size of the compressed version.
       gzip(compressed, function (exception, results) {
-        console.log("Compressed version size: %d KB.", results.length);
+        console.log("Compressed version size: %d bytes.", results.length);
       });
     }
   }
