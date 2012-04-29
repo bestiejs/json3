@@ -213,7 +213,12 @@
     // Test adapted from the Opera JSON test suite via Ken Snyder.
     // See http://testsuites.opera.com/JSON/correctness/scripts/045.js
     this.serializes('{"PI":3.141592653589793}', Math, "List of non-enumerable property names specified as the `filter` argument", ["PI"]);
-    this.done(3);
+    this.equal(3, JSON.parse("[1, 2, 3]", function (key, value) {
+      if (typeof value == "object" && value) {
+        return value;
+      }
+    }).length, "Issue #10: `walk` should not use `splice` when removing an array element");
+    this.done(4);
   });
 
   testSuite.addTest("`stringify`", function () {
