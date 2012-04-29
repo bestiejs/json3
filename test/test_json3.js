@@ -126,6 +126,9 @@
     this.parseError("--1", "Leading `--`");
     this.parseError("1-+", "Trailing `-+`");
     this.parseError("0xaf", "Hex literal");
+
+    // The native `JSON.parse` implementation in IE 9 allows this syntax, but
+    // the feature tests should detect the broken implementation.
     this.parseError("- 5", "Invalid negative sign");
 
     this.done(20);
