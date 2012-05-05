@@ -2,10 +2,10 @@
 
 ![JSON 3 Logo](http://bestiejs.github.com/json3/page/logo.png)
 
-**JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.2.1**.
+**JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.2.2**.
 
-- [Development Version](http://bestiejs.github.com/json3/lib/json3.js) *(37 KB; uncompressed with comments)*
-- [Production Version](http://bestiejs.github.com/json3/lib/json3.min.js) *(3.1 KB; compressed)*
+- [Development Version](http://bestiejs.github.com/json3/lib/json3.js) *(35.5 KB; uncompressed with comments)*
+- [Production Version](http://bestiejs.github.com/json3/lib/json3.min.js) *(3.0 KB; compressed and `gzip`-ped)*
 
 [JSON](http://json.org/) is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by [Douglas Crockford](http://www.crockford.com/), the format was standardized in the [fifth edition](http://es5.github.com/) of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
 
@@ -91,7 +91,7 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 
 ## Known Incompatibilities
 
-* JSON 3 is **not compatible** with [Prototype](http://prototypejs.org) 1.6.1 and older. If you cannot upgrade to Prototype 1.7, please use `Object.toJSON()` and `String#evalJSON(true)` instead of `JSON.stringify()` and `JSON.parse()`, respectively. This is **not** a JSON 3 bug; because Prototype adds several non-standard `toJSON()` methods that [return serialized values instead of objects](http://prototypejs.org/learn/json), using the native JSON implementation will yield identical results.
+* JSON 3 is **not compatible** with [Prototype](http://prototypejs.org) 1.6.1 and older. If you cannot upgrade to Prototype 1.7, please use `Object.toJSON()` and `String#evalJSON(true)` instead of `JSON.stringify()` and `JSON.parse()`, respectively. This is **not** a JSON 3 bug; because Prototype adds several non-standard `toJSON()` methods that [return serialized values instead of objects](https://gist.github.com/2605201), using the native JSON implementation will yield identical results.
 
 * Attempting to serialize the `arguments` object may produce inconsistent results across environments due to specification version differences. As a workaround, please convert the `arguments` object to an array first: `JSON.stringify([].slice.call(arguments, 0))`.
 
@@ -105,9 +105,9 @@ JSON 3 assumes that the following methods exist and function as described in the
 - `Function#call`
 - `Math.floor`
 - `Number#toString`
+- `Date#valueOf`
 - `String.prototype`: `indexOf`, `charCodeAt`, `charAt`, `slice`.
-- `Date.prototype`: `getUTC{Hours, Minutes, Seconds, Milliseconds}`, `valueOf`.
-- `Array.prototype`: `push`, `pop`, `join`, `splice`.
+- `Array.prototype`: `push`, `pop`, `join`.
 
 # Contribute #
 
