@@ -225,7 +225,7 @@
   });
 
   testSuite.addTest("`stringify`", function () {
-    var expected = 26, value, pattern;
+    var expected = 27, value, pattern;
 
     // Special values.
     this.serializes("null", null, "`null` is represented literally");
@@ -263,6 +263,7 @@
     this.serializes('"1993-06-02T02:10:28.224Z"', new Date(Date.UTC(1993, 5, 2, 2, 10, 28, 224)), "The date time string should conform to the format outlined in the spec");
     this.serializes('"-271821-04-20T00:00:00.000Z"', new Date(-8.64e15), "The minimum valid date value should serialize correctly");
     this.serializes('"+275760-09-13T00:00:00.000Z"', new Date(8.64e15), "The maximum valid date value should serialize correctly");
+    this.serializes('"+010000-01-01T00:00:00.000Z"', new Date(Date.UTC(10000, 0, 1)), "https://bugs.ecmascript.org/show_bug.cgi?id=119");
 
     // Tests based on research by @Yaffle. See kriskowal/es5-shim#111.
     this.serializes('"1969-12-31T23:59:59.999Z"', new Date(-1), "Millisecond values < 1000 should be serialized correctly");
@@ -492,7 +493,37 @@
     this.done(74);
   });
 
+  // This test may fail in certain implementations.
+  testSuite.addTest("Anticipated ECMAScript 6 Additions", function () {
+    var expected = 0, value;
+    try {
+      value = {};
+      // IE 8 only allows properties to be defined on DOM elements. Credits:
+      // John-David Dalton and Juriy Zaytsev.
+      if (Object.defineProperty(value, value, value), "value" in Object.getOwnPropertyDescriptor(value, value)) {
+        expected += 1;
+        value = [0, 1, 2, 3];
+        Object.prototype[3] = 3;
+        Object.defineProperty(value, 1, {
+          "get": function () {
+            Object.defineProperty(value, 4, { "value": 4 });
+            delete value[2];
+            delete value[3];
+            value[5] = 5;
+            return 1;
+          }
+        });
+        // Test by Jeff Walden and Allen Wirfs-Brock.
+        this.serializes('{"0":{"1":{"3":{"3":3}},"3":3},"3":3}', { 0: { 1: { 3: { 4: { 5: { 2: "omitted" } } } } } }, "Issue #12: `parse` should process property name arrays sequentially", value);
+      }
+    } catch (exception) {}
+    // Clean up.
+    delete Object.prototype[3];
+    this.done(expected);
+  });
+
   testSuite.shuffle();
+
   if (isLoader) {
     define(function () {
       return testSuite;
