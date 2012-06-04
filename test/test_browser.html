@@ -23,6 +23,9 @@
         this.curl = { "apiName": "require" };
         this.document.write('<script src="../vendor/' + (parameters.amd == "require" ? "require" : "curl") + '.js"><\/script>');
       }
+      if (Spec.hasKey(parameters, "prototype")) {
+        this.document.write('<script src="../vendor/prototype.js"><\/script>');
+      }
     }).call(this);
     </script>
     <script>

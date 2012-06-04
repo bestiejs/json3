@@ -225,7 +225,7 @@
   });
 
   testSuite.addTest("`stringify`", function () {
-    var expected = 27, value, pattern;
+    var expected = 28, value, pattern;
 
     // Special values.
     this.serializes("null", null, "`null` is represented literally");
@@ -237,6 +237,7 @@
     this.serializes('"\\\\\\"How\\bquickly\\tdaft\\njumping\\fzebras\\rvex\\""', new String('\\"How\bquickly\tdaft\njumping\fzebras\rvex"'), "All control characters in strings are escaped");
 
     this.serializes("[false,1,\"Kit\"]", [new Boolean, new Number(1), new String("Kit")], "Arrays are serialized recursively");
+    this.serializes("[null]", [void 0], "`[undefined]` is serialized as `[null]`");
 
     // Property enumeration is implementation-dependent.
     value = {
