@@ -83,8 +83,8 @@
       test.parseError(value, "Source string containing an invalid Unicode whitespace character");
     });
 
-    this.parseError("{\u000b}", "Source string containing a vertical tab");
-    this.parseError("{\u000c}", "Source string containing a form feed");
+    this.parses({}, "{\u000b}", "Source string containing a vertical tab");
+    this.parses({}, "{\u000c}", "Source string containing a form feed");
     this.parseError("{\ufeff}", "Source string containing a byte-order mark");
 
     this.parses({}, "{\r\n}", "Source string containing a CRLF line ending");
@@ -327,8 +327,8 @@
 
     // Tests 15.12.1.1-0-1 thru 15.12.1.1-0-8.
     this.parseError("12\t\r\n 34", "Valid whitespace characters may not separate two discrete tokens");
-    this.parseError("\u000b1234", "The vertical tab is not a valid whitespace character");
-    this.parseError("\u000c1234", "The form feed is not a valid whitespace character");
+    this.parses(1234, "\u000b1234", "The vertical tab is a valid whitespace character");
+    this.parses(1234, "\u000c1234", "The form feed is a valid whitespace character");
     this.parseError("\u00a01234", "The non-breaking space is not a valid whitespace character");
     this.parseError("\u200b1234", "The zero-width space is not a valid whitespace character");
     this.parseError("\ufeff1234", "The byte order mark (zero-width non-breaking space) is not a valid whitespace character");
