@@ -188,7 +188,7 @@
     this.parses({"hello": "world"}, "{\"hello\": \"world\"}", "Object literal containing one member");
     this.parses({"hello": "world", "foo": ["bar", true], "fox": {"quick": true, "purple": false}}, "{\"hello\": \"world\", \"foo\": [\"bar\", true], \"fox\": {\"quick\": true, \"purple\": false}}", "Object literal containing multiple members");
 
-    this.parseError("{key: 1}", "Unquoted identifier used as a property name");
+    this.parses({ "key": 1 }, "{key: 1}", "Unquoted identifier used as a property name");
     this.parseError("{false: 1}", "`false` used as a property name");
     this.parseError("{true: 1}", "`true` used as a property name");
     this.parseError("{null: 1}", "`null` used as a property name");
@@ -524,14 +524,15 @@
   });
 
   testSuite.addTest("JSON 5 Extensions", function () {
-    // Comments.
     this.parses({}, "{/* Block comment. */}", "Block comment");
     this.parses({}, "{/* Block comment.\n// Nested line comment. */}", "Block comment with nested line comment.");
     this.parses([], "// Line comment.\n[\n// Another line comment.\n]", "Line comments should be treated as whitespace");
     this.parses([], "/* Block comment. */\n[//Line comment.\n]", "Comments should be treated as whitespace");
     this.parses([], "[]// Line comment.", "Trailing line comment");
-
     this.parseError("{}/* Hello", "Unterminated line comment");
+
+    this.parses({ "foo": "bar", "while": true, "finally": "a trailing comma"}, "{foo: 'bar', while: true, finally: 'a trailing comma',}", "Unquoted identifiers as property names");
+
     this.done();
   });
 
