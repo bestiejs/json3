@@ -125,7 +125,7 @@
     this.parseError("1e-", "Missing signed exponent");
     this.parseError("--1", "Leading `--`");
     this.parseError("1-+", "Trailing `-+`");
-    this.parseError("0xaf", "Hex literal");
+    this.parses(0xaf, "0xaf", "Hex literal");
 
     // The native `JSON.parse` implementation in IE 9 allows this syntax, but
     // the feature tests should detect the broken implementation.
