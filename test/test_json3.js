@@ -523,6 +523,18 @@
     this.done(expected);
   });
 
+  testSuite.addTest("JSON 5 Extensions", function () {
+    // Comments.
+    this.parses({}, "{/* Block comment. */}", "Block comment");
+    this.parses({}, "{/* Block comment.\n// Nested line comment. */}", "Block comment with nested line comment.");
+    this.parses([], "// Line comment.\n[\n// Another line comment.\n]", "Line comments should be treated as whitespace");
+    this.parses([], "/* Block comment. */\n[//Line comment.\n]", "Comments should be treated as whitespace");
+    this.parses([], "[]// Line comment.", "Trailing line comment");
+
+    this.parseError("{}/* Hello", "Unterminated line comment");
+    this.done();
+  });
+
   testSuite.shuffle();
 
   if (isLoader) {
