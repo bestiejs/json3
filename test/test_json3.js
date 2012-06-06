@@ -165,7 +165,7 @@
     this.parses("hello\\world", '"hello\\\\world"', "String containing an escaped reverse solidus");
     this.parses("hello\"world", '"hello\\"world"', "String containing an escaped double-quote character");
 
-    this.parseError("'hello'", "Single-quoted string literal");
+    this.parses("hello", "'hello'", "Single-quoted string literal");
     this.parseError('"\\x61"', "String containing a hex escape sequence");
     this.parseError('"hello \r\n world"', "String containing an unescaped CRLF line ending");
 
@@ -192,7 +192,7 @@
     this.parseError("{false: 1}", "`false` used as a property name");
     this.parseError("{true: 1}", "`true` used as a property name");
     this.parseError("{null: 1}", "`null` used as a property name");
-    this.parseError("{'key': 1}", "Single-quoted string used as a property name");
+    this.parses({ "key": 1}, "{'key': 1}", "Single-quoted string used as a property name");
     this.parseError("{1: 2, 3: 4}", "Number used as a property name");
 
     this.parses({ "hello": "world", "foo": "bar" }, "{\"hello\": \"world\", \"foo\": \"bar\",}", "Trailing comma in object literal");
@@ -356,7 +356,7 @@
 
     // Tests 15.12.1.1-g2-1 thru 15.12.1.1-g2-5.
     this.parses("abc", '"abc"', "Strings must be enclosed in double quotes");
-    this.parseError("'abc'", "Single-quoted strings are not permitted");
+    this.parses("abc", "'abc'", "Single-quoted strings are permitted");
     // Note: the original test 15.12.1.1-g2-3 (`"\u0022abc\u0022"`) is incorrect,
     // as the JavaScript interpreter will always convert `\u0022` to `"`.
     this.parseError("\\u0022abc\\u0022", "Unicode-escaped double quote delimiters are not permitted");
