@@ -177,7 +177,7 @@
   });
 
   testSuite.addTest("`parse`: Array Literals", function () {
-    this.parseError("[1, 2, 3,]", "Trailing comma in array literal");
+    this.parses([1, 2, 3], "[1, 2, 3,]", "Trailing comma in array literal");
     this.parses([1, 2, [3, [4, 5]], 6, [true, false], [null], [[]]], "[1, 2, [3, [4, 5]], 6, [true, false], [null], [[]]]", "Nested arrays");
     this.parses([{}], "[{}]", "Array containing empty object literal");
     this.parses([100, true, false, null, {"a": ["hello"], "b": ["world"]}, [0.01]], "[1e2, true, false, null, {\"a\": [\"hello\"], \"b\": [\"world\"]}, [1e-2]]", "Mixed array");
@@ -195,7 +195,7 @@
     this.parseError("{'key': 1}", "Single-quoted string used as a property name");
     this.parseError("{1: 2, 3: 4}", "Number used as a property name");
 
-    this.parseError("{\"hello\": \"world\", \"foo\": \"bar\",}", "Trailing comma in object literal");
+    this.parses({ "hello": "world", "foo": "bar" }, "{\"hello\": \"world\", \"foo\": \"bar\",}", "Trailing comma in object literal");
     this.done(9);
   });
 
