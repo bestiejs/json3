@@ -533,6 +533,9 @@
 
     this.parses({ "foo": "bar", "while": true, "finally": "a trailing comma"}, "{foo: 'bar', while: true, finally: 'a trailing comma',}", "Unquoted identifiers as property names");
 
+    this.parses("hello\nworld", "'hello\\\nworld'", "Single-quoted mutliline string");
+    this.parses("hello\r\nworld", '"hello\\\r\nworld"', "Double-quoted multiline string");
+
     this.done();
   });
 
