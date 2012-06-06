@@ -70,22 +70,21 @@
   });
 
   testSuite.addTest("`parse`: Whitespace", function (test) {
-    // The only valid JSON whitespace characters are tabs, spaces, and line
-    // terminators. All other Unicode category `Z` (`Zs`, `Zl`, and `Zp`)
-    // characters are invalid (note that the `Zs` category includes the
-    // space character).
-    var characters = ["{\u00a0}", "{\u1680}", "{\u180e}", "{\u2000}", "{\u2001}",
+    var characters = ["{\u1680}", "{\u180e}", "{\u2000}", "{\u2001}",
       "{\u2002}", "{\u2003}", "{\u2004}", "{\u2005}", "{\u2006}", "{\u2007}",
-      "{\u2008}", "{\u2009}", "{\u200a}", "{\u202f}", "{\u205f}", "{\u3000}",
-      "{\u2028}", "{\u2029}"];
+      "{\u2008}", "{\u2009}", "{\u200a}", "{\u202f}", "{\u205f}", "{\u3000}"];
 
     Spec.forEach(characters, function (value) {
       test.parseError(value, "Source string containing an invalid Unicode whitespace character");
     });
 
+    this.parses({}, "{\u00a0}", "Source string containing a non-breaking space");
+    this.parses({}, "{\u2028}", "Source string containing a Unicode line separator");
+    this.parses({}, "{\u2029}", "Source string containing a Unicode paragraph separator");
+
     this.parses({}, "{\u000b}", "Source string containing a vertical tab");
     this.parses({}, "{\u000c}", "Source string containing a form feed");
-    this.parseError("{\ufeff}", "Source string containing a byte-order mark");
+    this.parses({}, "{\ufeff}", "Source string containing a byte-order mark");
 
     this.parses({}, "{\r\n}", "Source string containing a CRLF line ending");
     this.parses({}, "{\n\n\r\n}", "Source string containing multiple line terminators");
@@ -329,11 +328,11 @@
     this.parseError("12\t\r\n 34", "Valid whitespace characters may not separate two discrete tokens");
     this.parses(1234, "\u000b1234", "The vertical tab is a valid whitespace character");
     this.parses(1234, "\u000c1234", "The form feed is a valid whitespace character");
-    this.parseError("\u00a01234", "The non-breaking space is not a valid whitespace character");
+    this.parses(1234, "\u00a01234", "The non-breaking space is a valid whitespace character");
+    this.parses(1234, "\ufeff1234", "The byte order mark (zero-width non-breaking space) is a valid whitespace character");
+    this.parses(1234, "\u20281234\u2029", "The Unicode line and paragraph separators are valid whitespace characters");
     this.parseError("\u200b1234", "The zero-width space is not a valid whitespace character");
-    this.parseError("\ufeff1234", "The byte order mark (zero-width non-breaking space) is not a valid whitespace character");
     this.parseError("\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u30001234", "Other Unicode category `Z` characters are not valid whitespace characters");
-    this.parseError("\u2028\u20291234", "The line (U+2028) and paragraph (U+2029) separators are not valid whitespace characters");
 
     // Test 15.12.1.1-0-9.
     this.parses({ "property": {}, "prop2": [true, null, 123.456] },
@@ -523,20 +522,94 @@
     this.done(expected);
   });
 
-  testSuite.addTest("JSON 5 Extensions", function () {
-    this.parses({}, "{/* Block comment. */}", "Block comment");
-    this.parses({}, "{/* Block comment.\n// Nested line comment. */}", "Block comment with nested line comment.");
+  testSuite.addTest("JSON5 Extensions", function () {
+    // Arrays.
+    this.parses([], "[]", "Empty array");
+    this.parses([true, false, null], "[true, false, null]", "Array containing Boolean and `null` literals");
+    this.parses([null], "[null,]", "Trailing comma in array literal");
+
+    this.parseError("[,null]", "Leading comma in array literal");
+    this.parseError("[,]", "Array containing an elision");
+    this.parseError("[true false]", "Array missing the requisite `,` delimiter between two elements");
+
+    // Comments.
+    this.parses({}, "{/* Block comment. */}", "Block comment in object literal");
+    this.parses({}, "{/* Block comment.\n// Nested line comment. */}", "Block comment with nested line comment");
+    this.parses([false], "[\n\tfalse/*\n\t\ttrue\n\t*/]", "Block comment and whitespace in array");
+    this.parses(null, "null\n/*\n\tTrailing block comment.\n*/", "`null` literal with trailing block comment");
+    this.parses("/* Block comment */ syntax in string.", '"/* Block comment */ syntax in string."', "Block comment delimiters in string");
+    this.parses(null, "/* Leading block comment. */\nnull", "`null` literal with leading block comment");
+    this.parses(true, "/**\n * Sample JSDoc comment...\r\n * With CRLF-style line endings.\n**/true", "JSDoc-style block comment with CRLF-style line endings");
+    this.parses([false], "[false // true\n]", "Line comment in array");
     this.parses([], "// Line comment.\n[\n// Another line comment.\n]", "Line comments should be treated as whitespace");
-    this.parses([], "/* Block comment. */\n[//Line comment.\n]", "Comments should be treated as whitespace");
-    this.parses([], "[]// Line comment.", "Trailing line comment");
-    this.parseError("{}/* Hello", "Unterminated line comment");
+    this.parses(null, "null // Trailing line comment.", "`null` literal with trailing line comment");
+    this.parses(false, "// Leading line comment.\nfalse", "Boolean literal with leading line comment");
+    this.parses("Line comment // syntax in string.", '"Line comment // syntax in string."', "Line comment delimiter in string");
 
-    this.parses({ "foo": "bar", "while": true, "finally": "a trailing comma"}, "{foo: 'bar', while: true, finally: 'a trailing comma',}", "Unquoted identifiers as property names");
+    this.parseError("/**/", "Empty block comment");
+    this.parseError("//", "Empty line comment");
+    this.parseError("true /* Unterminated block comment", "Unterminated trailing block comment");
 
-    this.parses("hello world", "'hello \\\nworld'", "Single-quoted mutliline string");
-    this.parses("hello world", '"hello \\\r\nworld"', "Double-quoted multiline string");
+    // Miscellaneous.
+    this.parses({
+      "foo": "bar",
+      "while": true,
+      "this": "is a multi-line string",
+      "here": "is another",
+      "hex": 0xdeadbeef,
+      "half": 0.5,
+      "finally": "a trailing comma",
+      "oh": ["we shouldn't forget", "arrays can have", "trailing commas too"]
+    }, "{ foo: 'bar', while: true, this: 'is a\\\n multi-line string',\n" +
+      "// this is an inline comment\nhere: 'is another', // inline comment\n\n" +
+      "/* this is a block comment\n\tit continues on another line*/\n" +
+      "hex: 0xDEADbeef, half: .5, finally: 'a trailing comma'," +
+      "oh: ['we shouldn\\'t forget', 'arrays can have', 'trailing commas too',],}",
+    "Complete source string with JSON5 grammar extensions");
 
-    this.done();
+    // Numbers.
+    this.parses(0xc8, "0xc8", "Lowercase hex literal");
+    this.parses(0xc8, "0XC8", "Uppercase hex literal");
+    this.parses(0xc8, "0xC8", "Mixed case hex literal");
+    this.parses(-0xc8, "-0xC8", "Negative hex literal");
+
+    this.parseError("0x", "Empty hexadecimal value");
+    this.parseError("0770", "Valid octal value");
+    this.parseError("080", "Invalid octal value");
+
+    // Objects.
+    this.parses({}, "{}", "Empty object");
+    this.parses({ "while": true }, "{ while: true }", "Reserved word used as unquoted object property name");
+    this.parses({ "hello": "world" }, "{ 'hello': \"world\" }", "Single-quoted object property name");
+    this.parses({ "foo": "bar" }, "{ \"foo\": \"bar\", }", "Trailing comma in object literal");
+    this.parses({
+      "hello": "world",
+      "_": "underscore",
+      "$": "dollar sign",
+      "one1": "numerals",
+      "_$_": "multiple symbols",
+      "$_$hello123world_$_": "mixed"
+    }, '{ hello: "world", _: "underscore", $: "dollar sign", one1: "numerals", _$_: "multiple symbols", $_$hello123world_$_: "mixed" }',
+      "Identifiers used as unquoted object property names");
+
+    this.parseError("{ 10twenty: \"ten twenty\" }", "Illegal identifier (leading numeric value)");
+    this.parseError("{ multi-word: \"multi-word\" }", "Illegal identifier (invalid punctuator)");
+    this.parseError("{ ,\"foo\": \"bar\" }", "Leading comma in object literal");
+    this.parseError("{,}", "Object literal containing a single comma");
+    this.parseError("{ \"foo\": \"bar\"\n \"hello\": \"world\" }", "Object literal missing the requisite `,` delimiter between two members");
+
+    // Strings.
+    this.parses("I can't wait", "'I can\\'t wait'", "Single-quoted string with escaped single quote character");
+    this.parses("hello world", "'hello\\\n world'", "Single-quoted string with LF line continuation");
+    this.parses("hello world", "'hello\\\r world'", "Single-quoted string with CR line continuation");
+    this.parses("hello world", '"hello \\\r\nworld"', "Double-quoted string with CRLF line continuation");
+    this.parseError('"hello \nworld"', "String with invalid line continuation");
+
+    // Identifiers.
+    this.parseError('{ sig\\u03A3ma: "the sum of all things" }', "Illegal identifier (Unicode escape sequence)");
+    this.parseError('{ ümlåût: "that\'s not really an ümlaüt, but this is" }', "Illegal identifier (literal Unicode character)");
+
+    this.done(46);
   });
 
   testSuite.shuffle();
