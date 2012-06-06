@@ -120,7 +120,7 @@
 
     this.parseError("+1", "Leading `+`");
     this.parseError("1.", "Trailing decimal point");
-    this.parseError(".1", "Leading decimal point");
+    this.parses(0.1, ".1", "Leading decimal point");
     this.parseError("1e", "Missing exponent");
     this.parseError("1e-", "Missing signed exponent");
     this.parseError("--1", "Leading `--`");
