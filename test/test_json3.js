@@ -1,20 +1,23 @@
-/* JSON 3 Unit Test Suite | http://bestiejs.github.com/json3 */
+/* JSON5 Unit Test Suite | http://bestiejs.github.com/json3 */
 (function (root) {
-  var isLoader = typeof define == "function" && !!define.amd,
-  isModule = typeof require == "function" && typeof exports == "object" && exports && !isLoader,
-  isBrowser = "window" in root && root.window == root && typeof root.navigator != "undefined",
-  isEngine = !isBrowser && !isModule && typeof root.load == "function",
+  // Detect CommonJS environments, web browsers, and JavaScript engines.
+  var isModule = typeof require == "function" && typeof exports == "object" && exports;
+  var isBrowser = "window" in root && root.window == root && typeof root.navigator != "undefined";
+  var isEngine = !isBrowser && !isModule && typeof root.load == "function";
 
-  load = function load(module, path) {
+  // Internal: Loads a named `module` with the given `path`.
+  var load = function (module, path) {
     return root[module] || (isModule ? require(path) : isEngine ?
       (root.load(path.replace(/\.js$/, "") + ".js"), root[module]) : null);
-  },
+  };
 
-  // Load Spec, Newton, and JSON 3.
-  Spec = load("Spec", "./../vendor/spec/lib/spec"), Newton = load("Newton", "./../vendor/spec/lib/newton"), JSON = load("JSON5", "../lib/json3"),
+  // Load Spec, Newton, and JSON5.
+  var Spec = load("Spec", "./../vendor/spec/lib/spec");
+  var Newton = load("Newton", "./../vendor/spec/lib/newton");
+  var JSON5 = load("JSON5", "../lib/json3");
 
   // Create the test suite.
-  testSuite = JSON.testSuite = new Spec.Suite("JSON 3 Unit Tests");
+  var testSuite = JSON5.testSuite = new Spec.Suite("JSON5 Unit Tests");
 
   // Create and attach the logger event handler.
   testSuite.on("all", isBrowser ? Newton.createReport("suite") : Newton.createConsole(function (value) {
@@ -28,78 +31,66 @@
     }
   }));
 
-  // Ensures that `JSON.parse` throws an exception when parsing the given
+  // Ensures that `JSON5.parse` throws a `SyntaxError` when parsing the given
   // `source` string.
   Spec.Test.prototype.parseError = function (source, message, callback) {
     return this.error(function () {
-      JSON.parse(source, callback);
+      JSON5.parse(source, callback);
     }, function (exception) {
       return exception.name == "SyntaxError";
     }, message);
   };
 
-  // Ensures that `JSON.parse` parses the given source string correctly.
+  // Ensures that `JSON5.parse` parses the given source string correctly.
   Spec.Test.prototype.parses = function (expected, source, message, callback) {
-    return this.deepEqual(JSON.parse(source, callback), expected, message);
-  };
-
-  // Ensures that `JSON.stringify` throws a `TypeError` if the given object
-  // contains a circular reference.
-  Spec.Test.prototype.cyclicError = function (value, message) {
-    return this.error(function () {
-      JSON.stringify(value);
-    }, function (exception) {
-      return exception.name == "TypeError";
-    }, message);
+    var actual;
+    try {
+      actual = JSON5.parse(source, callback);
+    } catch (exception) {
+      return this.ok(false, {
+        "actual": exception,
+        "message": message
+      });
+    }
+    return this.deepEqual(actual, expected, message);
   };
 
   // Tests
   // -----
 
-  testSuite.addTest("`parse`: Empty Source Strings", function () {
-    this.parseError("", "Empty JSON source string");
+  testSuite.addTest("Empty Source Strings", function () {
+    this.parseError("", "Empty source string");
     this.parseError("\n\n\r\n", "Source string containing only line terminators");
     this.parseError(" ", "Source string containing a single space character");
     this.parseError(" ", "Source string containing multiple space characters");
     this.done(4);
   });
 
-  testSuite.addTest("`parse`: Whitespace", function (test) {
-    var characters = ["{\u1680}", "{\u180e}", "{\u2000}", "{\u2001}",
-      "{\u2002}", "{\u2003}", "{\u2004}", "{\u2005}", "{\u2006}", "{\u2007}",
-      "{\u2008}", "{\u2009}", "{\u200a}", "{\u202f}", "{\u205f}", "{\u3000}"];
-
-    Spec.forEach(characters, function (value) {
-      test.parseError(value, "Source string containing an invalid Unicode whitespace character");
-    });
-
-    this.parses({}, "{\u00a0}", "Source string containing a non-breaking space");
-    this.parses({}, "{\u2028}", "Source string containing a Unicode line separator");
-    this.parses({}, "{\u2029}", "Source string containing a Unicode paragraph separator");
-
-    this.parses({}, "{\u000b}", "Source string containing a vertical tab");
-    this.parses({}, "{\u000c}", "Source string containing a form feed");
-    this.parses({}, "{\ufeff}", "Source string containing a byte-order mark");
-
+  testSuite.addTest("Whitespace", function () {
+    for (var values = "\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000", length = values.length; length--;) {
+      this.parseError("{" + values.charAt(length) + "}", "Source string containing an invalid Unicode whitespace character");
+    }
     this.parses({}, "{\r\n}", "Source string containing a CRLF line ending");
     this.parses({}, "{\n\n\r\n}", "Source string containing multiple line terminators");
     this.parses({}, "{\t}", "Source string containing a tab character");
     this.parses({}, "{ }", "Source string containing a space character");
-    this.done(26);
+    this.done(20);
   });
 
-  testSuite.addTest("`parse`: Octal Values", function (test) {
+  testSuite.addTest("Octal Literals", function () {
     // `08` and `018` are invalid octal values.
-    Spec.forEach(["00", "01", "02", "03", "04", "05", "06", "07", "010", "011", "08", "018"], function (value) {
-      test.parseError(value, "Octal literal");
-      test.parseError("-" + value, "Negative octal literal");
-      test.parseError('"\\' + value + '"', "Octal escape sequence in a string");
-      test.parseError('"\\x' + value + '"', "Hex escape sequence in a string");
-    });
+    var values = ["00", "01", "02", "03", "04", "05", "06", "07", "010", "011", "08", "018"], length = values.length, value;
+    while (length--) {
+      value = values[length];
+      this.parseError(value, "Octal literal");
+      this.parseError("-" + value, "Negative octal literal");
+      this.parseError('"\\' + value + '"', "Octal escape sequence in a string");
+      this.parseError('"\\x' + value + '"', "Hex escape sequence in a string");
+    }
     this.done(48);
   });
 
-  testSuite.addTest("`parse`: Numeric Literals", function () {
+  testSuite.addTest("Integers and Floats", function () {
     this.parses(100, "100", "Integer");
     this.parses(-100, "-100", "Negative integer");
     this.parses(10.5, "10.5", "Float");
@@ -107,106 +98,81 @@
     this.parses(0.625, "0.625", "Decimal");
     this.parses(-0.03125, "-0.03125", "Negative decimal");
     this.parses(1000, "1e3", "Exponential");
-    this.parses(100, "1e+2", "Positive exponential");
-    this.parses(-0.01, "-1e-2", "Negative exponential");
-    this.parses(3125, "0.03125e+5", "Decimalized exponential");
-    this.parses(100, "1E2", "Case-insensitive exponential delimiter");
-
+    this.parses(100, "1e+2", "Positive exponent");
+    this.parses(-0.01, "-1e-2", "Negative exponent");
+    this.parses(3125, "0.03125e+5", "Decimalized exponent");
+    this.parses(100, "1E2", "Case-insensitive exponent delimiter");
     this.parseError("+1", "Leading `+`");
     this.parseError("1.", "Trailing decimal point");
-    this.parses(0.1, ".1", "Leading decimal point");
     this.parseError("1e", "Missing exponent");
     this.parseError("1e-", "Missing signed exponent");
     this.parseError("--1", "Leading `--`");
     this.parseError("1-+", "Trailing `-+`");
-    this.parses(0xaf, "0xaf", "Hex literal");
-
-    // The native `JSON.parse` implementation in IE 9 allows this syntax, but
-    // the feature tests should detect the broken implementation.
     this.parseError("- 5", "Invalid negative sign");
-
-    this.done(20);
+    this.done(18);
   });
 
-  testSuite.addTest("`parse`: String Literals", function (test) {
-    var expected = 49, controlCharacters = ["\u0001", "\u0002", "\u0003",
-      "\u0004", "\u0005", "\u0006", "\u0007", "\b", "\t", "\n", "\u000b", "\f",
-      "\r", "\u000e", "\u000f", "\u0010", "\u0011", "\u0012", "\u0013",
-      "\u0014", "\u0015", "\u0016", "\u0017", "\u0018", "\u0019", "\u001a",
-      "\u001b", "\u001c", "\u001d", "\u001e", "\u001f"];
-
+  testSuite.addTest("Double-Quoted String Literals", function () {
+    var expected = 48, values = "\x01\x02\x03\x04\x05\x06\x07\b\t\n\v\f\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f", length;
     // Opera 7 discards null characters in strings.
     if ("\0".length) {
       expected += 1;
-      controlCharacters.push("\u0000");
+      values += "\0";
     }
-
     this.parses("value", '"value"', "Double-quoted string literal");
     this.parses("", '""', "Empty string literal");
-
     this.parses("\u2028", '"\\u2028"', "String containing an escaped Unicode line separator");
     this.parses("\u2029", '"\\u2029"', "String containing an escaped Unicode paragraph separator");
     this.parses("\ud834\udf06", '"\\ud834\\udf06"', "String containing an escaped Unicode surrogate pair");
     this.parses("\ud834\udf06", '"\ud834\udf06"', "String containing an unescaped Unicode surrogate pair");
-    this.parses("\u0001", '"\\u0001"', "String containing an escaped ASCII control character");
+    this.parses("\u0001", '"\\u0001"', "String containing an escaped control character");
     this.parses("\b", '"\\b"', "String containing an escaped backspace");
     this.parses("\f", '"\\f"', "String containing an escaped form feed");
     this.parses("\n", '"\\n"', "String containing an escaped line feed");
     this.parses("\r", '"\\r"', "String containing an escaped carriage return");
     this.parses("\t", '"\\t"', "String containing an escaped tab");
-
     this.parses("hello/world", '"hello\\/world"', "String containing an escaped solidus");
     this.parses("hello\\world", '"hello\\\\world"', "String containing an escaped reverse solidus");
     this.parses("hello\"world", '"hello\\"world"', "String containing an escaped double-quote character");
-
-    this.parses("hello", "'hello'", "Single-quoted string literal");
     this.parseError('"\\x61"', "String containing a hex escape sequence");
     this.parseError('"hello \r\n world"', "String containing an unescaped CRLF line ending");
-
-    Spec.forEach(controlCharacters, function (value) {
-      test.parseError('"' + value + '"', "String containing an unescaped ASCII control character");
-    });
-
+    for (length = values.length; length--;) {
+      this.parseError('"' + values.charAt(length) + '"', "String containing an unescaped control character");
+    }
     this.done(expected);
   });
 
-  testSuite.addTest("`parse`: Array Literals", function () {
-    this.parses([1, 2, 3], "[1, 2, 3,]", "Trailing comma in array literal");
+  testSuite.addTest("Arrays", function () {
     this.parses([1, 2, [3, [4, 5]], 6, [true, false], [null], [[]]], "[1, 2, [3, [4, 5]], 6, [true, false], [null], [[]]]", "Nested arrays");
     this.parses([{}], "[{}]", "Array containing empty object literal");
     this.parses([100, true, false, null, {"a": ["hello"], "b": ["world"]}, [0.01]], "[1e2, true, false, null, {\"a\": [\"hello\"], \"b\": [\"world\"]}, [1e-2]]", "Mixed array");
-    this.done(4);
+    this.done(3);
   });
 
-  testSuite.addTest("`parse`: Object Literals", function () {
+  testSuite.addTest("Objects", function () {
     this.parses({"hello": "world"}, "{\"hello\": \"world\"}", "Object literal containing one member");
     this.parses({"hello": "world", "foo": ["bar", true], "fox": {"quick": true, "purple": false}}, "{\"hello\": \"world\", \"foo\": [\"bar\", true], \"fox\": {\"quick\": true, \"purple\": false}}", "Object literal containing multiple members");
-
-    this.parses({ "key": 1 }, "{key: 1}", "Unquoted identifier used as a property name");
     this.parseError("{false: 1}", "`false` used as a property name");
     this.parseError("{true: 1}", "`true` used as a property name");
     this.parseError("{null: 1}", "`null` used as a property name");
-    this.parses({ "key": 1}, "{'key': 1}", "Single-quoted string used as a property name");
     this.parseError("{1: 2, 3: 4}", "Number used as a property name");
-
-    this.parses({ "hello": "world", "foo": "bar" }, "{\"hello\": \"world\", \"foo\": \"bar\",}", "Trailing comma in object literal");
-    this.done(9);
+    this.done(6);
   });
 
-  // JavaScript expressions should never be evaluated, as JSON 3 does not use
+  // JavaScript expressions should never be evaluated, as JSON5 does not use
   // `eval`.
-  testSuite.addTest("`parse`: Invalid Expressions", function (test) {
+  testSuite.addTest("JavaScript Expressions", function (test) {
     Spec.forEach(["1 + 1", "1 * 2", "var value = 123;", "{});value = 123;({}", "call()", "1, 2, 3, \"value\""], function (expression) {
       test.parseError(expression, "Source string containing a JavaScript expression");
     });
     this.done(6);
   });
 
-  testSuite.addTest("`parse`: Optional Arguments", function () {
+  testSuite.addTest("Optional Reviver Function", function () {
     this.parses({"a": 1, "b": 16}, '{"a": 1, "b": "10000"}', "Callback function provided", function (key, value) {
       return typeof value == "string" ? parseInt(value, 2) : value;
     });
-    this.equal(3, JSON.parse("[1, 2, 3]", function (key, value) {
+    this.equal(3, JSON5.parse("[1, 2, 3]", function (key, value) {
       if (typeof value == "object" && value) {
         return value;
       }
@@ -250,11 +216,6 @@
 
     // Tests 15.12.1.1-0-1 thru 15.12.1.1-0-8.
     this.parseError("12\t\r\n 34", "Valid whitespace characters may not separate two discrete tokens");
-    this.parses(1234, "\u000b1234", "The vertical tab is a valid whitespace character");
-    this.parses(1234, "\u000c1234", "The form feed is a valid whitespace character");
-    this.parses(1234, "\u00a01234", "The non-breaking space is a valid whitespace character");
-    this.parses(1234, "\ufeff1234", "The byte order mark (zero-width non-breaking space) is a valid whitespace character");
-    this.parses(1234, "\u20281234\u2029", "The Unicode line and paragraph separators are valid whitespace characters");
     this.parseError("\u200b1234", "The zero-width space is not a valid whitespace character");
     this.parseError("\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u30001234", "Other Unicode category `Z` characters are not valid whitespace characters");
 
@@ -279,7 +240,6 @@
 
     // Tests 15.12.1.1-g2-1 thru 15.12.1.1-g2-5.
     this.parses("abc", '"abc"', "Strings must be enclosed in double quotes");
-    this.parses("abc", "'abc'", "Single-quoted strings are permitted");
     // Note: the original test 15.12.1.1-g2-3 (`"\u0022abc\u0022"`) is incorrect,
     // as the JavaScript interpreter will always convert `\u0022` to `"`.
     this.parseError("\\u0022abc\\u0022", "Unicode-escaped double quote delimiters are not permitted");
@@ -306,15 +266,27 @@
     this.parses("\r", '"\\r"', "Escaped carriage return");
     this.parses("\t", '"\\t"', "Escaped tab");
 
-    this.done();
+    this.done(30);
   });
 
   testSuite.addTest("JSON5 Extensions", function () {
+    // Whitespace.
+    this.parses(1234, "\u000b1234", "The vertical tab is a valid whitespace character");
+    this.parses(1234, "\u000c1234", "The form feed is a valid whitespace character");
+    this.parses(1234, "\u00a01234", "The non-breaking space is a valid whitespace character");
+    this.parses(1234, "\ufeff1234", "The byte order mark (zero-width non-breaking space) is a valid whitespace character");
+    this.parses(1234, "\u20281234\u2029", "The Unicode line and paragraph separators are valid whitespace characters");
+    this.parses({}, "{\u00a0}", "Source string containing a non-breaking space");
+    this.parses({}, "{\u2028}", "Source string containing a Unicode line separator");
+    this.parses({}, "{\u2029}", "Source string containing a Unicode paragraph separator");
+    this.parses({}, "{\u000b}", "Source string containing a vertical tab");
+    this.parses({}, "{\u000c}", "Source string containing a form feed");
+    this.parses({}, "{\ufeff}", "Source string containing a byte-order mark");
+
     // Arrays.
     this.parses([], "[]", "Empty array");
     this.parses([true, false, null], "[true, false, null]", "Array containing Boolean and `null` literals");
-    this.parses([null], "[null,]", "Trailing comma in array literal");
-
+    this.parses([1, 2, 3], "[1, 2, 3,]", "Trailing comma in array literal");
     this.parseError("[,null]", "Leading comma in array literal");
     this.parseError("[,]", "Array containing an elision");
     this.parseError("[true false]", "Array missing the requisite `,` delimiter between two elements");
@@ -332,7 +304,6 @@
     this.parses(null, "null // Trailing line comment.", "`null` literal with trailing line comment");
     this.parses(false, "// Leading line comment.\nfalse", "Boolean literal with leading line comment");
     this.parses("Line comment // syntax in string.", '"Line comment // syntax in string."', "Line comment delimiter in string");
-
     this.parseError("/**/", "Empty block comment");
     this.parseError("//", "Empty line comment");
     this.parseError("true /* Unterminated block comment", "Unterminated trailing block comment");
@@ -355,20 +326,22 @@
     "Complete source string with JSON5 grammar extensions");
 
     // Numbers.
+    this.parses(0.1, ".1", "Leading decimal point");
+    this.parses(0xaf, "0xaf", "Hex literal");
     this.parses(0xc8, "0xc8", "Lowercase hex literal");
     this.parses(0xc8, "0XC8", "Uppercase hex literal");
     this.parses(0xc8, "0xC8", "Mixed case hex literal");
     this.parses(-0xc8, "-0xC8", "Negative hex literal");
-
     this.parseError("0x", "Empty hexadecimal value");
     this.parseError("0770", "Valid octal value");
     this.parseError("080", "Invalid octal value");
 
     // Objects.
     this.parses({}, "{}", "Empty object");
+    this.parses({ "key": 1 }, "{key: 1}", "Unquoted identifier used as a property name");
     this.parses({ "while": true }, "{ while: true }", "Reserved word used as unquoted object property name");
-    this.parses({ "hello": "world" }, "{ 'hello': \"world\" }", "Single-quoted object property name");
-    this.parses({ "foo": "bar" }, "{ \"foo\": \"bar\", }", "Trailing comma in object literal");
+    this.parses({ "key": 1}, "{'key': 1}", "Single-quoted string used as a property name");
+    this.parses({ "hello": "world", "foo": "bar" }, "{\"hello\": \"world\", \"foo\": \"bar\",}", "Trailing comma in object literal");
     this.parses({
       "hello": "world",
       "_": "underscore",
@@ -378,7 +351,6 @@
       "$_$hello123world_$_": "mixed"
     }, '{ hello: "world", _: "underscore", $: "dollar sign", one1: "numerals", _$_: "multiple symbols", $_$hello123world_$_: "mixed" }',
       "Identifiers used as unquoted object property names");
-
     this.parseError("{ 10twenty: \"ten twenty\" }", "Illegal identifier (leading numeric value)");
     this.parseError("{ multi-word: \"multi-word\" }", "Illegal identifier (invalid punctuator)");
     this.parseError("{ ,\"foo\": \"bar\" }", "Leading comma in object literal");
@@ -386,6 +358,7 @@
     this.parseError("{ \"foo\": \"bar\"\n \"hello\": \"world\" }", "Object literal missing the requisite `,` delimiter between two members");
 
     // Strings.
+    this.parses("hello", "'hello'", "Single-quoted string");
     this.parses("I can't wait", "'I can\\'t wait'", "Single-quoted string with escaped single quote character");
     this.parses("hello world", "'hello\\\n world'", "Single-quoted string with LF line continuation");
     this.parses("hello world", "'hello\\\r world'", "Single-quoted string with CR line continuation");
@@ -396,16 +369,12 @@
     this.parseError('{ sig\\u03A3ma: "the sum of all things" }', "Illegal identifier (Unicode escape sequence)");
     this.parseError('{ ümlåût: "that\'s not really an ümlaüt, but this is" }', "Illegal identifier (literal Unicode character)");
 
-    this.done(46);
+    this.done(61);
   });
 
   testSuite.shuffle();
 
-  if (isLoader) {
-    define(function () {
-      return testSuite;
-    });
-  } else if (!isBrowser && (!isModule || (typeof module == "object" && module == require.main))) {
+  if (!isBrowser && (!isModule || (typeof module == "object" && module == require.main))) {
     testSuite.run();
   }
 })(this);
