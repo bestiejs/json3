@@ -43,11 +43,6 @@
     return this.deepEqual(JSON.parse(source, callback), expected, message);
   };
 
-  // Ensures that `JSON.stringify` serializes the given object correctly.
-  Spec.Test.prototype.serializes = function (expected, value, message, filter, width) {
-    return this.strictEqual(JSON.stringify(value, filter, width), expected, message);
-  };
-
   // Ensures that `JSON.stringify` throws a `TypeError` if the given object
   // contains a circular reference.
   Spec.Test.prototype.cyclicError = function (value, message) {
@@ -207,87 +202,16 @@
     this.done(6);
   });
 
-  testSuite.addTest("`stringify` and `parse`: Optional Arguments", function () {
+  testSuite.addTest("`parse`: Optional Arguments", function () {
     this.parses({"a": 1, "b": 16}, '{"a": 1, "b": "10000"}', "Callback function provided", function (key, value) {
       return typeof value == "string" ? parseInt(value, 2) : value;
     });
-    this.serializes("{\n  \"bar\": 456\n}", {"foo": 123, "bar": 456}, "Object; optional `filter` and `whitespace` arguments", ["bar"], 2);
-    // Test adapted from the Opera JSON test suite via Ken Snyder.
-    // See http://testsuites.opera.com/JSON/correctness/scripts/045.js
-    this.serializes('{"PI":3.141592653589793}', Math, "List of non-enumerable property names specified as the `filter` argument", ["PI"]);
     this.equal(3, JSON.parse("[1, 2, 3]", function (key, value) {
       if (typeof value == "object" && value) {
         return value;
       }
     }).length, "Issue #10: `walk` should not use `splice` when removing an array element");
-    this.done(4);
-  });
-
-  testSuite.addTest("`stringify`", function () {
-    var expected = 28, value, pattern;
-
-    // Special values.
-    this.serializes("null", null, "`null` is represented literally");
-    this.serializes("null", 1 / 0, "`Infinity` is serialized as `null`");
-    this.serializes("null", 0 / 0, "`NaN` is serialized as `null`");
-    this.serializes("null", -1 / 0, "`-Infinity` is serialized as `null`");
-    this.serializes("true", true, "Boolean primitives are represented literally");
-    this.serializes("false", new Boolean(false), "Boolean objects are represented literally");
-    this.serializes('"\\\\\\"How\\bquickly\\tdaft\\njumping\\fzebras\\rvex\\""', new String('\\"How\bquickly\tdaft\njumping\fzebras\rvex"'), "All control characters in strings are escaped");
-
-    this.serializes("[false,1,\"Kit\"]", [new Boolean, new Number(1), new String("Kit")], "Arrays are serialized recursively");
-    this.serializes("[null]", [void 0], "`[undefined]` is serialized as `[null]`");
-
-    // Property enumeration is implementation-dependent.
-    value = {
-      "jdalton": ["John-David", 29],
-      "kitcambridge": ["Kit", 18],
-      "mathias": ["Mathias", 23]
-    };
-    this.parses(value, JSON.stringify(value), "Objects are serialized recursively");
-
-    // Complex cyclic structures.
-    value = { "foo": { "b": { "foo": { "c": { "foo": null} } } } };
-    this.serializes('{"foo":{"b":{"foo":{"c":{"foo":null}}}}}', value, "Nested objects containing identically-named properties should serialize correctly");
-
-    value.foo.b.foo.c.foo = value;
-    this.cyclicError(value, "Objects containing complex circular references should throw a `TypeError`");
-
-    // Sparse arrays.
-    value = [];
-    value[5] = 1;
-    this.serializes("[null,null,null,null,null,1]", value, "Sparse arrays should serialize correctly");
-
-    // Dates.
-    this.serializes('"1994-07-03T00:00:00.000Z"', new Date(Date.UTC(1994, 6, 3)), "Dates should be serialized according to the simplified date time string format");
-    this.serializes('"1993-06-02T02:10:28.224Z"', new Date(Date.UTC(1993, 5, 2, 2, 10, 28, 224)), "The date time string should conform to the format outlined in the spec");
-    this.serializes('"-271821-04-20T00:00:00.000Z"', new Date(-8.64e15), "The minimum valid date value should serialize correctly");
-    this.serializes('"+275760-09-13T00:00:00.000Z"', new Date(8.64e15), "The maximum valid date value should serialize correctly");
-    this.serializes('"+010000-01-01T00:00:00.000Z"', new Date(Date.UTC(10000, 0, 1)), "https://bugs.ecmascript.org/show_bug.cgi?id=119");
-
-    // Tests based on research by @Yaffle. See kriskowal/es5-shim#111.
-    this.serializes('"1969-12-31T23:59:59.999Z"', new Date(-1), "Millisecond values < 1000 should be serialized correctly");
-    this.serializes('"-000001-01-01T00:00:00.000Z"', new Date(-621987552e5), "Years prior to 0 should be serialized as extended years");
-    this.serializes('"+010000-01-01T00:00:00.000Z"', new Date(2534023008e5), "Years after 9999 should be serialized as extended years");
-    this.serializes('"-109252-01-01T10:37:06.708Z"', new Date(-3509827334573292), "Issue #4: Opera > 9.64 should correctly serialize a date with a year of `-109252`");
-
-    // Opera 7 normalizes dates with invalid time values to represent the
-    // current date.
-    value = new Date("Kit");
-    if (!isFinite(value)) {
-      expected += 1;
-      this.serializes("null", value, "Invalid dates should serialize as `null`");
-    }
-
-    // Additional arguments.
-    this.serializes("[\n  1,\n  2,\n  3,\n  [\n    4,\n    5\n  ]\n]", [1, 2, 3, [4, 5]], "Nested arrays; optional `whitespace` argument", null, "  ");
-    this.serializes("[]", [], "Empty array; optional string `whitespace` argument", null, "  ");
-    this.serializes("{}", {}, "Empty object; optional numeric `whitespace` argument", null, 2);
-    this.serializes("[\n  1\n]", [1], "Single-element array; optional numeric `whitespace` argument", null, 2);
-    this.serializes("{\n  \"foo\": 123\n}", { "foo": 123 }, "Single-member object; optional string `whitespace` argument", null, "  ");
-    this.serializes("{\n  \"foo\": {\n    \"bar\": [\n      123\n    ]\n  }\n}", {"foo": {"bar": [123]}}, "Nested objects; optional numeric `whitespace` argument", null, 2);
-
-    this.done(expected);
+    this.done(2);
   });
 
   /*
@@ -382,144 +306,7 @@
     this.parses("\r", '"\\r"', "Escaped carriage return");
     this.parses("\t", '"\\t"', "Escaped tab");
 
-    // Section 15.12.3: `JSON.stringify()`.
-    // ------------------------------------
-
-    // Test 15.12.3-11-1 thru 5.12.3-11-15.
-    this.serializes(void 0, void 0, "`JSON.stringify(undefined)` should return `undefined`");
-    this.serializes('"replacement"', void 0, "The `JSON.stringify` callback function can be called on a top-level `undefined` value", function (key, value) {
-      return "replacement";
-    });
-    this.serializes('"a string"', "a string", "`JSON.stringify` should serialize top-level string primitives");
-    this.serializes("123", 123, "`JSON.stringify` should serialize top-level number primitives");
-    this.serializes("true", true, "`JSON.stringify` should serialize top-level Boolean primitives");
-    this.serializes("null", null, "`JSON.stringify` should serialize top-level `null` values");
-    this.serializes("42", new Number(42), "`JSON.stringify` should serialize top-level number objects");
-    this.serializes('"wrapped"', new String("wrapped"), "`JSON.stringify` should serialize top-level string objects");
-    this.serializes("false", new Boolean(false), "`JSON.stringify` should serialize top-level Boolean objects");
-    this.serializes(void 0, 42, "The `JSON.stringify` callback function may return `undefined` when called on a top-level number primitive", function () {
-      return void 0;
-    });
-    this.serializes(void 0, { "prop": 1 }, "The `JSON.stringify` callback function may return `undefined` when called on a top-level object", function () {
-      return void 0;
-    });
-    this.serializes("[4,2]", 42, "The `JSON.stringify` callback function may return an array when called on a top-level number primitive", function (key, value) {
-      return value == 42 ? [4, 2] : value;
-    });
-    this.serializes('{"forty":2}', 42, "The `JSON.stringify` callback function may return an object literal when called on a top-level number primitive", function (key, value) {
-      return value == 42 ? { "forty": 2 } : value;
-    });
-    this.serializes(void 0, function () {}, "`JSON.stringify` should return `undefined` when called on a top-level function");
-    this.serializes("99", function () {}, "The `JSON.stringify` callback function may return a number primitive when called on a top-level function", function () {
-      return 99;
-    });
-
-    // Test 15.12.3-4-1.
-    this.serializes("[42]", [42], "`JSON.stringify` should ignore `filter` arguments that are not functions or arrays", {});
-
-    // Test 15.12.3-5-a-i-1 and 15.12.3-5-b-i-1.
-    this.equal(JSON.stringify(value, null, new Number(5)), JSON.stringify(value, null, 5), "Optional `width` argument: Number object and primitive width values should produce identical results");
-    this.equal(JSON.stringify(value, null, new String("xxx")), JSON.stringify(value, null, "xxx"), "Optional `width` argument: String object and primitive width values should produce identical results");
-
-    // Test 15.12.3-6-a-1 and 15.12.3-6-a-2.
-    this.equal(JSON.stringify(value, null, 10), JSON.stringify(value, null, 100), "Optional `width` argument: The maximum numeric width value should be 10");
-    this.equal(JSON.stringify(value, null, 5.99999), JSON.stringify(value, null, 5), "Optional `width` argument: Numeric values should be converted to integers");
-
-    // Test 15.12.3-6-b-1 and 15.12.3-6-b-4.
-    this.equal(JSON.stringify(value, null, 0.999999), JSON.stringify(value), "Optional `width` argument: Numeric width values between 0 and 1 should be ignored");
-    this.equal(JSON.stringify(value, null, 0), JSON.stringify(value), "Optional `width` argument: Zero should be ignored");
-    this.equal(JSON.stringify(value, null, -5), JSON.stringify(value), "Optional `width` argument: Negative numeric values should be ignored");
-    this.equal(JSON.stringify(value, null, 5), JSON.stringify(value, null, "     "), "Optional `width` argument: Numeric width values in the range [1, 10] should produce identical results to that of string values containing `width` spaces");
-
-    // Test 15.12.3-7-a-1.
-    this.equal(JSON.stringify(value, null, "0123456789xxxxxxxxx"), JSON.stringify(value, null, "0123456789"), "Optional `width` argument: String width values longer than 10 characters should be truncated");
-
-    // Test 15.12.3-8-a-1 thru 15.12.3-8-a-5.
-    this.equal(JSON.stringify(value, null, ""), JSON.stringify(value), "Empty string `width` arguments should be ignored");
-    this.equal(JSON.stringify(value, null, true), JSON.stringify(value), "Boolean primitive `width` arguments should be ignored");
-    this.equal(JSON.stringify(value, null, null), JSON.stringify(value), "`null` `width` arguments should be ignored");
-    this.equal(JSON.stringify(value, null, new Boolean(false)), JSON.stringify(value), "Boolean object `width` arguments should be ignored");
-    this.equal(JSON.stringify(value, null, value), JSON.stringify(value), "Object literal `width` arguments should be ignored");
-
-    // Test 15.12.3@2-2-b-i-1.
-    this.serializes('["fortytwo objects"]', [{
-      "prop": 42,
-      "toJSON": function () {
-        return "fortytwo objects";
-      }
-    }], "An object literal with a custom `toJSON` method nested within an array may return a string primitive for serialization");
-
-    // Test 15.12.3@2-2-b-i-2.
-    this.serializes('[42]', [{
-      "prop": 42,
-      "toJSON": function () {
-        return new Number(42);
-      }
-    }], "An object literal with a custom `toJSON` method nested within an array may return a number object for serialization");
-
-    // Test 15.12.3@2-2-b-i-3.
-    this.serializes('[true]', [{
-      "prop": 42,
-      "toJSON": function () {
-        return new Boolean(true);
-      }
-    }], "An object liyeral with a custom `toJSON` method nested within an array may return a Boolean object for serialization");
-
-    // Test 15.12.3@2-3-a-1.
-    this.serializes('["fortytwo"]', [42], "The `JSON.stringify` callback function may return a string object when called on an array", function (key, value) {
-      return value === 42 ? new String("fortytwo") : value;
-    });
-
-    // Test 15.12.3@2-3-a-2.
-    this.serializes('[84]', [42], "The `JSON.stringify` callback function may return a number object when called on an array", function (key, value) {
-      return value === 42 ? new Number(84) : value;
-    });
-
-    // Test 15.12.3@2-3-a-3.
-    this.serializes('[false]', [42], "The `JSON.stringify` callback function may return a Boolean object when called on an array", function (key, value) {
-      return value === 42 ? new Boolean(false) : value;
-    });
-
-    // Test 15.12.3@4-1-2. 15.12.3@4-1-1 only tests whether an exception is
-    // thrown; the type of the exception is not checked.
-    value = {};
-    value.prop = value;
-    this.cyclicError(value, "An object containing a circular reference should throw a `TypeError`");
-
-    // Test 15.12.3@4-1-3, modified to ensure that a `TypeError` is thrown.
-    value = { "p1": { "p2": {} } };
-    value.p1.p2.prop = value;
-    this.cyclicError(value, "A nested cyclic structure should throw a `TypeError`");
-    this.done(74);
-  });
-
-  // This test may fail in certain implementations.
-  testSuite.addTest("Anticipated ECMAScript 6 Additions", function () {
-    var expected = 0, value;
-    try {
-      value = {};
-      // IE 8 only allows properties to be defined on DOM elements. Credits:
-      // John-David Dalton and Juriy Zaytsev.
-      if (Object.defineProperty(value, value, value), "value" in Object.getOwnPropertyDescriptor(value, value)) {
-        expected += 1;
-        value = [0, 1, 2, 3];
-        Object.prototype[3] = 3;
-        Object.defineProperty(value, 1, {
-          "get": function () {
-            Object.defineProperty(value, 4, { "value": 4 });
-            delete value[2];
-            delete value[3];
-            value[5] = 5;
-            return 1;
-          }
-        });
-        // Test by Jeff Walden and Allen Wirfs-Brock.
-        this.serializes('{"0":{"1":{"3":{"3":3}},"3":3},"3":3}', { 0: { 1: { 3: { 4: { 5: { 2: "omitted" } } } } } }, "Issue #12: `parse` should process property name arrays sequentially", value);
-      }
-    } catch (exception) {}
-    // Clean up.
-    delete Object.prototype[3];
-    this.done(expected);
+    this.done();
   });
 
   testSuite.addTest("JSON5 Extensions", function () {
