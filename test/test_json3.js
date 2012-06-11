@@ -47,6 +47,7 @@
     try {
       actual = JSON5.parse(source, callback);
     } catch (exception) {
+      console.error(exception)
       return this.ok(false, {
         "actual": exception,
         "message": message
@@ -102,14 +103,15 @@
     this.parses(-0.01, "-1e-2", "Negative exponent");
     this.parses(3125, "0.03125e+5", "Decimalized exponent");
     this.parses(100, "1E2", "Case-insensitive exponent delimiter");
+    this.parses(1, "1.", "Trailing decimal point");
+    this.parses(100, "1.e2", "Trailing decimal with exponent");
     this.parseError("+1", "Leading `+`");
-    this.parseError("1.", "Trailing decimal point");
     this.parseError("1e", "Missing exponent");
     this.parseError("1e-", "Missing signed exponent");
     this.parseError("--1", "Leading `--`");
     this.parseError("1-+", "Trailing `-+`");
     this.parseError("- 5", "Invalid negative sign");
-    this.done(18);
+    this.done(19);
   });
 
   testSuite.addTest("Double-Quoted String Literals", function () {
