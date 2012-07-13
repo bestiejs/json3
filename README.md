@@ -2,9 +2,9 @@
 
 ![JSON 3 Logo](http://bestiejs.github.com/json3/page/logo.png)
 
-**JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.2.2**.
+**JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.2.3**.
 
-- [Development Version](http://bestiejs.github.com/json3/lib/json3.js) *(35.5 KB; uncompressed with comments)*
+- [Development Version](http://bestiejs.github.com/json3/lib/json3.js) *(35.7 KB; uncompressed with comments)*
 - [Production Version](http://bestiejs.github.com/json3/lib/json3.min.js) *(3.0 KB; compressed and `gzip`-ped)*
 
 [JSON](http://json.org/) is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by [Douglas Crockford](http://www.crockford.com/), the format was standardized in the [fifth edition](http://es5.github.com/) of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
