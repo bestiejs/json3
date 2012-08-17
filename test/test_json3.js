@@ -225,7 +225,7 @@
   });
 
   testSuite.addTest("`stringify`", function () {
-    var expected = 28, value, pattern;
+    var expected = 29, value, pattern;
 
     // Special values.
     this.serializes("null", null, "`null` is represented literally");
@@ -250,6 +250,10 @@
     // Complex cyclic structures.
     value = { "foo": { "b": { "foo": { "c": { "foo": null} } } } };
     this.serializes('{"foo":{"b":{"foo":{"c":{"foo":null}}}}}', value, "Nested objects containing identically-named properties should serialize correctly");
+
+    var S = [], N = {};
+    S.push(N, N);
+    this.serializes('[{},{}]', S, "Objects containing duplicate references should not throw a `TypeError`");
 
     value.foo.b.foo.c.foo = value;
     this.cyclicError(value, "Objects containing complex circular references should throw a `TypeError`");
