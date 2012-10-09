@@ -7,7 +7,6 @@
   </head>
   <body>
     <div id="suite"></div>
-    <script src="../lib/json3.js"></script>
     <script src="../vendor/spec/lib/spec.js"></script>
     <script src="../vendor/spec/lib/newton.js"></script>
     <script>
@@ -48,7 +47,7 @@
           testSuite.run();
         });
       } else {
-        this.document.write('<script src="test_json3.js"><\/script>');
+        this.document.write('<script src="../lib/json3.js"><\/script><script src="test_json3.js"><\/script>');
         this.onload = function () {
           JSON.testSuite.run();
         };
