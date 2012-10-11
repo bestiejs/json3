@@ -2,9 +2,9 @@
 
 ![JSON 3 Logo](http://bestiejs.github.com/json3/page/logo.png)
 
-**JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.2.3**.
+**JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.2.4**.
 
-- [Development Version](http://bestiejs.github.com/json3/lib/json3.js) *(35.7 KB; uncompressed with comments)*
+- [Development Version](http://bestiejs.github.com/json3/lib/json3.js) *(36.5 KB; uncompressed with comments)*
 - [Production Version](http://bestiejs.github.com/json3/lib/json3.min.js) *(3.0 KB; compressed and `gzip`-ped)*
 
 [JSON](http://json.org/) is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by [Douglas Crockford](http://www.crockford.com/), the format was standardized in the [fifth edition](http://es5.github.com/) of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
@@ -19,9 +19,11 @@ The project is [hosted on GitHub](http://git.io/json3), along with the [unit tes
 
 JSON 3...
 
-* Correctly serializes primitive wrapper objects (*[Issue #28](https://github.com/douglascrockford/JSON-js/issues/28)*).
+* Correctly serializes primitive wrapper objects.
 * Throws a `TypeError` when serializing cyclic structures (JSON 2 recurses until the call stack overflows).
 * Utilizes **feature tests** to detect broken or incomplete *native* JSON implementations (JSON 2 only checks for the presence of the native functions). The tests are only executed once at runtime, so there is no additional performance cost when parsing or serializing values.
+
+**As of v3.2.3**, JSON 3 is compatible with [Prototype](http://prototypejs.org) 1.6.1 and older.
 
 In contrast to JSON 2, JSON 3 **does not**...
 
@@ -90,8 +92,6 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 - Google [V8](http://code.google.com/p/v8)
 
 ## Known Incompatibilities
-
-* JSON 3 is **not compatible** with [Prototype](http://prototypejs.org) 1.6.1 and older. If you cannot upgrade to Prototype 1.7, please use `Object.toJSON()` and `String#evalJSON(true)` instead of `JSON.stringify()` and `JSON.parse()`, respectively. This is **not** a JSON 3 bug; because Prototype adds several non-standard `toJSON()` methods that [return serialized values instead of objects](https://gist.github.com/2605201), using the native JSON implementation will yield identical results.
 
 * Attempting to serialize the `arguments` object may produce inconsistent results across environments due to specification version differences. As a workaround, please convert the `arguments` object to an array first: `JSON.stringify([].slice.call(arguments, 0))`.
 

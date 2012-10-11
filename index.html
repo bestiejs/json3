@@ -19,11 +19,11 @@
 <p><img src="http://bestiejs.github.com/json3/page/logo.png" alt="JSON 3 Logo">
 
 </p>
-<p><strong>JSON 3</strong> is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is <strong>3.2.3</strong>.
+<p><strong>JSON 3</strong> is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is <strong>3.2.4</strong>.
 
 </p>
 <ul>
-<li><a href="http://bestiejs.github.com/json3/lib/json3.js">Development Version</a> <em>(35.7 KB; uncompressed with comments)</em></li>
+<li><a href="http://bestiejs.github.com/json3/lib/json3.js">Development Version</a> <em>(36.5 KB; uncompressed with comments)</em></li>
 <li><a href="http://bestiejs.github.com/json3/lib/json3.min.js">Production Version</a> <em>(3.0 KB; compressed and <code>gzip</code>-ped)</em></li>
 </ul>
 <p><a href="http://json.org/">JSON</a> is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by <a href="http://www.crockford.com/">Douglas Crockford</a>, the format was standardized in the <a href="http://es5.github.com/">fifth edition</a> of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
@@ -43,9 +43,11 @@
 
 </p>
 <ul>
-<li>Correctly serializes primitive wrapper objects (<em><a href="https://github.com/douglascrockford/JSON-js/issues/28">Issue #28</a></em>).</li>
+<li>Correctly serializes primitive wrapper objects.</li>
 <li>Throws a <code>TypeError</code> when serializing cyclic structures (JSON 2 recurses until the call stack overflows).</li>
-<li>Utilizes <strong>feature tests</strong> to detect broken or incomplete <em>native</em> JSON implementations (JSON 2 only checks for the presence of the native functions). The tests are only executed once at runtime, so there is no additional performance cost when parsing or serializing values.</li>
+<li><p>Utilizes <strong>feature tests</strong> to detect broken or incomplete <em>native</em> JSON implementations (JSON 2 only checks for the presence of the native functions). The tests are only executed once at runtime, so there is no additional performance cost when parsing or serializing values.</p>
+<p><strong>As of v3.2.3</strong>, JSON 3 is compatible with <a href="http://prototypejs.org">Prototype</a> 1.6.1 and older.</p>
+</li>
 </ul>
 <p>In contrast to JSON 2, JSON 3 <strong>does not</strong>...
 
@@ -112,10 +114,7 @@ JSON.stringify({&quot;Hello&quot;: 123, &quot;Good-bye&quot;: 456}, [&quot;Hello
 </ul>
 <h2>Known Incompatibilities</h2>
 <ul>
-<li><p>JSON 3 is <strong>not compatible</strong> with <a href="http://prototypejs.org">Prototype</a> 1.6.1 and older. If you cannot upgrade to Prototype 1.7, please use <code>Object.toJSON()</code> and <code>String#evalJSON(true)</code> instead of <code>JSON.stringify()</code> and <code>JSON.parse()</code>, respectively. This is <strong>not</strong> a JSON 3 bug; because Prototype adds several non-standard <code>toJSON()</code> methods that <a href="https://gist.github.com/2605201">return serialized values instead of objects</a>, using the native JSON implementation will yield identical results.</p>
-</li>
-<li><p>Attempting to serialize the <code>arguments</code> object may produce inconsistent results across environments due to specification version differences. As a workaround, please convert the <code>arguments</code> object to an array first: <code>JSON.stringify([].slice.call(arguments, 0))</code>.</p>
-</li>
+<li>Attempting to serialize the <code>arguments</code> object may produce inconsistent results across environments due to specification version differences. As a workaround, please convert the <code>arguments</code> object to an array first: <code>JSON.stringify([].slice.call(arguments, 0))</code>.</li>
 </ul>
 <h2>Required Native Methods</h2>
 <p>JSON 3 assumes that the following methods exist and function as described in the ECMAScript specification:
