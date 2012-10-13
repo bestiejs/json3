@@ -23,8 +23,8 @@
 
 </p>
 <ul>
-<li><a href="http://bestiejs.github.com/json3/lib/json3.js">Development Version</a> <em>(36.5 KB; uncompressed with comments)</em></li>
-<li><a href="http://bestiejs.github.com/json3/lib/json3.min.js">Production Version</a> <em>(3.0 KB; compressed and <code>gzip</code>-ped)</em></li>
+<li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.2.4/json3.js">Development Version</a> <em>(36.5 KB; uncompressed with comments)</em></li>
+<li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.2.4/json3.min.js">Production Version</a> <em>(3.0 KB; compressed and <code>gzip</code>-ped)</em></li>
 </ul>
 <p><a href="http://json.org/">JSON</a> is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by <a href="http://www.crockford.com/">Douglas Crockford</a>, the format was standardized in the <a href="http://es5.github.com/">fifth edition</a> of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
 
@@ -45,10 +45,11 @@
 <ul>
 <li>Correctly serializes primitive wrapper objects.</li>
 <li>Throws a <code>TypeError</code> when serializing cyclic structures (JSON 2 recurses until the call stack overflows).</li>
-<li><p>Utilizes <strong>feature tests</strong> to detect broken or incomplete <em>native</em> JSON implementations (JSON 2 only checks for the presence of the native functions). The tests are only executed once at runtime, so there is no additional performance cost when parsing or serializing values.</p>
-<p><strong>As of v3.2.3</strong>, JSON 3 is compatible with <a href="http://prototypejs.org">Prototype</a> 1.6.1 and older.</p>
-</li>
+<li>Utilizes <strong>feature tests</strong> to detect broken or incomplete <em>native</em> JSON implementations (JSON 2 only checks for the presence of the native functions). The tests are only executed once at runtime, so there is no additional performance cost when parsing or serializing values.</li>
 </ul>
+<p><strong>As of v3.2.3</strong>, JSON 3 is compatible with <a href="http://prototypejs.org">Prototype</a> 1.6.1 and older.
+
+</p>
 <p>In contrast to JSON 2, JSON 3 <strong>does not</strong>...
 
 </p>
@@ -68,7 +69,7 @@
 </p>
 <h1><a name="section_3"></a>Usage</h1>
 <h2>Web Browsers</h2>
-<pre><code>&lt;script src=&quot;http://bestiejs.github.com/json3/lib/json3.min.js&quot;&gt;&lt;/script&gt;
+<pre><code>&lt;script src=&quot;//cdnjs.cloudflare.com/ajax/libs/json3/3.2.4/json3.min.js&quot;&gt;&lt;/script&gt;
 &lt;script&gt;
   JSON.stringify({&quot;Hello&quot;: 123});
   // =&gt; &#39;{&quot;Hello&quot;:123}&#39;
