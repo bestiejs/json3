@@ -1,6 +1,6 @@
 {
   "name": "json3",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "A modern JSON implementation compatible with nearly all JavaScript platforms.",
   "homepage": "http://bestiejs.github.com/json3",
   "main": "./lib/json3",
@@ -17,6 +17,18 @@
     "name": "Kit Cambridge",
     "web": "http://kitcambridge.github.com"
   }],
+  "contributors": [
+    {
+      "name": "Mangled Deutz",
+      "email": "olivier@webitup.fr",
+      "web": "http://tech.roxee.tv"
+    },
+    {
+      "name": "Kiryl Yermakou",
+      "email": "rma4ok@gmail.com",
+      "web": "https://github.com/rma4ok"
+    }
+  ],
   "bugs": {
     "url": "http://github.com/bestiejs/json3/issues"
   },
