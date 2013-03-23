@@ -11,14 +11,29 @@
   }],
   "author": {
     "name": "Kit Cambridge",
-    "web": "http://kitcambridge.github.com"
+    "email": "github@kitcambridge.be",
+    "web": "http://kitcambridge.be/"
   },
   "maintainers": [{
     "name": "Kit Cambridge",
-    "web": "http://kitcambridge.github.com"
+    "email": "github@kitcambridge.be",
+    "web": "http://kitcambridge.be/"
+  }],
+  "contributors": [{
+    "name": "Øyvind Sean Kinsey",
+    "email": "oyvind@kinsey.no",
+    "web": "http://fb.me/ok"
+  }, {
+    "name": "Mangled Deutz",
+    "email": "olivier@webitup.fr",
+    "web": "http://tech.roxee.tv"
+  }, {
+    "name": "Kiryl Yermakou",
+    "email": "rma4ok@gmail.com",
+    "web": "https://github.com/rma4ok"
   }],
   "bugs": {
-    "url": "http://github.com/bestiejs/json3/issues"
+    "url": "https://github.com/bestiejs/json3/issues"
   },
   "scripts": {
     "test": "node test/test_*.js"

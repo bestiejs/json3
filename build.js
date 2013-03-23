@@ -10,6 +10,52 @@ closurePath = path.join(__dirname, "vendor", "closure-compiler.jar"),
 // warnings apart from syntax and optimization errors.
 closureOptions = ["--compilation_level=ADVANCED_OPTIMIZATIONS", "--warning_level=QUIET"];
 
+// A RegExp used to detect the `define` pragma used by asynchronous module
+// loaders.
+var definePattern = RegExp('(?:' +
+  // `typeof define == "function"`. Matches `==` and `===`; `'` and `"`.
+  'typeof\\s+define\\s*===?\\s*([\'"])function\\1|' +
+  // `"function" == typeof define`. Same rules as above.
+  '([\'"])function\\2\\s*===?\\s*typeof\\s+define' +
+')' +
+// `&&`.
+'\\s*&&\\s*(?:' +
+  // `define`.
+  'define\\s*(?:' +
+    // `.amd`.
+    '\\.\\s*amd|' +
+    // `["amd"]` | `['amd']`.
+    '\\[\\s*([\'"])amd\\3\\s*\\]' +
+  ')|' +
+  '(?:' +
+    '(?:' +
+      // `typeof define.amd`.
+      'typeof\\s+define\\.\\s*amd|' +
+      // `typeof define["amd"]` or `typeof define['amd']`.
+      'typeof\\s+define\\[\\s*([\'"])amd\\4\\s*\\]' +
+    ')' +
+    // `=== "object"`. Same rules for quotes and equality operators.
+    '\\s*===?\\s*([\'"])object\\5' +
+  '|' +
+    // `"object" ===`.
+    '([\'"])object\\6\\s*===?\\s*' +
+    '(?:' +
+      'typeof\\s+define\\.\\s*amd|' +
+      'typeof\\s+define\\[\\s*([\'"])amd\\7\\s*\\]' +
+    ')' + 
+  ')' +
+  '(?:' +
+    // `&&` (optional Boolean test for `define.amd`).
+    '\\s*&&\\s*' +
+    '(?:' +
+      // `define.amd`.
+      'define\\.\\s*amd|' +
+      // `define["amd"] | define['amd']`.
+      'define\\[\\s*([\'"])amd\\8\\s*\\]' +
+    ')' +
+  ')?' +
+')', 'g');
+
 // Enable GitHub-Flavored Markdown.
 marked.setOptions({ "gfm": true });
 
@@ -117,10 +163,8 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource
       }
       compressSource(exception, output);
     });
-    // Proxy the source to the Closure Compiler. The top-level
-    // immediately-invoked function expression is removed, as the output is
-    // automatically wrapped in one.
-    compiler.stdin.end(source.replace(/^;?\(function\s*\(\)\s*\{([\s\S]*?)}\)\.call\(this\);*?/m, "$1"));
+    // Proxy the preprocessed source to the Closure Compiler.
+    compiler.stdin.end(preprocessSource(source));
   }
 
   // Post-processes the compressed source and writes the result to disk.
@@ -128,10 +172,8 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource
     if (exception) {
       console.log(exception);
     } else {
-      // Extract the JSON 3 header and wrap the compressed source in an
-      // IIFE (enabling advanced optimizations causes the Compiler to add
-      // variables to the global scope).
-      compressed = extractComments(source)[0] + "\n;(function(){" + compressed + "}());";
+      // Extract the JSON 3 header and clean up the minified source.
+      compressed = extractComments(source)[0] + postprocessSource(compressed);
       // Write the compressed version to disk.
       fs.writeFile(path.join(__dirname, "lib", "json3.min.js"), compressed, writeSource);
     }
@@ -210,4 +252,18 @@ function extractComments(source) {
     }
   }
   return results;
+}
+
+function preprocessSource(source) {
+  var result = source.replace(definePattern, 'typeof define === "function" && define["amd"]');
+  // Remove the top-level immediately-invoked function expression, as the output
+  // is automatically wrapped in one.
+  return result.replace(/^;?\(function\s*\(\)\s*\{([\s\S]*?)}\)\.call\(this\);*?/m, "$1");
+}
+
+function postprocessSource(source) {
+  // Wrap the compressed source in an IIFE (enabling advanced optimizations
+  // causes the Compiler to add variables to the global scope) and fix the
+  // `define` pragma.
+  return "\n;(function(){" + source.replace(definePattern, 'typeof define==="function"&&define.amd') + "}());";
 }
