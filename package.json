@@ -26,11 +26,15 @@
   }, {
     "name": "Mangled Deutz",
     "email": "olivier@webitup.fr",
-    "web": "http://tech.roxee.tv"
+    "web": "http://tech.roxee.tv/"
   }, {
     "name": "Kiryl Yermakou",
     "email": "rma4ok@gmail.com",
     "web": "https://github.com/rma4ok"
+  }, {
+    "name": "Oskar Schöldström",
+    "email": "public@oxy.fi",
+    "web": "http://oxy.fi/"
   }],
   "bugs": {
     "url": "https://github.com/bestiejs/json3/issues"
