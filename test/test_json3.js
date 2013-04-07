@@ -1,20 +1,23 @@
 /* JSON 3 Unit Test Suite | http://bestiejs.github.com/json3 */
 (function (root) {
-  var isLoader = typeof define == "function" && !!define.amd,
-  isModule = typeof require == "function" && typeof exports == "object" && exports && !isLoader,
-  isBrowser = "window" in root && root.window == root && typeof root.navigator != "undefined",
-  isEngine = !isBrowser && !isModule && typeof root.load == "function",
+  var isLoader = typeof define == "function" && !!define.amd;
+  var isModule = typeof require == "function" && typeof exports == "object" && exports && !isLoader;
+  var isBrowser = "window" in root && root.window == root && typeof root.navigator != "undefined";
+  var isEngine = !isBrowser && !isModule && typeof root.load == "function";
 
-  load = function load(module, path) {
+  var load = function load(module, path) {
     return root[module] || (isModule ? require(path) : isEngine ?
       (root.load(path.replace(/\.js$/, "") + ".js"), root[module]) : null);
-  },
+  };
 
   // Load Spec, Newton, and JSON 3.
-  Spec = load("Spec", "./../vendor/spec/lib/spec"), Newton = load("Newton", "./../vendor/spec/lib/newton"), JSON = load("JSON", "../lib/json3"),
+  var Spec = load("Spec", "./../vendor/spec/lib/spec"), Newton = load("Newton", "./../vendor/spec/lib/newton"), JSON = load("JSON", "../lib/json3");
+  
+  // The ExtendScript engine doesn't support named exceptions.
+  var supportsNamedExceptions = new SyntaxError().name == "SyntaxError";
 
   // Create the test suite.
-  testSuite = JSON.testSuite = new Spec.Suite("JSON 3 Unit Tests");
+  var testSuite = JSON.testSuite = new Spec.Suite("JSON 3 Unit Tests");
 
   // Create and attach the logger event handler.
   testSuite.on("all", isBrowser ? Newton.createReport("suite") : Newton.createConsole(function (value) {
@@ -34,7 +37,7 @@
     return this.error(function () {
       JSON.parse(source, callback);
     }, function (exception) {
-      return exception.name == "SyntaxError";
+      return supportsNamedExceptions ? exception.name == "SyntaxError" : true;
     }, message);
   };
 
@@ -54,7 +57,7 @@
     return this.error(function () {
       JSON.stringify(value);
     }, function (exception) {
-      return exception.name == "TypeError";
+      return supportsNamedExceptions ? exception.name == "TypeError" : true;
     }, message);
   };
 
@@ -135,7 +138,7 @@
   });
 
   testSuite.addTest("`parse`: String Literals", function (test) {
-    var expected = 49, controlCharacters = ["\u0001", "\u0002", "\u0003",
+    var expected = 48, controlCharacters = ["\u0001", "\u0002", "\u0003",
       "\u0004", "\u0005", "\u0006", "\u0007", "\b", "\t", "\n", "\u000b", "\f",
       "\r", "\u000e", "\u000f", "\u0010", "\u0011", "\u0012", "\u0013",
       "\u0014", "\u0015", "\u0016", "\u0017", "\u0018", "\u0019", "\u001a",
@@ -152,7 +155,8 @@
 
     this.parses("\u2028", '"\\u2028"', "String containing an escaped Unicode line separator");
     this.parses("\u2029", '"\\u2029"', "String containing an escaped Unicode paragraph separator");
-    this.parses("\ud834\udf06", '"\\ud834\\udf06"', "String containing an escaped Unicode surrogate pair");
+    // ExtendScript doesn't handle surrogate pairs correctly; attempting to
+    // parse `"\ud834\udf06"` will throw an uncatchable error (issue #29).
     this.parses("\ud834\udf06", '"\ud834\udf06"', "String containing an unescaped Unicode surrogate pair");
     this.parses("\u0001", '"\\u0001"', "String containing an escaped ASCII control character");
     this.parses("\b", '"\\b"', "String containing an escaped backspace");
@@ -215,7 +219,10 @@
     this.serializes("{\n  \"bar\": 456\n}", {"foo": 123, "bar": 456}, "Object; optional `filter` and `whitespace` arguments", ["bar"], 2);
     // Test adapted from the Opera JSON test suite via Ken Snyder.
     // See http://testsuites.opera.com/JSON/correctness/scripts/045.js
-    this.serializes('{"PI":3.141592653589793}', Math, "List of non-enumerable property names specified as the `filter` argument", ["PI"]);
+    // The regular expression is necessary because the ExtendScript engine
+    // only approximates pi to 14 decimal places (ES 3 and ES 5 approximate
+    // pi to 15 places).
+    this.ok(/^\{"PI":3\.\d{14,15}\}$/.test(JSON.stringify(Math, ["PI"])), "List of non-enumerable property names specified as the `filter` argument");
     this.equal(3, JSON.parse("[1, 2, 3]", function (key, value) {
       if (typeof value == "object" && value) {
         return value;
