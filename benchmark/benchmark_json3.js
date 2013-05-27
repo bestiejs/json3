@@ -1,4 +1,5 @@
-;(function (window) {
+var ui;
+;(function(window) {
   // Convenience aliases.
   var getClass = {}.toString;
 
@@ -79,7 +80,7 @@
       transport.send(null);
       // Catch script errors.
       var onError = window.onerror, exception;
-      window.onerror = function (message) {
+      window.onerror = function(message) {
         exception = message;
         return true;
       };
@@ -152,50 +153,51 @@
   // Asen Bozhilov's `evalJSON`
   var evalJSON = getLibrary('evalJSON', '../vendor/evalJSON');
 
-  var suite = new Benchmark.Suite('JSON 3 Benchmark Suite');
+  var suite = typeof ui == 'object' && ui || new Benchmark.Suite('JSON 3 Benchmark Suite');
 
   var value = '{"kitcambridge":"Kit","contributors":{"jdalton":"John-David","mathias":"Mathias"},"list":[1,2,3],"number":5,"date":"2012-04-25T14:08:36.879Z","boolean":true,"nil":null}';
 
-  suite.add('JSON 3: `parse`', function () {
+  suite.add('JSON 3: `parse`', function() {
     JSON3.parse(value);
   });
 
-  suite.add('JSON 2: `parse`', function () {
+  suite.add('JSON 2: `parse`', function() {
     JSON2.parse(value);
   });
 
-  suite.add('`json-parse-state`', function () {
+  suite.add('`json-parse-state`', function() {
     json_parse_state(value);
   });
 
-  suite.add('`json-parse`', function () {
+  suite.add('`json-parse`', function() {
     json_parse(value);
   });
 
-  suite.add('`json-sans-eval`', function () {
+  suite.add('`json-sans-eval`', function() {
     json_sans_eval(value);
   });
 
-  suite.add('`evalJSON`', function () {
+  suite.add('`evalJSON`', function() {
     evalJSON(value);
   });
 
-  suite.on('cycle', function (event) {
-    log(String(event.target));
-  }).on('complete', function () {
-    var results = this.filter("successful"), fastest = results.filter("fastest"), slowest = results.filter("slowest");
-    _.forEach(results, function (result) {
-      var percent, hz = result.hz, text;
-      if (_.contains(fastest, result)) {
-        log("Fastest: `%s`.", result.name);
-      } else if (_.contains(slowest, result)) {
-        log("Slowest: `%s`.%s", result.name, isFinite(hz) ? " " + Math.round((1 - hz / fastest[0].hz) * 100) + "% slower." : "");
-      }
+  if (!isBrowser) {
+    suite.on('cycle', function(event) {
+      log(String(event.target));
+    }).on('complete', function() {
+      var results = this.filter("successful"), fastest = results.filter("fastest"), slowest = results.filter("slowest");
+      _.forEach(results, function(result) {
+        var hz = result.hz;
+        if (_.contains(fastest, result)) {
+          log("Fastest: `%s`.", result.name);
+        } else if (_.contains(slowest, result)) {
+          log("Slowest: `%s`.%s", result.name, isFinite(hz) ? " " + Math.round((1 - hz / fastest[0].hz) * 100) + "% slower." : "");
+        }
+      });
     });
-  });
 
-  suite.run({
-    'async': true
-  });
-
+    suite.run({
+      'async': true
+    });
+  }
 }(this));
