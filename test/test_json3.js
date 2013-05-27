@@ -232,7 +232,7 @@
   });
 
   testSuite.addTest("`stringify`", function () {
-    var expected = 29, value, pattern;
+    var expected = 29;
 
     // Special values.
     this.serializes("null", null, "`null` is represented literally");
@@ -247,7 +247,7 @@
     this.serializes("[null]", [void 0], "`[undefined]` is serialized as `[null]`");
 
     // Property enumeration is implementation-dependent.
-    value = {
+    var value = {
       "jdalton": ["John-David", 29],
       "kitcambridge": ["Kit", 18],
       "mathias": ["Mathias", 23]
@@ -399,7 +399,7 @@
 
     // Test 15.12.3-11-1 thru 5.12.3-11-15.
     this.serializes(void 0, void 0, "`JSON.stringify(undefined)` should return `undefined`");
-    this.serializes('"replacement"', void 0, "The `JSON.stringify` callback function can be called on a top-level `undefined` value", function (key, value) {
+    this.serializes('"replacement"', void 0, "The `JSON.stringify` callback function can be called on a top-level `undefined` value", function () {
       return "replacement";
     });
     this.serializes('"a string"', "a string", "`JSON.stringify` should serialize top-level string primitives");
@@ -512,7 +512,7 @@
       value = {};
       // IE 8 only allows properties to be defined on DOM elements. Credits:
       // John-David Dalton and Juriy Zaytsev.
-      if (Object.defineProperty(value, value, value), "value" in Object.getOwnPropertyDescriptor(value, value)) {
+      if ((Object.defineProperty(value, value, value), "value" in Object.getOwnPropertyDescriptor(value, value))) {
         expected += 1;
         value = [0, 1, 2, 3];
         Object.prototype[3] = 3;
