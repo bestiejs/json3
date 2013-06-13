@@ -1,11 +1,11 @@
 # JSON 3 #
 
-![JSON 3 Logo](http://bestiejs.github.com/json3/page/logo.png)
+![JSON 3 Logo](http://bestiejs.github.io/json3/page/logo.png)
 
-**JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.2.4**.
+**JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.2.5**.
 
-- [Development Version](http://cdnjs.cloudflare.com/ajax/libs/json3/3.2.4/json3.js) *(36.5 KB; uncompressed with comments)*
-- [Production Version](http://cdnjs.cloudflare.com/ajax/libs/json3/3.2.4/json3.min.js) *(3.0 KB; compressed and `gzip`-ped)*
+- [Development Version](http://bestiejs.github.io/json3/lib/json3.js) *(38.8 KB; uncompressed with comments)*
+- [Production Version](http://bestiejs.github.io/json3/lib/json3.min.js) *(3.2 KB; compressed and `gzip`-ped)*
 
 [JSON](http://json.org/) is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by [Douglas Crockford](http://www.crockford.com/), the format was standardized in the [fifth edition](http://es5.github.com/) of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
 
@@ -13,7 +13,7 @@ JSON 3 exposes two functions: `stringify()` for [serializing](https://developer.
 
 The JSON 3 parser does **not** use `eval` or regular expressions. This provides security and performance benefits in obsolete and mobile environments, where the margin is particularly significant. The complete [benchmark suite](http://jsperf.com/json3) is available on [jsPerf](http://jsperf.com/).
 
-The project is [hosted on GitHub](http://git.io/json3), along with the [unit tests](http://bestiejs.github.com/json3/test/test_browser.html). It is part of the [BestieJS](https://github.com/bestiejs) family, a collection of best-in-class JavaScript libraries that promote cross-platform support, specification precedents, unit testing, and plenty of documentation.
+The project is [hosted on GitHub](http://git.io/json3), along with the [unit tests](http://bestiejs.github.io/json3/test/test_browser.html). It is part of the [BestieJS](https://github.com/bestiejs) family, a collection of best-in-class JavaScript libraries that promote cross-platform support, specification precedents, unit testing, and plenty of documentation.
 
 # Changes from JSON 2 #
 
@@ -42,7 +42,7 @@ Portions of the date serialization code are adapted from the [`date-shim`](https
 
 ## Web Browsers
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.2.4/json3.min.js"></script>
+    <script src="http://bestiejs.github.io/json3/lib/json3.js"></script>
     <script>
       JSON.stringify({"Hello": 123});
       // => '{"Hello":123}'

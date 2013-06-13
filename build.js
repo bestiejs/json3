@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/* JSON 3 Builder | http://bestiejs.github.com/json3 */
+/* JSON 3 Builder | http://bestiejs.github.io/json3 */
 var path = require("path"), fs = require("fs"), gzip = require("zlib").gzip, spawn = require("child_process").spawn, marked = require(path.join(__dirname, "vendor", "marked")),
 
 // The path to the Closure Compiler `.jar` file.
