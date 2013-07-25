@@ -45,5 +45,22 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/bestiejs/json3.git"
+  },
+  "jam": {
+    "main": "./lib/json3.js"
+  },
+  "volo": {
+    "type": "directory",
+    "ignore": [
+      ".*",
+      "build.js",
+      "index.html",
+      "component.json",
+      "bower.json",
+      "benchmark",
+      "page",
+      "test",
+      "vendor"
+    ]
   }
 }

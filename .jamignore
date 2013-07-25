@@ -1,10 +1,9 @@
-bower.json
-component.json
+.*
 build.js
 index.html
+component.json
+bower.json
 index.js
-.jshintrc
-
 benchmark
 page
 test
