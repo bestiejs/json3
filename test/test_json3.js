@@ -12,7 +12,7 @@
 
   // Load Spec, Newton, and JSON 3.
   var Spec = load("Spec", "./../vendor/spec/lib/spec"), Newton = load("Newton", "./../vendor/spec/lib/newton"), JSON = load("JSON", "../lib/json3");
-  
+
   // The ExtendScript engine doesn't support named exceptions.
   var supportsNamedExceptions = new SyntaxError().name == "SyntaxError";
 

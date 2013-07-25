@@ -7,20 +7,19 @@
     <script src="../vendor/spec/lib/spec.js"></script>
     <script src="../vendor/spec/lib/newton.js"></script>
     <script>
-    var curl;
+    var curl, queryParams;
     (function () {
-      var parameters;
       if (!(typeof Spec == "object" && Spec || typeof Newton == "object" && Newton)) {
         return;
       }
-      parameters = Newton.parseQuery(location.search);
-      if (Spec.hasKey(parameters, "amd")) {
+      queryParams = Newton.parseQuery(location.search);
+      if (Spec.hasKey(queryParams, "amd")) {
         // Load RequireJS or `curl.js`. `document.write` is used because older
         // versions of Safari and Chrome do not support DOM script injection.
         curl = { "apiName": "require" };
-        document.write('<script src="../vendor/' + (parameters.amd == "require" ? "require" : "curl") + '.js"><\/script>');
+        document.write('<script src="../vendor/' + (queryParams.amd == "require" ? "require" : "curl") + '.js"><\/script>');
       }
-      if (Spec.hasKey(parameters, "prototype")) {
+      if (Spec.hasKey(queryParams, "prototype")) {
         document.write('<script src="../vendor/prototype.js"><\/script>');
       }
     }());
@@ -28,11 +27,12 @@
     <script>
     var JSON;
     (function () {
+      var path = "../lib/json3" + (Spec.hasKey(queryParams, "minified") ? ".min" : "");
       if (typeof require == "function" && typeof define == "function") {
         require({
           // RequireJS accepts relative paths in the module name; `curl.js` does
           // not. Both accept a `paths` map of module paths to relative paths.
-          "paths": { "json": "../lib/json3" },
+          "paths": { "json": path },
           // Thwart aggressive resource caching. RequireJS only.
           "urlArgs": "async=" + (+new Date())
         }, ["json", "test_json3"], function (JSON3, testSuite) {
@@ -45,7 +45,7 @@
           testSuite.run();
         });
       } else {
-        document.write('<script src="../lib/json3.js"><\/script>');
+        document.write('<script src="' + path + '.js"><\/script>');
         document.write('<script src="test_json3.js"><\/script>');
         window.onload = function () {
           JSON.testSuite.run();
