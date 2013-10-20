@@ -139,29 +139,31 @@ fs.readFile(path.join(__dirname, "README.md"), "utf8", function readInfo(excepti
 
 // Compress JSON 3 using the Closure Compiler.
 fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource(exception, source) {
-  var error, output, compiler, results;
   if (exception) {
     console.log(exception);
   } else {
     // Shell out to the Closure Compiler. Requires Java 6 or higher.
-    error = output = "";
-    compiler = spawn("java", ["-jar", closurePath].concat(closureOptions));
+    var error = [], errorLength = 0;
+    var output = [], outputLength = 0;
+    var compiler = spawn("java", ["-jar", closurePath].concat(closureOptions));
     compiler.stdout.on("data", function onData(data) {
       // Append the data to the output stream.
-      output += data;
+      output.push(data);
+      outputLength += data.length;
     });
     compiler.stderr.on("data", function onError(data) {
       // Append the error message to the error stream.
-      error += data;
+      error.push(data);
+      errorLength += data.length;
     });
     compiler.on("exit", function onExit(status) {
       var exception;
       // `status` specifies the process exit code.
       if (status) {
-        exception = new Error(error);
+        exception = new Error(Buffer.concat(error, errorLength));
         exception.status = status;
       }
-      compressSource(exception, output);
+      compressSource(exception, '' + Buffer.concat(output, outputLength));
     });
     // Proxy the preprocessed source to the Closure Compiler.
     compiler.stdin.end(preprocessSource(source));
