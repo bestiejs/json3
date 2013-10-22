@@ -20,21 +20,25 @@
     "web": "http://kitcambridge.be/"
   }],
   "contributors": [{
-    "name": "Øyvind Sean Kinsey",
-    "email": "oyvind@kinsey.no",
-    "web": "http://fb.me/ok"
-  }, {
     "name": "Mangled Deutz",
     "email": "olivier@webitup.fr",
     "web": "http://tech.roxee.tv/"
   }, {
-    "name": "Kiryl Yermakou",
-    "email": "rma4ok@gmail.com",
-    "web": "https://github.com/rma4ok"
+    "name": "Øyvind Sean Kinsey",
+    "email": "oyvind@kinsey.no",
+    "web": "http://fb.me/ok"
   }, {
     "name": "Oskar Schöldström",
     "email": "public@oxy.fi",
     "web": "http://oxy.fi/"
+  }, {
+    "name": "Benjamin Tan",
+    "email": "demoneaux@gmail.com",
+    "web": "http://d10.github.io/"
+  }, {
+    "name": "Kiryl Yermakou",
+    "email": "rma4ok@gmail.com",
+    "web": "https://github.com/rma4ok"
   }],
   "bugs": {
     "url": "https://github.com/bestiejs/json3/issues"
