@@ -16,6 +16,12 @@
   // The ExtendScript engine doesn't support named exceptions.
   var supportsNamedExceptions = new SyntaxError().name == "SyntaxError";
 
+  var getClass = {}.toString;
+
+  // Matches the form of native decompiled function representations. Credits:
+  // John-David Dalton.
+  var nativePattern = RegExp('^' + ("" + {}.toString).replace(/([.*+?^${}()|[\]\\])/g, "\\$1").replace(/toString| for [^\]]+/g, ".*?") + "$");
+
   // Create the test suite.
   var testSuite = JSON.testSuite = new Spec.Suite("JSON 3 Unit Tests");
 
@@ -505,14 +511,13 @@
     this.done(74);
   });
 
-  // This test may fail in certain implementations.
   testSuite.addTest("Anticipated ECMAScript 6 Additions", function () {
     var expected = 0, value;
     try {
       value = {};
       // IE 8 only allows properties to be defined on DOM elements. Credits:
-      // John-David Dalton and Juriy Zaytsev.
-      if ((Object.defineProperty(value, value, value), "value" in Object.getOwnPropertyDescriptor(value, value))) {
+      // John-David Dalton and Juriy Zaytsev
+      if ((Object.defineProperty(value, value, value), "value" in Object.getOwnPropertyDescriptor(value, value)) && !nativePattern.test(JSON.stringify)) {
         expected += 1;
         value = [0, 1, 2, 3];
         Object.prototype[3] = 3;
@@ -526,7 +531,7 @@
           }
         });
         // Test by Jeff Walden and Allen Wirfs-Brock.
-        this.serializes('{"0":{"1":{"3":{"3":3}},"3":3},"3":3}', { 0: { 1: { 3: { 4: { 5: { 2: "omitted" } } } } } }, "Issue #12: `parse` should process property name arrays sequentially", value);
+        this.serializes('{"0":{"1":{"3":{"3":3}},"3":3},"3":3}', { 0: { 1: { 3: { 4: { 5: { 2: "omitted" } } } } } }, "Issue #12: `stringify` should process property name arrays sequentially", value);
       }
     } catch (exception) {}
     // Clean up.
