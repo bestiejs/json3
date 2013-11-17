@@ -2,11 +2,12 @@
 (function (root) {
   var isLoader = typeof define == "function" && !!define.amd;
   var isModule = typeof require == "function" && typeof exports == "object" && exports && !isLoader;
-  var isBrowser = "window" in root && root.window == root && typeof root.navigator != "undefined";
+  var isPhantom = typeof phantom == "object" && phantom && typeof phantom.exit == "function" && typeof require == "function";
+  var isBrowser = "window" in root && root.window == root && typeof root.navigator != "undefined" && !isPhantom;
   var isEngine = !isBrowser && !isModule && typeof root.load == "function";
 
   var load = function load(module, path) {
-    if (isModule) {
+    if (isModule || isPhantom) {
       return require(path);
     }
     if (isEngine) {
@@ -524,5 +525,8 @@
     });
   } else if (!isBrowser && (!isModule || (typeof module == "object" && module == require.main))) {
     testSuite.run();
+    if (isPhantom) {
+      phantom.exit();
+    }
   }
 })(this);
