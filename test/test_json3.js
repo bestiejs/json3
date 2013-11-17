@@ -6,8 +6,13 @@
   var isEngine = !isBrowser && !isModule && typeof root.load == "function";
 
   var load = function load(module, path) {
-    return root[module] || (isModule ? require(path) : isEngine ?
-      (root.load(path.replace(/\.js$/, "") + ".js"), root[module]) : null);
+    if (isModule) {
+      return require(path);
+    }
+    if (isEngine) {
+      root.load(path.replace(/\.js$/, "") + ".js");
+    }
+    return root[module] || null;
   };
 
   // Load Spec, Newton, and JSON 3.
@@ -509,34 +514,6 @@
     value.p1.p2.prop = value;
     this.cyclicError(value, "A nested cyclic structure should throw a `TypeError`");
     this.done(74);
-  });
-
-  testSuite.addTest("Anticipated ECMAScript 6 Additions", function () {
-    var expected = 0, value;
-    try {
-      value = {};
-      // IE 8 only allows properties to be defined on DOM elements. Credits:
-      // John-David Dalton and Juriy Zaytsev
-      if ((Object.defineProperty(value, value, value), "value" in Object.getOwnPropertyDescriptor(value, value)) && !nativePattern.test(JSON.stringify)) {
-        expected += 1;
-        value = [0, 1, 2, 3];
-        Object.prototype[3] = 3;
-        Object.defineProperty(value, 1, {
-          "get": function () {
-            Object.defineProperty(value, 4, { "value": 4 });
-            delete value[2];
-            delete value[3];
-            value[5] = 5;
-            return 1;
-          }
-        });
-        // Test by Jeff Walden and Allen Wirfs-Brock.
-        this.serializes('{"0":{"1":{"3":{"3":3}},"3":3},"3":3}', { 0: { 1: { 3: { 4: { 5: { 2: "omitted" } } } } } }, "Issue #12: `stringify` should process property name arrays sequentially", value);
-      }
-    } catch (exception) {}
-    // Clean up.
-    delete Object.prototype[3];
-    this.done(expected);
   });
 
   testSuite.shuffle();
