@@ -10,8 +10,6 @@ env:
 matrix:
   include:
     - node_js: "0.10"
-      env: BIN="istanbul"
-    - node_js: "0.10"
       env: BIN="narwhal"
     - node_js: "0.10"
       env: BIN="rhino"
