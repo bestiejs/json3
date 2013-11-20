@@ -32,16 +32,39 @@
   var testSuite = JSON.testSuite = new Spec.Suite("JSON 3 Unit Tests");
 
   // Create and attach the logger event handler.
-  testSuite.on("all", isBrowser ? Newton.createReport("suite") : Newton.createConsole(function (value) {
-    if (typeof console != "undefined" && console.log) {
-      console.log(value);
-    } else if (typeof print == "function" && !isBrowser) {
-      // In browsers, the global `print` function prints the current page.
-      print(value);
-    } else {
-      throw value;
-    }
-  }));
+  if (isBrowser) {
+    testSuite.on("all", Newton.createReport("suite"));
+  } else {
+    var logResult = Newton.createConsole(function (message) {
+      if (typeof console != "undefined" && console.log) {
+        console.log(message);
+      } else if (typeof print == "function" && !isBrowser) {
+        // In browsers, the global `print` function prints the current page.
+        print(message);
+      } else {
+        throw (typeof message == "object" && message || new Error(message));
+      }
+    });
+    testSuite.on("all", function(event) {
+      logResult.call(this, event);
+      if (event.type != "complete") {
+        return;
+      }
+      var suite = event.target, exitCode = suite.failures;
+      if (typeof process == "object" && process && typeof process.exit == "function") {
+        return process.exit(exitCode);
+      }
+      if (isPhantom) {
+        return phantom.exit(exitCode);
+      }
+      if (Spec.Environment.java) {
+        return java.lang.System.exit(exitCode);
+      }
+      if (exitCode) {
+        throw new Error(Newton.substitute("%d unexpected failures.", exitCode));
+      }
+    });
+  }
 
   // Ensures that `JSON.parse` throws an exception when parsing the given
   // `source` string.
@@ -525,8 +548,5 @@
     });
   } else if (!isBrowser && (!isModule || (typeof module == "object" && module == require.main))) {
     testSuite.run();
-    if (isPhantom) {
-      phantom.exit();
-    }
   }
 })(this);

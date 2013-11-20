@@ -63,5 +63,5 @@
   "-W053": true,
   "-W086": true,
 
-  "predef": ["define", "environment", "Packages", "Benchmark", "_"]
+  "predef": ["define", "environment", "Packages", "Benchmark", "_", "phantom"]
 }

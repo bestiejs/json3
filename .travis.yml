@@ -7,8 +7,6 @@ env:
   matrix:
     - BIN="node"
     - BIN="phantomjs"
-    - BIN="phantomjs"
-    - BIN="phantomjs"
 matrix:
   include:
     - node_js: "0.10"
@@ -34,5 +32,4 @@ before_install:
   - "[ $BIN == 'ringo' ] && sudo ln -s /opt/ringojs-0.9/bin/ringo /usr/local/bin/ringo && sudo chmod +x /usr/local/bin/ringo || true"
 install: true
 script:
-  - "[ $BIN == 'istanbul' ] && $BIN cover ./test/test_json3.js || true"
-  - "[ $BIN != 'istanbul' ] && cd test && $BIN ./test_json3.js || true"
+  - "[ $BIN == 'istanbul' ] && $BIN cover ./test/test_json3.js || cd test && $BIN ./test_json3.js"
