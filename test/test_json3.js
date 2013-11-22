@@ -4,7 +4,7 @@
   var isModule = typeof require == "function" && typeof exports == "object" && exports && !isLoader;
   var isPhantom = typeof phantom == "object" && phantom && typeof phantom.exit == "function" && typeof require == "function";
   var isPhantomPage = typeof callPhantom == "function";
-  var isBrowser = "window" in root && root.window == root && typeof root.navigator != "undefined" && !isPhantom;
+  var isBrowser = "window" in root && root.window == root && typeof root.navigator != "undefined" && !isPhantomPage;
   var isEngine = !isBrowser && !isModule && typeof root.load == "function";
 
   var load = function load(module, path) {
