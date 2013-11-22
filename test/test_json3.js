@@ -3,6 +3,7 @@
   var isLoader = typeof define == "function" && !!define.amd;
   var isModule = typeof require == "function" && typeof exports == "object" && exports && !isLoader;
   var isPhantom = typeof phantom == "object" && phantom && typeof phantom.exit == "function" && typeof require == "function";
+  var isPhantomPage = typeof callPhantom == "function";
   var isBrowser = "window" in root && root.window == root && typeof root.navigator != "undefined" && !isPhantom;
   var isEngine = !isBrowser && !isModule && typeof root.load == "function";
 
@@ -16,6 +17,22 @@
     return root[module] || null;
   };
 
+  if (isPhantom && !isPhantomPage) {
+    var page = load("webpage").create();
+    page.open("./test_browser.html", function (status) {
+      if (status != "success") {
+        console.log("Unable to open page.");
+        phantom.exit(1);
+      }
+    });
+    page.onCallback = function (exitCode) {
+      phantom.exit(exitCode);
+    };
+    page.onConsoleMessage = function (message) {
+      console.log(message);
+    };
+    return;
+  }
   // Load Spec, Newton, and JSON 3.
   var Spec = load("Spec", "./../vendor/spec/lib/spec"), Newton = load("Newton", "./../vendor/spec/lib/newton"), JSON = load("JSON", "../lib/json3");
 
@@ -54,8 +71,8 @@
       if (typeof process == "object" && process && typeof process.exit == "function") {
         return process.exit(exitCode);
       }
-      if (isPhantom) {
-        return phantom.exit(exitCode);
+      if (isPhantomPage) {
+        return callPhantom(exitCode);
       }
       if (Spec.Environment.java) {
         return java.lang.System.exit(exitCode);
