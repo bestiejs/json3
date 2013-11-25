@@ -4,10 +4,10 @@
 
 **JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.2.6**.
 
-- [Development Version](https://raw.github.com/bestiejs/json3/v3.2.6/lib/json3.js) *(40 KB; uncompressed with comments)*
-- [Production Version](https://raw.github.com/bestiejs/json3/v3.2.6/lib/json3.min.js) *(3.3 KB; compressed and `gzip`-ped)*
+- [Development Version](http://cdnjs.cloudflare.com/ajax/libs/json3/3.2.6/json3.js) *(40 KB; uncompressed with comments)*
+- [Production Version](http://cdnjs.cloudflare.com/ajax/libs/json3/3.2.6/json3.min.js) *(3.3 KB; compressed and `gzip`-ped)*
 
-CDN copies are also available at [cdnjs](http://cdnjs.com/libraries/json3/) & [jsDelivr](http://www.jsdelivr.com/#!json3).
+Special thanks to [cdnjs](http://cdnjs.com/libraries/json3/) and [jsDelivr](http://www.jsdelivr.com/#!json3) for hosting CDN copies of JSON 3.
 
 [JSON](http://json.org/) is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by [Douglas Crockford](http://www.crockford.com/), the format was standardized in the [fifth edition](http://es5.github.com/) of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
 
@@ -44,7 +44,7 @@ Portions of the date serialization code are adapted from the [`date-shim`](https
 
 ## Web Browsers
 
-    <script src="http://bestiejs.github.io/json3/lib/json3.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.2.6/json3.min.js"></script>
     <script>
       JSON.stringify({"Hello": 123});
       // => '{"Hello":123}'

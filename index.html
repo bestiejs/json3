@@ -19,10 +19,10 @@
 <p><img src="http://bestiejs.github.io/json3/page/logo.png" alt="JSON 3 Logo"></p>
 <p><strong>JSON 3</strong> is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is <strong>3.2.6</strong>.</p>
 <ul>
-<li><a href="https://raw.github.com/bestiejs/json3/v3.2.6/lib/json3.js">Development Version</a> <em>(40 KB; uncompressed with comments)</em></li>
-<li><a href="https://raw.github.com/bestiejs/json3/v3.2.6/lib/json3.min.js">Production Version</a> <em>(3.3 KB; compressed and <code>gzip</code>-ped)</em></li>
+<li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.2.6/json3.js">Development Version</a> <em>(40 KB; uncompressed with comments)</em></li>
+<li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.2.6/json3.min.js">Production Version</a> <em>(3.3 KB; compressed and <code>gzip</code>-ped)</em></li>
 </ul>
-<p>CDN copies are also available at <a href="http://cdnjs.com/libraries/json3/">cdnjs</a> &amp; <a href="http://www.jsdelivr.com/#!json3">jsDelivr</a>.</p>
+<p>Special thanks to <a href="http://cdnjs.com/libraries/json3/">cdnjs</a> and <a href="http://www.jsdelivr.com/#!json3">jsDelivr</a> for hosting CDN copies of JSON 3.</p>
 <p><a href="http://json.org/">JSON</a> is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by <a href="http://www.crockford.com/">Douglas Crockford</a>, the format was standardized in the <a href="http://es5.github.com/">fifth edition</a> of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.</p>
 <p>JSON 3 exposes two functions: <code>stringify()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/stringify">serializing</a> a JavaScript value to JSON, and <code>parse()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/parse">producing</a> a JavaScript value from a JSON source string. It is a <strong>drop-in replacement</strong> for <a href="http://json.org/js">JSON 2</a>. The functions behave exactly as described in the ECMAScript spec, <strong>except</strong> for the date serialization discrepancy noted below.</p>
 <p>The JSON 3 parser does <strong>not</strong> use <code>eval</code> or regular expressions. This provides security and performance benefits in obsolete and mobile environments, where the margin is particularly significant. The complete <a href="http://jsperf.com/json3">benchmark suite</a> is available on <a href="http://jsperf.com/">jsPerf</a>.</p>
@@ -46,7 +46,7 @@
 <p>Portions of the date serialization code are adapted from the <a href="https://github.com/Yaffle/date-shim"><code>date-shim</code></a> project.</p>
 <h1 id="-a-name-section_3-a-usage"><a name="section_3"></a>Usage</h1>
 <h2 id="web-browsers">Web Browsers</h2>
-<pre><code>&lt;script src=&quot;http://bestiejs.github.io/json3/lib/json3.js&quot;&gt;&lt;/script&gt;
+<pre><code>&lt;script src=&quot;//cdnjs.cloudflare.com/ajax/libs/json3/3.2.6/json3.min.js&quot;&gt;&lt;/script&gt;
 &lt;script&gt;
   JSON.stringify({&quot;Hello&quot;: 123});
   // =&gt; &#39;{&quot;Hello&quot;:123}&#39;
