@@ -257,15 +257,12 @@ function extractComments(source) {
 }
 
 function preprocessSource(source) {
-  var result = source.replace(definePattern, 'typeof define === "function" && define["amd"]');
-  // Remove the top-level immediately-invoked function expression, as the output
-  // is automatically wrapped in one.
-  return result.replace(/^;?\(function\s*\(\)\s*\{([\s\S]*?)}\)\.call\(this\);*?/m, "$1");
+  return source.replace(definePattern, 'typeof define === "function" && define["amd"]');
 }
 
 function postprocessSource(source) {
-  // Wrap the compressed source in an IIFE (enabling advanced optimizations
-  // causes the Compiler to add variables to the global scope) and fix the
+  // Shift variables in the global scope into the IIFE and fix the
   // `define` pragma.
-  return "\n;(function(){" + source.replace(definePattern, 'typeof define==="function"&&define.amd') + "}());";
+  var result = source.replace(/^(var [^;]*;)\s*(\(function\([^)]*\)\{)/m, '\n;$2$1');
+  return result.replace(definePattern, 'typeof define==="function"&&define.amd');
 }
