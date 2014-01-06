@@ -42,7 +42,7 @@ var definePattern = RegExp('(?:' +
     '(?:' +
       'typeof\\s+define\\.\\s*amd|' +
       'typeof\\s+define\\[\\s*([\'"])amd\\7\\s*\\]' +
-    ')' + 
+    ')' +
   ')' +
   '(?:' +
     // `&&` (optional Boolean test for `define.amd`).
@@ -175,7 +175,7 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource
       console.log(exception);
     } else {
       // Extract the JSON 3 header and clean up the minified source.
-      compressed = extractComments(source)[0] + postprocessSource(compressed);
+      compressed = extractComments(source)[0] + '\n' + postprocessSource(compressed);
       // Write the compressed version to disk.
       fs.writeFile(path.join(__dirname, "lib", "json3.min.js"), compressed, writeSource);
     }
