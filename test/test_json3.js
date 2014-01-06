@@ -17,7 +17,10 @@
   };
 
   // Load Spec, Newton, and JSON 3.
-  var Spec = load("Spec", "./../vendor/spec/lib/spec"), Newton = load("Newton", "./../vendor/spec/lib/newton"), JSON = load("JSON", "../lib/json3");
+  var Spec = load("Spec", "./../vendor/spec/lib/spec"),
+      Newton = load("Newton", "./../vendor/spec/lib/newton"),
+      JSON3 = load("JSON3", "../lib/json3"),
+      JSON = JSON3;
 
   // The ExtendScript engine doesn't support named exceptions.
   var supportsNamedExceptions = new SyntaxError().name == "SyntaxError";
@@ -29,7 +32,7 @@
   var nativePattern = RegExp('^' + ("" + {}.toString).replace(/([.*+?^${}()|[\]\\])/g, "\\$1").replace(/toString| for [^\]]+/g, ".*?") + "$");
 
   // Create the test suite.
-  var testSuite = JSON.testSuite = new Spec.Suite("JSON 3 Unit Tests");
+  var testSuite = new Spec.Suite("JSON 3 Unit Tests");
 
   // Create and attach the logger event handler.
   if (isBrowser) {
@@ -540,13 +543,43 @@
     this.done(74);
   });
 
+  testSuite.addTest("`runInContext`", function () {
+    var context = {
+      "SyntaxError": function (message) {
+        var error = new SyntaxError(message);
+        error.isCustom = true;
+        return error;
+      },
+      "JSON": {}
+    };
+
+    var exports = {},
+        contextJSON = JSON3.runInContext(context, exports);
+
+    this.strictEqual(contextJSON, exports, "`runInContext` should return the `exports` object");
+    this.equal(typeof contextJSON.runInContext, "function", "`runInContext` should attach itself to the `exports` object");
+    this.equal(typeof contextJSON.stringify, "function", "`runInContext` should define the `stringify` method");
+    this.equal(typeof contextJSON.parse, "function", "`runInContext` should define the `parse` method");
+
+    this.error(function () {
+      contextJSON.parse("");
+    }, function (exception) {
+      return !!exception.isCustom;
+    }, "`runInContext` should use the specified native constructors");
+
+    this.done(5);
+  });
+
   testSuite.shuffle();
 
   if (isLoader) {
     define(function () {
       return testSuite;
     });
-  } else if (!isBrowser && (!isModule || (typeof module == "object" && module == require.main))) {
-    testSuite.run();
+  } else {
+    JSON3.testSuite = testSuite;
+    if (!isBrowser && (!isModule || (typeof module == "object" && module == require.main))) {
+      testSuite.run();
+    }
   }
 })(this);
