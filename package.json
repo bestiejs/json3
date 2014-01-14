@@ -50,8 +50,10 @@
     "type": "git",
     "url": "git://github.com/bestiejs/json3.git"
   },
+  "files": ["README.md", "LICENSE", "lib/json3.js"],
   "jam": {
-    "main": "./lib/json3.js"
+    "main": "./lib/json3.js",
+    "includes": ["README.md", "LICENSE", "lib/json3.js", "lib/json3.min.js"]
   },
   "volo": {
     "type": "directory",
