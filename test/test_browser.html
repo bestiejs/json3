@@ -3,16 +3,15 @@
   <head>
     <meta charset="utf-8">
     <title>JSON 3 Unit Tests</title>
-    <link rel="stylesheet" href="../vendor/spec/lib/newton.css" media="screen">
-    <script src="../vendor/spec/lib/spec.js"></script>
-    <script src="../vendor/spec/lib/newton.js"></script>
+    <link rel="stylesheet" href="../vendor/newton.css" media="screen">
+    <script src="../vendor/spec.js"></script>
+    <script src="../vendor/newton.js"></script>
     <script>
     var curl, queryParams;
     (function () {
       if (!(typeof Spec == "object" && Spec || typeof Newton == "object" && Newton)) {
         return;
       }
-
       queryParams = Newton.parseQuery(location.search);
       if (Spec.hasKey(queryParams, "amd")) {
         // Load RequireJS or `curl.js`. `document.write` is used because older
@@ -20,74 +19,59 @@
         curl = { "apiName": "require" };
         document.write('<script src="../vendor/' + (queryParams.amd == "require" ? "require" : "curl") + '.js"><\/script>');
       }
-
       if (Spec.hasKey(queryParams, "prototype")) {
         document.write('<script src="../vendor/prototype.js"><\/script>');
       }
     }());
     </script>
     <script>
-    var libraryPath, isAMD, addNoConflictTest;
     (function (root) {
-      if (!(typeof Spec == "object" && Spec || typeof Newton == "object" && Newton)) {
-        return;
-      }
+      var nativeJSON = root.JSON,
+          path = "../lib/json3" + (Spec.hasKey(queryParams, "minified") ? ".min" : "");
 
-      var previousJSON = root.JSON;
-      libraryPath = "../lib/json3" + (Spec.hasKey(queryParams, "minified") ? ".min" : "");
-
-      addNoConflictTest = function (testSuite) {
+      function addNoConflictTest(testSuite) {
         testSuite.addTest("`noConflict`", function () {
           var JSON3 = root.JSON3.noConflict();
-          this.strictEqual(root.JSON, previousJSON, "`noConflict` should restore the previous value of the `JSON` object");
+          this.notStrictEqual(root.JSON, JSON3, "`noConflict` should restore the previous value of the `JSON` object");
           this.strictEqual(root.JSON3, JSON3, "`noConflict` should return the `JSON3` object");
           this.done(2);
         });
-      };
+      }
 
-      isAMD = typeof require == "function" && typeof define == "function";
-      if (!isAMD) {
-        document.write('<script src="' + libraryPath + '.js"><\/script>');
+      if (typeof require == "function" && typeof define == "function") {
+        var options = {
+          // RequireJS accepts relative paths in the module name; `curl.js` does
+          // not. Both accept a `paths` map of module paths to relative paths.
+          "paths": { "json": path },
+          // Thwart aggressive resource caching. RequireJS only.
+          "urlArgs": "async=" + (+new Date())
+        };
+
+        require(options, ["json"], function (JSON3) {
+          require(options, ["test_json3"], function (testSuite) {
+            // Test asynchronous module loading via RequireJS/`curl.js`.
+            testSuite.addTest("Asynchronous Module Definition", function (test) {
+              this.equal(root.JSON3, JSON3, "The global `JSON3` object should be defined even if JSON 3 is loaded as a module");
+              this.equal(JSON3.stringify(1), "1", "JSON 3 should be exported as an asynchronous module");
+              this.done(2);
+            });
+            addNoConflictTest(testSuite);
+            testSuite.run();
+          });
+        });
+      } else {
+        document.write('<script src="' + path + '.js"><\/script>');
         document.write('<script src="test_json3.js"><\/script>');
+        window.onload = function () {
+          var testSuite = root.JSON3.testSuite;
+          addNoConflictTest(testSuite);
+          testSuite.run();
+        };
       }
     }(this));
     </script>
   </head>
   <body>
     <div id="suite"></div>
-    <script>
-    (function (root) {
-      if (!(typeof Spec == "object" && Spec || typeof Newton == "object" && Newton)) {
-        return;
-      }
-
-      if (isAMD) {
-        // Test asynchronous module loading via RequireJS/`curl.js`.
-        require({
-          // RequireJS accepts relative paths in the module name; `curl.js` does
-          // not. Both accept a `paths` map of module paths to relative paths.
-          "paths": {
-            "json": libraryPath,
-            "spec": "../vendor/spec/lib/spec",
-            "newton": "../vendor/spec/lib/newton"
-          },
-          // Thwart aggressive resource caching. RequireJS only.
-          "urlArgs": "async=" + (+new Date())
-        }, ["json", "test_json3"], function (JSON3, testSuite) {
-          testSuite.addTest("Asynchronous Module Definition", function (test) {
-            test.equal(root.JSON3, JSON3, "The global `JSON3` object should be defined even if JSON 3 is loaded as a module");
-            test.equal(JSON3.stringify(1), "1", "JSON 3 should be exported as an asynchronous module");
-            test.done(2);
-          });
-          addNoConflictTest(testSuite);
-          testSuite.run();
-        });
-      } else {
-        var testSuite = root.JSON3.testSuite;
-        addNoConflictTest(testSuite);
-        testSuite.run();
-      }
-    }(this));
-    </script>
   </body>
 </html>

@@ -566,8 +566,8 @@
   if (isLoader) {
     define(["json", "spec", "newton"], defineTests);
   } else {
-    var Spec = load("Spec", "./../vendor/spec/lib/spec");
-    var Newton = load("Newton", "./../vendor/spec/lib/newton");
+    var Spec = load("Spec", "./../vendor/spec");
+    var Newton = load("Newton", "./../vendor/newton");
     var JSON3 = load("JSON3", "../lib/json3");
 
     var testSuite = defineTests(JSON3, Spec, Newton);

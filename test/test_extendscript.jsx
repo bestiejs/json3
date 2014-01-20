@@ -1,9 +1,9 @@
 function main() {
   var exports = this.Spec = {};
-  #include "../vendor/spec/lib/spec.js"
+  #include "../vendor/spec.js"
 
   exports = this.Newton = {};
-  #include "../vendor/spec/lib/newton.js"
+  #include "../vendor/newton.js"
 
   exports = this.JSON = {};
   #include "../lib/json3.js"
