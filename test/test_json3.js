@@ -556,7 +556,15 @@
         return !!exception.isCustom;
       }, "`runInContext` should use the specified native constructors");
 
-      this.done(5);
+      var withImplicitExports = JSON3.runInContext(context);
+      this.equal(typeof withImplicitExports.stringify, "function", "`runInContext` should create an `exports` object if one is not specified");
+      this.equal(withImplicitExports.stringify(123), "123", "`withImplicitExports.stringify` should be callable");
+
+      var withImplicit = JSON3.runInContext();
+      this.equal(typeof withImplicit.parse, "function", "`runInContext` should allow both `context` and `exports` to be omitted");
+      this.equal(withImplicit.parse("123"), "123", "`withImplicit.parse` should be callable");
+
+      this.done(9);
     });
 
     testSuite.shuffle();
