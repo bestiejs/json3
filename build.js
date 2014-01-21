@@ -6,7 +6,8 @@ var path = require("path"),
     url = require("url"),
     gzip = require("zlib").gzip,
     spawn = require("child_process").spawn,
-    marked = require(path.join(__dirname, "vendor", "marked"));
+    marked = require(path.join(__dirname, "vendor", "marked")),
+    highlightAuto = require(path.join(__dirname, "vendor", "highlight")).highlightAuto;
 
 // The path to the Closure Compiler `.jar` file.
 var closurePath = path.join(__dirname, "vendor", "closure-compiler.jar");
@@ -94,7 +95,10 @@ renderer.link = function link(href, title, textContent) {
 
 marked.setOptions({
   "renderer": renderer,
-  "smartypants": true
+  "smartypants": true,
+  "highlight": function highlight(source) {
+    return highlightAuto(source).value;
+  }
 });
 
 // Generate the GitHub project page.

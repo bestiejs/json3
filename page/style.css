@@ -153,3 +153,128 @@ pre {
   padding: 0 0 30px 30px;
   float: right;
 }
+
+/* GitHub Docco Style | Copyright Vasily Polovnyov | <vast@whiteants.net> */
+
+pre .hljs-comment,
+pre .hljs-template_comment,
+pre .hljs-diff .hljs-header,
+pre .hljs-javadoc {
+  color: #408080;
+  font-style: italic
+}
+
+pre .hljs-keyword,
+pre .hljs-assignment,
+pre .hljs-literal,
+pre .hljs-css .hljs-rule .hljs-keyword,
+pre .hljs-winutils,
+pre .hljs-javascript .hljs-title,
+pre .hljs-lisp .hljs-title,
+pre .hljs-subst {
+  color: #954121;
+  /*font-weight: bold*/
+}
+
+pre .hljs-number,
+pre .hljs-hexcolor {
+  color: #40a070
+}
+
+pre .hljs-string,
+pre .hljs-tag .hljs-value,
+pre .hljs-phpdoc,
+pre .hljs-tex .hljs-formula {
+  color: #219161;
+}
+
+pre .hljs-title,
+pre .hljs-id {
+  color: #19469D;
+}
+pre .hljs-params {
+  color: #00F;
+}
+
+pre .hljs-javascript .hljs-title,
+pre .hljs-lisp .hljs-title,
+pre .hljs-subst {
+  font-weight: normal
+}
+
+pre .hljs-class .hljs-title,
+pre .hljs-haskell .hljs-label,
+pre .hljs-tex .hljs-command {
+  color: #458;
+  font-weight: bold
+}
+
+pre .hljs-tag,
+pre .hljs-tag .hljs-title,
+pre .hljs-rules .hljs-property,
+pre .hljs-django .hljs-tag .hljs-keyword {
+  color: #000080;
+  font-weight: normal
+}
+
+pre .hljs-attribute,
+pre .hljs-variable,
+pre .hljs-instancevar,
+pre .hljs-lisp .hljs-body {
+  color: #008080
+}
+
+pre .hljs-regexp {
+  color: #B68
+}
+
+pre .hljs-class {
+  color: #458;
+  font-weight: bold
+}
+
+pre .hljs-symbol,
+pre .hljs-ruby .hljs-symbol .hljs-string,
+pre .hljs-ruby .hljs-symbol .hljs-keyword,
+pre .hljs-ruby .hljs-symbol .hljs-keymethods,
+pre .hljs-lisp .hljs-keyword,
+pre .hljs-tex .hljs-special,
+pre .hljs-input_number {
+  color: #990073
+}
+
+pre .hljs-builtin,
+pre .hljs-constructor,
+pre .hljs-built_in,
+pre .hljs-lisp .hljs-title {
+  color: #0086b3
+}
+
+pre .hljs-preprocessor,
+pre .hljs-pi,
+pre .hljs-doctype,
+pre .hljs-shebang,
+pre .hljs-cdata {
+  color: #999;
+  font-weight: bold
+}
+
+pre .hljs-deletion {
+  background: #fdd
+}
+
+pre .hljs-addition {
+  background: #dfd
+}
+
+pre .hljs-diff .hljs-change {
+  background: #0086b3
+}
+
+pre .hljs-chunk {
+  color: #aaa
+}
+
+pre .hljs-tex .hljs-formula {
+  opacity: 0.5;
+}

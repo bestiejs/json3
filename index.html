@@ -48,26 +48,26 @@
 <p>Portions of the date serialization code are adapted from the <a href="https://github.com/Yaffle/date-shim"><code>date-shim</code></a> project.</p>
 <h1 id="-a-name-section_3-a-usage"><a name="section_3"></a>Usage</h1>
 <h2 id="web-browsers">Web Browsers</h2>
-<pre><code>&lt;script src=&quot;//cdnjs.cloudflare.com/ajax/libs/json3/3.2.6/json3.min.js&quot;&gt;&lt;/script&gt;
-&lt;script&gt;
-  JSON.stringify({&quot;Hello&quot;: 123});
-  // =&gt; &#39;{&quot;Hello&quot;:123}&#39;
-  JSON.parse(&quot;[[1, 2, 3], 1, 2, 3, 4]&quot;, function (key, value) {
-    if (typeof value == &quot;number&quot;) {
-      value = value % 2 ? &quot;Odd&quot; : &quot;Even&quot;;
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">"//cdnjs.cloudflare.com/ajax/libs/json3/3.2.6/json3.min.js"</span>&gt;</span><span class="javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-title">script</span>&gt;</span><span class="javascript">
+  <span class="hljs-built_in">JSON</span>.stringify({<span class="hljs-string">"Hello"</span>: <span class="hljs-number">123</span>});
+  <span class="hljs-comment">// =&gt; '{"Hello":123}'</span>
+  <span class="hljs-built_in">JSON</span>.parse(<span class="hljs-string">"[[1, 2, 3], 1, 2, 3, 4]"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key, value)</span> {</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> value == <span class="hljs-string">"number"</span>) {
+      value = value % <span class="hljs-number">2</span> ? <span class="hljs-string">"Odd"</span> : <span class="hljs-string">"Even"</span>;
     }
-    return value;
+    <span class="hljs-keyword">return</span> value;
   });
-  // =&gt; [[&quot;Odd&quot;, &quot;Even&quot;, &quot;Odd&quot;], &quot;Odd&quot;, &quot;Even&quot;, &quot;Odd&quot;, &quot;Even&quot;]
-&lt;/script&gt;
+  <span class="hljs-comment">// =&gt; [["Odd", "Even", "Odd"], "Odd", "Even", "Odd", "Even"]</span>
+</span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
 </code></pre><h2 id="commonjs-environments">CommonJS Environments</h2>
-<pre><code>var JSON3 = require(&quot;./path/to/json3&quot;);
-JSON3.parse(&quot;[1, 2, 3]&quot;);
-// =&gt; [1, 2, 3]
+<pre><code><span class="hljs-keyword">var</span> JSON3 = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./path/to/json3"</span>);
+JSON3.parse(<span class="hljs-string">"[1, 2, 3]"</span>);
+<span class="hljs-comment">// =&gt; [1, 2, 3]</span>
 </code></pre><h2 id="javascript-engines">JavaScript Engines</h2>
-<pre><code>load(&quot;path/to/json3.js&quot;);
-JSON.stringify({&quot;Hello&quot;: 123, &quot;Good-bye&quot;: 456}, [&quot;Hello&quot;], &quot;\t&quot;);
-// =&gt; &#39;{\n\t&quot;Hello&quot;: 123\n}&#39;
+<pre><code>load(<span class="hljs-string">"path/to/json3.js"</span>);
+<span class="hljs-built_in">JSON</span>.stringify({<span class="hljs-string">"Hello"</span>: <span class="hljs-number">123</span>, <span class="hljs-string">"Good-bye"</span>: <span class="hljs-number">456</span>}, [<span class="hljs-string">"Hello"</span>], <span class="hljs-string">"\t"</span>);
+<span class="hljs-comment">// =&gt; '{\n\t"Hello": 123\n}'</span>
 </code></pre><h1 id="-a-name-section_4-a-compatibility"><a name="section_4"></a>Compatibility</h1>
 <p>JSON 3 has been <strong>tested</strong> with the following web browsers, CommonJS environments, and JavaScript engines.</p>
 <h2 id="web-browsers">Web Browsers</h2>
@@ -110,7 +110,7 @@ JSON.stringify({&quot;Hello&quot;: 123, &quot;Good-bye&quot;: 456}, [&quot;Hello
 <h1 id="-a-name-section_5-a-contribute"><a name="section_5"></a>Contribute</h1>
 <p>Check out a working copy of the JSON 3 source code with <a href="http://git-scm.com/">Git</a>:</p>
 <pre><code>$ git clone git://github.com/bestiejs/json3.git
-$ cd json3
+$ <span class="hljs-built_in">cd</span> json3
 </code></pre><p>If you’d like to contribute a feature or bug fix, you can <a href="http://help.github.com/fork-a-repo/">fork</a> JSON 3, commit your changes, and <a href="http://help.github.com/send-pull-requests/">send a pull request</a>. Please make sure to update the unit tests in the <code>test</code> directory as well.</p>
 <p>Alternatively, you can use the <a href="https://github.com/bestiejs/json3/issues">GitHub issue tracker</a> to submit bug reports, feature requests, and questions, or send tweets to <a href="http://twitter.com/kitcambridge">@kitcambridge</a>.</p>
 <p>JSON 3 is released under the <a href="http://kit.mit-license.org/">MIT License</a>.</p>
