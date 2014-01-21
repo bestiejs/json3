@@ -184,6 +184,7 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource
   if (exception) {
     console.log(exception);
   } else {
+    console.log("Development version size: %d bytes.", Buffer.byteLength(source));
     // Shell out to the Closure Compiler. Requires Java 6 or higher.
     var error = [], errorLength = 0;
     var output = [], outputLength = 0;
