@@ -60,7 +60,27 @@
   });
   <span class="hljs-comment">// =&gt; [["Odd", "Even", "Odd"], "Odd", "Even", "Odd", "Even"]</span>
 </span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
-</code></pre><h2 id="commonjs-environments">CommonJS Environments</h2>
+</code></pre><p><strong>When used in a web browser</strong>, JSON 3 exposes an additional <code>JSON3</code> object containing the <code>noConflict()</code> and <code>runInContext()</code> functions, as well as aliases to the <code>stringify()</code> and <code>parse()</code> functions.</p>
+<h3 id="-noconflict-and-runincontext-"><code>noConflict</code> and <code>runInContext</code></h3>
+<ul>
+<li><code>JSON3.noConflict()</code> restores the original value of the global <code>JSON</code> object and returns a reference to the <code>JSON3</code> object.</li>
+<li><code>JSON3.runInContext([context, exports])</code> initializes JSON 3 using the given <code>context</code> object (e.g., <code>window</code>, <code>global</code>, etc.), or the global object if omitted. If an <code>exports</code> object is specified, the <code>stringify()</code>, <code>parse()</code>, and <code>runInContext()</code> functions will be attached to it instead of a new object.</li>
+</ul>
+<h3 id="asynchronous-module-loaders">Asynchronous Module Loaders</h3>
+<p>JSON 3 is defined as an <a href="https://github.com/amdjs/amdjs-api/wiki/AMD#define-function-">anonymous module</a> for compatibility with <a href="http://requirejs.org/">RequireJS</a>, <a href="https://github.com/cujojs/curl"><code>curl.js</code></a>, and other asynchronous module loaders.</p>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">"//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.js"</span>&gt;</span><span class="javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-title">script</span>&gt;</span><span class="javascript">
+  <span class="hljs-built_in">require</span>({
+    <span class="hljs-string">"paths"</span>: {
+      <span class="hljs-string">"json3"</span>: <span class="hljs-string">"./path/to/json3"</span>
+    }
+  }, [<span class="hljs-string">"json3"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(JSON)</span> {</span>
+    <span class="hljs-built_in">JSON</span>.parse(<span class="hljs-string">"[1, 2, 3]"</span>);
+    <span class="hljs-comment">// =&gt; [1, 2, 3]</span>
+  });
+</span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
+</code></pre><p>To avoid issues with third-party scripts, <strong>JSON 3 is exported to the global scope even when used with a module loader</strong>. If this behavior is undesired, <code>JSON3.noConflict()</code> can be used to restore the global <code>JSON</code> object to its original value.</p>
+<h2 id="commonjs-environments">CommonJS Environments</h2>
 <pre><code><span class="hljs-keyword">var</span> JSON3 = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./path/to/json3"</span>);
 JSON3.parse(<span class="hljs-string">"[1, 2, 3]"</span>);
 <span class="hljs-comment">// =&gt; [1, 2, 3]</span>

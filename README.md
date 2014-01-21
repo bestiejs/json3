@@ -59,6 +59,31 @@ Portions of the date serialization code are adapted from the [`date-shim`](https
       // => [["Odd", "Even", "Odd"], "Odd", "Even", "Odd", "Even"]
     </script>
 
+**When used in a web browser**, JSON 3 exposes an additional `JSON3` object containing the `noConflict()` and `runInContext()` functions, as well as aliases to the `stringify()` and `parse()` functions.
+
+### `noConflict` and `runInContext`
+
+* `JSON3.noConflict()` restores the original value of the global `JSON` object and returns a reference to the `JSON3` object.
+* `JSON3.runInContext([context, exports])` initializes JSON 3 using the given `context` object (e.g., `window`, `global`, etc.), or the global object if omitted. If an `exports` object is specified, the `stringify()`, `parse()`, and `runInContext()` functions will be attached to it instead of a new object.
+
+### Asynchronous Module Loaders
+
+JSON 3 is defined as an [anonymous module](https://github.com/amdjs/amdjs-api/wiki/AMD#define-function-) for compatibility with [RequireJS](http://requirejs.org/), [`curl.js`](https://github.com/cujojs/curl), and other asynchronous module loaders.
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.js"></script>
+    <script>
+      require({
+        "paths": {
+          "json3": "./path/to/json3"
+        }
+      }, ["json3"], function (JSON) {
+        JSON.parse("[1, 2, 3]");
+        // => [1, 2, 3]
+      });
+    </script>
+
+To avoid issues with third-party scripts, **JSON 3 is exported to the global scope even when used with a module loader**. If this behavior is undesired, `JSON3.noConflict()` can be used to restore the global `JSON` object to its original value.
+
 ## CommonJS Environments
 
     var JSON3 = require("./path/to/json3");
