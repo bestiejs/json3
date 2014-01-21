@@ -46,6 +46,18 @@ a:hover, a:focus {
   color: #000;
 }
 
+#content .travis-ci {
+  padding: 0;
+  color: transparent;
+  background: none;
+  text-decoration: none;
+}
+
+#content .travis-ci:hover, #content .travis-ci:focus {
+  background: none;
+  color: transparent;
+}
+
 h1, h2, h3 {
   padding: 5px 0;
   margin: 0;
@@ -137,7 +149,7 @@ pre {
   white-space: pre-wrap;
 }
 
-img {
+.logo {
   padding: 0 0 30px 30px;
   float: right;
 }

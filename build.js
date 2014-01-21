@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 
 /* JSON 3 Builder | http://bestiejs.github.io/json3 */
-var path = require("path"), fs = require("fs"), gzip = require("zlib").gzip, spawn = require("child_process").spawn, marked = require(path.join(__dirname, "vendor", "marked")),
+var path = require("path"),
+    fs = require("fs"),
+    url = require("url"),
+    gzip = require("zlib").gzip,
+    spawn = require("child_process").spawn,
+    marked = require(path.join(__dirname, "vendor", "marked"));
 
 // The path to the Closure Compiler `.jar` file.
-closurePath = path.join(__dirname, "vendor", "closure-compiler.jar"),
+var closurePath = path.join(__dirname, "vendor", "closure-compiler.jar");
 
 // The Closure Compiler options: enable advanced optimizations and suppress all
 // warnings apart from syntax and optimization errors.
-closureOptions = ["--compilation_level=ADVANCED_OPTIMIZATIONS", "--warning_level=QUIET"];
+var closureOptions = ["--compilation_level=ADVANCED_OPTIMIZATIONS", "--warning_level=QUIET"];
 
 // A RegExp used to detect the `define` pragma used by asynchronous module
 // loaders.
@@ -56,8 +61,41 @@ var definePattern = RegExp('(?:' +
   ')?' +
 ')', 'g');
 
-// Enable GitHub-Flavored Markdown.
-marked.setOptions({ "gfm": true });
+var renderer = new marked.Renderer();
+
+renderer.image = function image(src, title, alt) {
+  var result = '<img src="' + src + '" alt="' + alt + '"';
+  if (title) {
+    result += ' title="' + title + '"';
+  }
+  if (path.basename(src) == 'logo.png') {
+    result += ' class="logo"';
+  }
+  return result + '>';
+};
+
+renderer.link = function link(href, title, textContent) {
+  var uri = url.parse(href);
+  if (this.options && this.options.sanitize) {
+    var protocol = uri.protocol;
+    if (protocol == 'javascript:') {
+      return '';
+    }
+  }
+  var result = '<a href="' + href + '"';
+  if (title) {
+    result += ' title="' + title + '"';
+  }
+  if (uri.hostname == 'travis-ci.org') {
+    result += ' class="travis-ci"';
+  }
+  return result + '>' + textContent + '</a>';
+};
+
+marked.setOptions({
+  "renderer": renderer,
+  "smartypants": true
+});
 
 // Generate the GitHub project page.
 fs.readFile(path.join(__dirname, "README.md"), "utf8", function readInfo(exception, source) {
