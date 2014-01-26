@@ -184,7 +184,7 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource
   if (exception) {
     console.log(exception);
   } else {
-    console.log("Development version size: %d bytes.", Buffer.byteLength(source));
+    console.log("Development version size: %d KB.", Math.round(Buffer.byteLength(source) / 1024 * 100) / 100);
     // Shell out to the Closure Compiler. Requires Java 6 or higher.
     var error = [], errorLength = 0;
     var output = [], outputLength = 0;
@@ -229,7 +229,7 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource
       console.log(exception || "Compressed version generated successfully.");
       // Automatically check the `gzip`-ped size of the compressed version.
       gzip(compressed, function (exception, results) {
-        console.log("Compressed version size: %d bytes.", results.length);
+        console.log("Compressed version size: %d KB.", Math.round(results.length / 1024 * 100) / 100);
       });
     }
   }
