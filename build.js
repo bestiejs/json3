@@ -26,6 +26,8 @@ var definePattern = RegExp('(?:' +
 ')' +
 // `&&`.
 '\\s*&&\\s*(?:' +
+  // `!!` (optional Boolean coercion)
+  '(?:!!)?' +
   // `define`.
   'define\\s*(?:' +
     // `.amd`.
@@ -54,6 +56,8 @@ var definePattern = RegExp('(?:' +
     // `&&` (optional Boolean test for `define.amd`).
     '\\s*&&\\s*' +
     '(?:' +
+      // `!!` (optional Boolean coercion)
+      '(?:!!)?' +
       // `define.amd`.
       'define\\.\\s*amd|' +
       // `define["amd"] | define['amd']`.
