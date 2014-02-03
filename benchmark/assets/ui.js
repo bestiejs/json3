@@ -5,192 +5,278 @@
  * Available under MIT license <http://mths.be/mit>
  */
 (function(window, document) {
-  // The path to the Java timer applet, relative to the document.
+
+  /** Java applet archive path */
   var archive = 'assets/nano.jar';
 
-  // A cache of error messages.
+  /** Cache of error messages */
   var errors = [];
 
-  // Event handler cache.
-  var eventHandlers = {};
+  /** Cache of event handlers */
+  var handlers = {};
 
-  // Indicates whether the page has loaded.
-  var isPageLoaded = false;
+  /** A flag to indicate that the page has loaded */
+  var pageLoaded = false;
 
-  // Benchmark results element ID prefix.
-  var idPrefix = 'results-';
+  /** Benchmark results element id prefix (e.g. `results-1`) */
+  var prefix = 'results-';
 
-  // The element responsible for scrolling the page. Assumes that `ui.js` has
-  // been loaded immediately before `</body>`.
+  /** The element responsible for scrolling the page (assumes ui.js is just before </body>) */
   var scrollEl = document.body;
 
-  // The UI namespace.
-  var ui = new Benchmark.Suite();
+  /** Used to resolve a value's internal [[Class]] */
+  var toString = {}.toString;
 
-  // An array of benchmarks created from test cases.
-  ui.benchmarks = [];
+  /** Namespace */
+  var ui = new Benchmark.Suite;
 
-  // The parsed query parameters from the location hash.
-  ui.parameters = {};
-
-  // API shortcuts.
-  var join = Benchmark.join,
-      filter = Benchmark.filter,
-      formatNumber = Benchmark.formatNumber;
-
-  // A map of operations to the CSS class names of their respective target
-  // elements.
+  /** Object containing various CSS class names */
   var classNames = {
-    // Used for error styles.
+    // used for error styles
     'error': 'error',
-    // Used to make content visible.
+    // used to make content visible
     'show': 'show',
-    // Used to reset result styles.
+    // used to reset result styles
     'results': 'results'
   };
 
-  // Various application messages.
-  var messages = {
-    // "Run" button states.
+  /** Object containing various text messages */
+  var texts = {
+    // inner text for the various run button states
     'run': {
       'again': 'Run again',
       'ready': 'Run tests',
       'running': 'Stop running'
     },
-    // Common status values.
+    // common status values
     'status': {
       'again': 'Done. Ready to run again.',
       'ready': 'Ready to run.'
     }
   };
 
-  // `Benchmark.Suite#run` options.
+  /** The options object for Benchmark.Suite#run */
   var runOptions = {
     'async': true,
     'queued': true
   };
 
-  function onCycle() {
-    var size = this.stats.sample.length;
-    if (!this.aborted) {
-      setStatus(this.name + ' &times; ' + formatNumber(this.count) + ' (' + size + ' sample' + (size === 1 ? '' : 's') + ')');
-    }
-  }
+  /** API shortcuts */
+  var filter = Benchmark.filter,
+      formatNumber = Benchmark.formatNumber,
+      join = Benchmark.join;
 
-  function onButtonClick() {
-    var isStopped = !ui.running;
-    ui.abort();
-    ui.length = 0;
-    if (!isStopped) {
-      return;
-    }
-    logError({ 'clear': true });
-    ui.push.apply(ui, _.filter(ui.benchmarks, function(bench) {
-      return !bench.error && bench.reset();
-    }));
-    ui.run(runOptions);
-  }
+  /*--------------------------------------------------------------------------*/
 
-  function onTitleClick(event) {
-    var id;
-    // Retrieve the closest benchmark results element.
-    for (var target = event.target || event.srcElement; target && !(id = target.id); target = target.parentNode);
-    var index = id && --id.split('-', 2)[1] || 0,
-        bench = ui.benchmarks[index];
-    // Queue the benchmark for running.
-    ui.push(bench.reset());
-    if (ui.running) {
-      ui.render(index);
-    } else {
-      ui.run(runOptions);
-    }
-  }
+  handlers.benchmark = {
 
-  function onTitleKey(event) {
-    var keyCode = event['which' in event ? 'which' : 'charCode' in event ? 'charCode' : 'keyCode'];
-    if (keyCode == 13) {
-      eventHandlers.title.click(event);
-    }
-  }
+    /**
+     * The onCycle callback, used for onStart as well, assigned to new benchmarks.
+     *
+     * @private
+     */
+    'cycle': function() {
+      var bench = this,
+          size = bench.stats.sample.length;
 
-  function onHashChange() {
-    ui.parseHash();
-    if (!isPageLoaded) {
-      return;
-    }
-    var parameters = ui.parameters,
-        filterBy = parameters.filterby,
-        scrollTop;
-
-    if (filterBy) {
-      scrollTop = $('results').offsetTop;
-    }
-
-    // Automatically run benchmarks.
-    if ('run' in parameters) {
-      scrollTop = $('runner').offsetTop;
-      setTimeout(eventHandlers.button.run, 1);
-    }
-
-    // Scroll to the relevant section.
-    if (scrollTop) {
-      scrollEl.scrollTop = scrollTop;
-    }
-  }
-
-  function onLoad() {
-    addClass('controls', classNames.show);
-    addListener('run', 'click', eventHandlers.button.run);
-
-    setHTML('run', messages.run.ready);
-    setHTML('user-agent', Benchmark.platform);
-    setStatus(messages.status.ready);
-
-    try {
-      // Show warning when Firebug is enabled, ignoring Firebug Lite.
-      // Firebug 1.9 no longer implements `console.firebug`.
-      if (console.firebug || /firebug/i.test(console.table())) {
-        addClass('firebug', classNames.show);
+      if (!bench.aborted) {
+        setStatus(bench.name + ' &times; ' + formatNumber(bench.count) + ' (' +
+          size + ' sample' + (size == 1 ? '' : 's') + ')');
       }
-    } catch (exception) {}
+    },
 
-    // Parse the location hash. Deferred to ensure that all other `load`
-    // event handlers have executed.
-    setTimeout(function() {
-      isPageLoaded = true;
-      eventHandlers.window.hashChange();
-    }, 1);
+    /**
+     * The onStart callback assigned to new benchmarks.
+     *
+     * @private
+     */
+    'start': function() {
+        // call user provided init() function
+        if (isFunction(window.init)) {
+          init();
+        }
+    }
+  };
+
+  handlers.button = {
+
+    /**
+     * The "run" button click event handler used to run or abort the benchmarks.
+     *
+     * @private
+     */
+    'run': function() {
+      var stopped = !ui.running;
+      ui.abort();
+      ui.length = 0;
+
+      if (stopped) {
+        logError({ 'clear': true });
+        ui.push.apply(ui, _.filter(ui.benchmarks, function(bench) {
+          return !bench.error && bench.reset();
+        }));
+        ui.run(runOptions);
+      }
+    }
+  };
+
+  handlers.title = {
+
+    /**
+     * The title table cell click event handler used to run the corresponding benchmark.
+     *
+     * @private
+     * @param {Object} event The event object.
+     */
+    'click': function(event) {
+      event || (event = window.event);
+
+      var id,
+          index,
+          target = event.target || event.srcElement;
+
+      while (target && !(id = target.id)) {
+        target = target.parentNode;
+      }
+      index = id && --id.split('-')[1] || 0;
+      ui.push(ui.benchmarks[index].reset());
+      ui.running ? ui.render(index) : ui.run(runOptions);
+    },
+
+    /**
+     * The title cell keyup event handler used to simulate a mouse click when hitting the ENTER key.
+     *
+     * @private
+     * @param {Object} event The event object.
+     */
+    'keyup': function(event) {
+      if (13 == (event || window.event).keyCode) {
+        handlers.title.click(event);
+      }
+    }
+  };
+
+  handlers.window = {
+
+    /**
+     * The window hashchange event handler supported by Chrome 5+, Firefox 3.6+, and IE8+.
+     *
+     * @private
+     */
+    'hashchange': function() {
+      ui.parseHash();
+
+      var scrollTop,
+          params = ui.params,
+          chart = params.chart,
+          filterBy = params.filterby;
+
+      if (pageLoaded) {
+        // call user provided init() function
+        if (isFunction(window.init)) {
+          init();
+        }
+        // auto-run
+        if ('run' in params) {
+          scrollTop = $('runner').offsetTop;
+          setTimeout(handlers.button.run, 1);
+        }
+        // scroll to the relevant section
+        if (scrollTop) {
+          scrollEl.scrollTop = scrollTop;
+        }
+      }
+    },
+
+    /**
+     * The window load event handler used to initialize the UI.
+     *
+     * @private
+     */
+    'load': function() {
+      // init the ui
+      addClass('controls', classNames.show);
+      addListener('run', 'click', handlers.button.run);
+
+      setHTML('run', texts.run.ready);
+      setHTML('user-agent', Benchmark.platform);
+      setStatus(texts.status.ready);
+
+      // show warning when Firebug is enabled (avoids showing for Firebug Lite)
+      try {
+        // Firebug 1.9 no longer has `console.firebug`
+        if (console.firebug || /firebug/i.test(console.table())) {
+          addClass('firebug', classNames.show);
+        }
+      } catch(e) { }
+
+      // clear length so tests can be manually queued
+      ui.length = 0;
+
+      // evaluate hash values after all other "load" events have fired
+      _.defer(function() {
+        pageLoaded = true;
+        handlers.window.hashchange();
+      });
+    }
+  };
+
+  /*--------------------------------------------------------------------------*/
+
+  /**
+   * Shortcut for document.getElementById().
+   *
+   * @private
+   * @param {Element|string} id The id of the element to retrieve.
+   * @returns {Element} The element, if found, or null.
+   */
+  function $(id) {
+    return typeof id == 'string' ? document.getElementById(id) : id;
   }
 
-  function $(element) {
-    return typeof element == 'string' ? document.getElementById(element) : element;
-  }
-
-  var crlfTab = /[\r\n\t]/g;
-
+  /**
+   * Adds a CSS class name to an element's className property.
+   *
+   * @private
+   * @param {Element|string} element The element or id of the element.
+   * @param {string} className The class name.
+   * @returns {Element} The element.
+   */
   function addClass(element, className) {
-    if (!(element = $(element))) {
-      return element;
-    }
-    var targetClass = (' ' + element.className + ' ').replace(crlfTab, ' ');
-    if (targetClass.indexOf(className) < 0) {
-      element.className = (targetClass + className).trim();
+    if ((element = $(element)) && !hasClass(element, className)) {
+      element.className += (element.className ? ' ' : '') + className;
     }
     return element;
   }
 
-  function addListener(element, type, handler) {
-    if (!(element = $(element))) {
-      return element;
-    }
-    if (typeof element.addEventListener != 'undefined') {
-      element.addEventListener(type, handler, false);
-    } else if (typeof element.attachEvent != 'undefined') {
-      element.attachEvent('on' + type, handler);
+  /**
+   * Registers an event listener on an element.
+   *
+   * @private
+   * @param {Element|string} element The element or id of the element.
+   * @param {string} eventName The name of the event.
+   * @param {Function} handler The event handler.
+   * @returns {Element} The element.
+   */
+  function addListener(element, eventName, handler) {
+    if ((element = $(element))) {
+      if (typeof element.addEventListener != 'undefined') {
+        element.addEventListener(eventName, handler, false);
+      } else if (typeof element.attachEvent != 'undefined') {
+        element.attachEvent('on' + eventName, handler);
+      }
     }
     return element;
   }
 
+  /**
+   * Appends to an element's innerHTML property.
+   *
+   * @private
+   * @param {Element|string} element The element or id of the element.
+   * @param {string} html The HTML to append.
+   * @returns {Element} The element.
+   */
   function appendHTML(element, html) {
     if ((element = $(element)) && html != null) {
       element.innerHTML += html;
@@ -198,10 +284,38 @@
     return element;
   }
 
+  /**
+   * Shortcut for document.createElement().
+   *
+   * @private
+   * @param {string} tag The tag name of the element to create.
+   * @returns {Element} A new element of the given tag name.
+   */
   function createElement(tagName) {
     return document.createElement(tagName);
   }
 
+  /**
+   * Checks if an element is assigned the given class name.
+   *
+   * @private
+   * @param {Element|string} element The element or id of the element.
+   * @param {string} className The class name.
+   * @returns {boolean} If assigned the class name return true, else false.
+   */
+  function hasClass(element, className) {
+    return !!(element = $(element)) &&
+      (' ' + element.className + ' ').indexOf(' ' + className + ' ') > -1;
+  }
+
+  /**
+   * Set an element's innerHTML property.
+   *
+   * @private
+   * @param {Element|string} element The element or id of the element.
+   * @param {string} html The HTML to set.
+   * @returns {Element} The element.
+   */
   function setHTML(element, html) {
     if ((element = $(element))) {
       element.innerHTML = html == null ? '' : html;
@@ -209,132 +323,164 @@
     return element;
   }
 
+  /*--------------------------------------------------------------------------*/
+
+  /**
+   * Gets the Hz, i.e. operations per second, of `bench` adjusted for the
+   * margin of error.
+   *
+   * @private
+   * @param {Object} bench The benchmark object.
+   * @returns {number} Returns the adjusted Hz.
+   */
   function getHz(bench) {
     return 1 / (bench.stats.mean + bench.stats.moe);
   }
 
-  function logError(error) {
-    var options = {},
-        element = $('error-info');
+  /**
+   * Checks if a value has an internal [[Class]] of Function.
+   *
+   * @private
+   * @param {Mixed} value The value to check.
+   * @returns {boolean} Returns `true` if the value is a function, else `false`.
+   */
+  function isFunction(value) {
+    return toString.call(value) == '[object Function]';
+  }
 
-    // Juggle arguments.
-    if (typeof error == 'object' && error) {
-      options = error;
-      error = options.text;
-    } else if (arguments.length) {
-      options.text = error;
+  /**
+   * Appends to or clears the error log.
+   *
+   * @private
+   * @param {string|Object} text The text to append or options object.
+   */
+  function logError(text) {
+    var table,
+        div = $('error-info'),
+        options = {};
+
+    // juggle arguments
+    if (typeof text == 'object' && text) {
+      options = text;
+      text = options.text;
     }
-
-    if (!element) {
-      var table = $('test-table');
-      element = createElement('div');
-      element.id = 'error-info';
-      table.parentNode.insertBefore(element, table.nextSibling);
+    else if (arguments.length) {
+      options.text = text;
     }
-
-    if (options.clear === true) {
-      element.className = element.innerHTML = '';
+    if (!div) {
+      table = $('test-table');
+      div = createElement('div');
+      div.id = 'error-info';
+      table.parentNode.insertBefore(div, table.nextSibling);
+    }
+    if (options.clear) {
+      div.className = div.innerHTML = '';
       errors.length = 0;
     }
-
-    if ('text' in options && !_.contains(errors, error)) {
-      errors.push(error);
-      addClass(element, classNames.show);
-      appendHTML(element, error);
+    if ('text' in options && _.indexOf(errors, text) < 0) {
+      errors.push(text);
+      addClass(div, classNames.show);
+      appendHTML(div, text);
     }
   }
 
-  function setStatus(status) {
-    return setHTML('status', status);
+  /**
+   * Sets the status text.
+   *
+   * @private
+   * @param {string} text The text to write to the status.
+   */
+  function setStatus(text) {
+    setHTML('status', text);
   }
 
-  var parseHash = ui.parseHash = function parseHash() {
-    var hashes = location.hash.slice(1).split('&'),
-        parameters = this.parameters || (this.parameters = {});
+  /*--------------------------------------------------------------------------*/
 
-    // Clear original parameters.
-    _.forOwn(parameters, function(value, property) {
-      delete parameters[property];
+  /**
+   * Parses the window.location.hash value into an object assigned to `ui.params`.
+   *
+   * @static
+   * @memberOf ui
+   * @returns {Object} The suite instance.
+   */
+  function parseHash() {
+    var me = this,
+        hashes = location.hash.slice(1).split('&'),
+        params = me.params || (me.params = {});
+
+    // remove old params
+    _.forOwn(params, function(value, key) {
+      delete params[key];
     });
 
-    // Add new parameters.
-    _.forEach(hashes[0], function(member) {
-      var position = member.indexOf('='),
-          value = '',
-          parameter;
-
-      if (member && position) {
-        if (position < 0) {
-          parameter = member;
-        } else {
-          parameter = decodeURIComponent(member.slice(0, position));
-          // Parameters without corresponding values are set to `''`.
-          if ((value = member.slice(position + 1))) {
-            value = decodeURIComponent(value).toLowerCase();
-          }
-        }
-        parameter = parameter.toLowerCase();
-        // The values of identical parameters (e.g., `a=1&a=2`) are aggregated
-        // into an array of values.
-        if (parameter in parameters) {
-          if (!parameters[parameter] || !_.isArray(parameters[parameter])) {
-            parameters[parameter] = [parameters[parameter]];
-          }
-          parameters[parameter].push(value);
-        } else {
-          parameters[parameter] = value;
-        }
-      }
+    // add new params
+    _.each(hashes[0] && hashes, function(value) {
+      value = value.split('=');
+      params[value[0].toLowerCase()] = (value[1] || '').toLowerCase();
     });
-    return this;
-  };
+    return me;
+  }
 
-  var render = ui.render = function render(index) {
-    var iterable;
-    if (index == null) {
-      index = 0;
-      iterable = ui.benchmarks;
-    } else {
-      iterable = [ui.benchmarks[index]];
-    }
+  /**
+   * Renders the results table cell of the corresponding benchmark(s).
+   *
+   * @static
+   * @memberOf ui
+   * @param {number} [index] The index of the benchmark to render.
+   * @returns {Object} The suite instance.
+   */
+  function render(index) {
+    _.each(index == null ? (index = 0, ui.benchmarks) : [ui.benchmarks[index]], function(bench) {
+      var parsed,
+          cell = $(prefix + (++index)),
+          error = bench.error,
+          hz = bench.hz;
 
-    _.forEach(iterable, function(bench) {
-      var cell = $(idPrefix + (++index));
-      // Reset the element title and class name.
+      // reset title and class
       cell.title = '';
       cell.className = classNames.results;
 
-      var error = bench.error;
+      // status: error
       if (error) {
-        // Status: Error.
         setHTML(cell, 'Error');
         addClass(cell, classNames.error);
-        var serialized = join(error, '</li><li>');
-        logError('<p>' + error + '.</p>' + (serialized ? '<ul><li>' + serialized + '</li></ul>' : ''));
-      } else {
-        // Status: Running.
+        parsed = join(error, '</li><li>');
+        logError('<p>' + error + '.</p>' + (parsed ? '<ul><li>' + parsed + '</li></ul>' : ''));
+      }
+      else {
+        // status: running
         if (bench.running) {
           setHTML(cell, 'running&hellip;');
-        } else if (bench.cycles) {
-          // Obscure details until the suite has completed.
+        }
+        // status: completed
+        else if (bench.cycles) {
+          // obscure details until the suite has completed
           if (ui.running) {
             setHTML(cell, 'completed');
-          } else {
-            var hz = bench.hz;
-            cell.title = 'Ran ' + formatNumber(bench.count) + ' times in ' + bench.times.cycle.toFixed(3) + ' seconds.';
-            setHTML(cell, formatNumber(hz.toFixed(hz < 100 ? 2 : 0)) + ' <small>&plusmn;' + bench.stats.rme.toFixed(2) + '%</small>');
           }
-        } else if (ui.running && _.indexOf(ui, bench) > -1) {
-          // Status: Pending.
-          setHTML(cell, 'pending&hellip;');
-        } else {
-          // Status: Ready.
-          setHTML(cell, 'ready');
+          else {
+            cell.title = 'Ran ' + formatNumber(bench.count) + ' times in ' +
+              bench.times.cycle.toFixed(3) + ' seconds.';
+            setHTML(cell, formatNumber(hz.toFixed(hz < 100 ? 2 : 0)) +
+              ' <small>&plusmn;' + bench.stats.rme.toFixed(2) + '%</small>');
+          }
+        }
+        else {
+          // status: pending
+          if (ui.running && ui.indexOf(bench) > -1) {
+            setHTML(cell, 'pending&hellip;');
+          }
+          // status: ready
+          else {
+            setHTML(cell, 'ready');
+          }
         }
       }
     });
     return ui;
-  };
+  }
+
+  /*--------------------------------------------------------------------------*/
 
   ui.on('add', function(event) {
     var bench = event.target,
@@ -342,53 +488,55 @@
         id = index + 1,
         title = $('title-' + id);
 
-    delete ui[ui.length];
-    ui.length = 0;
     ui.benchmarks.push(bench);
 
     title.tabIndex = 0;
     title.title = 'Click to run this test again.';
 
-    addListener(title, 'click', eventHandlers.title.click);
-    addListener(title, 'keyup', eventHandlers.title.keyup);
+    addListener(title, 'click', handlers.title.click);
+    addListener(title, 'keyup', handlers.title.keyup);
 
-    bench.on('start cycle', eventHandlers.benchmark.cycle);
+    bench.on('start', handlers.benchmark.start);
+    bench.on('start cycle', handlers.benchmark.cycle);
     ui.render(index);
-  });
-
-  ui.on('start cycle', function() {
+  })
+  .on('start cycle', function() {
     ui.render();
-    setHTML('run', messages.run.running);
-  });
-
-  ui.on('complete', function() {
+    setHTML('run', texts.run.running);
+  })
+  .on('complete', function() {
     var benches = filter(ui.benchmarks, 'successful'),
         fastest = filter(benches, 'fastest'),
         slowest = filter(benches, 'slowest');
 
     ui.render();
-    setHTML('run', messages.run.again);
-    setStatus(messages.status.again);
+    setHTML('run', texts.run.again);
+    setStatus(texts.status.again);
 
-    _.forEach(benches, function(bench) {
-      var cell = $(idPrefix + (_.indexOf(ui.benchmarks, bench) + 1)),
+    // highlight result cells
+    _.each(benches, function(bench) {
+      var cell = $(prefix + (_.indexOf(ui.benchmarks, bench) + 1)),
           fastestHz = getHz(fastest[0]),
           hz = getHz(bench),
           percent = (1 - (hz / fastestHz)) * 100,
           span = cell.getElementsByTagName('span')[0],
           text = 'fastest';
 
-      if (_.contains(fastest, bench)) {
-        // Indicate the fastest result.
+      if (_.indexOf(fastest, bench) > -1) {
+        // mark fastest
         addClass(cell, text);
-      } else {
-        text = isFinite(hz) ? formatNumber(percent < 1 ? percent.toFixed(2) : Math.round(percent)) + '% slower' : '';
-        if (_.contains(slowest, bench)) {
-          // Indicate the slowest result.
+      }
+      else {
+        text = isFinite(hz)
+          ? formatNumber(percent < 1 ? percent.toFixed(2) : Math.round(percent)) + '% slower'
+          : '';
+
+        // mark slowest
+        if (_.indexOf(slowest, bench) > -1) {
           addClass(cell, 'slowest');
         }
       }
-      // Print ranking.
+      // write ranking
       if (span) {
         setHTML(span, text);
       } else {
@@ -397,36 +545,50 @@
     });
   });
 
-  eventHandlers.benchmark = {
-    'cycle': onCycle
-  };
+  /*--------------------------------------------------------------------------*/
 
-  eventHandlers.button = {
-    'run': onButtonClick
-  };
+  /**
+   * An array of benchmarks created from test cases.
+   *
+   * @memberOf ui
+   * @type Array
+   */
+  ui.benchmarks = [];
 
-  eventHandlers.title = {
-    'click': onTitleClick,
-    'keyup': onTitleKey
-  };
+  /**
+   * The parsed query parameters of the pages url hash.
+   *
+   * @memberOf ui
+   * @type Object
+   */
+  ui.params = {};
 
-  eventHandlers.window = {
-    'hashChange': onHashChange,
-    'load': onLoad
-  };
+  // parse query params into ui.params hash
+  ui.parseHash = parseHash;
 
-  // Expose.
+  // (re)render the results of one or more benchmarks
+  ui.render = render;
+
+  /*--------------------------------------------------------------------------*/
+
+  // expose
   window.ui = ui;
 
-  // Parse the new query parameters when the hash changes.
-  addListener(window, 'hashchange', eventHandlers.window.hashChange);
+  // don't let users alert, confirm, prompt, or open new windows
+  window.alert = window.confirm = window.prompt = window.open = function() { };
 
-  addListener(window, 'load', eventHandlers.window.load);
+  // parse hash query params when it changes
+  addListener(window, 'hashchange', handlers.window.hashchange);
 
-  // Immediately parse the location hash.
+  // bootstrap onload
+  addListener(window, 'load', handlers.window.load);
+
+  // parse location hash string
   ui.parseHash();
 
-  // Detect the scroll element.
+  /*--------------------------------------------------------------------------*/
+
+  // detect the scroll element
   (function() {
     var scrollTop,
         div = document.createElement('div'),
@@ -437,36 +599,41 @@
         htmlStyle = html.style,
         htmlHeight = htmlStyle.height;
 
-    bodyStyle.height = htmlStyle.height = 'auto';
+    bodyStyle.height  = htmlStyle.height = 'auto';
     div.style.cssText = 'display:block;height:9001px;';
     body.insertBefore(div, body.firstChild);
     scrollTop = html.scrollTop;
 
+    // set `scrollEl` that's used in `handlers.window.hashchange()`
     if (html.clientWidth !== 0 && ++html.scrollTop && html.scrollTop == scrollTop + 1) {
-      // Set the correct `scrollEl` used by the `hashchange` event handler.
       scrollEl = html;
     }
-
     body.removeChild(div);
     bodyStyle.height = bodyHeight;
     htmlStyle.height = htmlHeight;
     html.scrollTop = scrollTop;
   }());
 
-  // Inject the `nano.jar` applet.
+  // inject nano applet
+  // (assumes ui.js is just before </body>)
   (function() {
-    if ('nojava' in ui.parameters) {
+    var measured,
+        perfNow,
+        begin = new Date;
+
+    if ('nojava' in ui.params) {
       return addClass('java', classNames.show);
     }
-    for (var begin = new Date(), measured; !(measured = new Date() - begin););
-    var getNow;
-    if (measured != 1 && !((getNow = window.performance) && typeof (getNow.now || getNow.webkitNow) == 'function')) {
-      // Inject the applet using `innerHTML` to avoid triggering alerts in some
-      // versions of IE 6.
-      document.body.insertBefore(setHTML(createElement('div'), '<applet code=nano archive=' + archive + '>').lastChild, document.body.firstChild);
+    // is the applet really needed?
+    while (!(measured = new Date - begin)) { }
+    if (measured != 1 && !((perfNow = window.performance) && typeof (perfNow.now || perfNow.webkitNow) == 'function')) {
+      // load applet using innerHTML to avoid an alert in some versions of IE6
+      document.body.insertBefore(setHTML(createElement('div'),
+        '<applet code=nano archive=' + archive + '>').lastChild, document.body.firstChild);
     }
   }());
 
+  // catch and display errors from the "preparation code"
   window.onerror = function(message, fileName, lineNumber) {
     logError('<p>' + message + '.</p><ul><li>' + join({
       'message': message,

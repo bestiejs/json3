@@ -222,10 +222,7 @@ textarea {
   resize: vertical;
   height: 15em;
   width: 42.6em;
-}
-
-.ie textarea {
-  width: 42.4em; /* IE < 8 */
+  *width: 42.4em; /* IE < 8 */
 }
 
 input, textarea {
@@ -256,9 +253,9 @@ table #results-1 {
   width: 100px;
 }
 
-.ie table pre {
-  padding: 1.5em 0; /* IE < 8 */
-  overflow-y: hidden; /* IE < 8 */
+table pre {
+  *padding: 1.5em 0; /* IE < 8 */
+  *overflow-y: hidden; /* IE < 8 */
 }
 
 table pre, table td.code {
@@ -327,6 +324,11 @@ footer {
 
 #bs-chart {
   overflow: auto;
+}
+
+#bs-chart-frame {
+  height: 240px;
+  width: 100%;
 }
 
 #bs-logo {

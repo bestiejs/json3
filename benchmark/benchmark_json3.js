@@ -1,5 +1,5 @@
 var ui;
-;(function(window) {
+;(function(root) {
   // Convenience aliases.
   var getClass = {}.toString;
 
@@ -11,24 +11,24 @@ var ui;
   var isNode = isModule && typeof process == 'object' && typeof process.binding == 'function';
 
   // Detect web browsers.
-  var isBrowser = 'window' in window && window.window == window && typeof window.document != 'undefined' && typeof window.navigator != 'undefined';
+  var isBrowser = 'window' in root && root.window == root && typeof root.document != 'undefined' && typeof root.navigator != 'undefined';
 
   // Detect JavaScript engines (SpiderMonkey, JS, V8, etc) and Mozilla Rhino.
-  var isEngine = !isBrowser && !isModule && typeof window.load == 'function';
+  var isEngine = !isBrowser && !isModule && typeof root.load == 'function';
   var isRhino = isEngine && typeof environment != 'undefined' && environment && getClass.call(environment) == '[object Environment]';
 
   // Loads a module with the given `exports` name and `path`.
   function load(exports, path) {
-    if (window[exports]) {
-      return window[exports];
+    if (root[exports]) {
+      return root[exports];
     }
     if (isModule) {
       return require(path);
     }
     if (isEngine) {
       // Normalize module paths.
-      window.load(path.replace(/\.js$/, '') + '.js');
-      return window[exports];
+      root.load(path.replace(/\.js$/, '') + '.js');
+      return root[exports];
     }
     return null;
   }
@@ -60,7 +60,7 @@ var ui;
         context.setLanguageVersion(150);
         // Create the constructors for the standard built-in ECMAScript objects.
         var scope = context.initStandardObjects();
-        var script = (new java.io.File(path)).getAbsoluteFile();
+        var script = (new io.File(path)).getAbsoluteFile();
         if (!script.isFile()) {
           throw Error('The script `' + path + '` does not exist.');
         }
@@ -76,17 +76,17 @@ var ui;
     if (isBrowser) {
       var transport = typeof ActiveXObject != 'undefined' ? new ActiveXObject('Microsoft.XMLHTTP') : typeof XMLHttpRequest != 'undefined' ? new XMLHttpRequest() : null;
       // Retrieve the script contents using a synchronous `XMLHttpRequest`.
-      transport.open('GET', path + (path.indexOf('?') < 0 ? '?' : '&') + '_=' + (+new Date()), false);
+      transport.open('GET', path + (path.indexOf('?') < 0 ? '?' : '&') + '_=' + (+new Date), false);
       transport.send(null);
       // Catch script errors.
-      var onError = window.onerror, exception;
-      window.onerror = function(message) {
+      var onError = root.onerror, exception;
+      root.onerror = function(message) {
         exception = message;
         return true;
       };
       // Remove the current exports.
-      previous = window[exports];
-      window[exports] = null;
+      previous = root[exports];
+      root[exports] = null;
       // Inject the script into the document to force evaluation.
       var script = document.createElement('script'), firstScript = document.scripts.item(0);
       // Append a `sourceURL` to facilitate debugging.
@@ -94,9 +94,9 @@ var ui;
       firstScript.parentNode.insertBefore(script, firstScript).parentNode.removeChild(script);
       // Capture the exported value and restore the previous exports and
       // `onerror` event handler.
-      result = window[exports];
-      window[exports] = previous;
-      window.onerror = onError;
+      result = root[exports];
+      root[exports] = previous;
+      root.onerror = onError;
       // Re-throw caught exceptions.
       if (exception) {
         throw Error(exception);
@@ -105,11 +105,11 @@ var ui;
     }
     if (isEngine) {
       // Simple overwrite-load-restore for other engines.
-      previous = window[exports];
-      window[exports] = null;
-      window.load(path);
-      result = window[exports];
-      window[exports] = previous;
+      previous = root[exports];
+      root[exports] = null;
+      root.load(path);
+      result = root[exports];
+      root[exports] = previous;
       return result;
     }
   }
