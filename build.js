@@ -1,16 +1,23 @@
 #!/usr/bin/env node
 
 /* JSON 3 Builder | http://bestiejs.github.io/json3 */
-var path = require("path"),
-    fs = require("fs"),
-    url = require("url"),
-    gzip = require("zlib").gzip,
+var fs = require("fs"),
+    https = require("https"),
+    path = require("path"),
     spawn = require("child_process").spawn,
-    marked = require(path.join(__dirname, "vendor", "marked")),
-    highlightAuto = require(path.join(__dirname, "vendor", "highlight")).highlightAuto;
+    url = require("url"),
+    util = require("util"),
+    zlib = require("zlib");
 
-// The path to the Closure Compiler `.jar` file.
-var closurePath = path.join(__dirname, "vendor", "closure-compiler.jar");
+var vendorPath = path.join(__dirname, "vendor"),
+    highlightAuto = require(path.join(vendorPath, "highlight")).highlightAuto,
+    marked = require(path.join(vendorPath, "marked")),
+    package = require(path.join(__dirname, "package.json")),
+    tar = require(path.join(vendorPath, "tar"));
+
+// The path to the Closure Compiler `.jar` file and ETag.
+var closurePath = path.join(vendorPath, "closure-compiler.jar"),
+    closureETag = path.join(vendorPath, "closure-compiler-etag.txt");
 
 // The Closure Compiler options: enable advanced optimizations and suppress all
 // warnings apart from syntax and optimization errors.
@@ -180,10 +187,18 @@ fs.readFile(path.join(__dirname, "README.md"), "utf8", function readInfo(excepti
 });
 
 // Compress JSON 3 using the Closure Compiler.
-fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource(exception, source) {
-  if (exception) {
-    console.log(exception);
-  } else {
+getCompiler(function hasCompiler(error) {
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource(error, source) {
+    if (error) {
+      console.log(error);
+      return;
+    }
+
     console.log("Development version size: %d bytes.", Buffer.byteLength(source));
     // Shell out to the Closure Compiler. Requires Java 6 or higher.
     var error = [], errorLength = 0;
@@ -210,29 +225,29 @@ fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource
     });
     // Proxy the preprocessed source to the Closure Compiler.
     compiler.stdin.end(preprocessSource(source));
-  }
 
-  // Post-processes the compressed source and writes the result to disk.
-  function compressSource(exception, compressed) {
-    if (exception) {
-      console.log(exception);
-    } else {
-      // Extract the JSON 3 header and clean up the minified source.
-      compressed = extractComments(source)[0] + '\n' + postprocessSource(compressed);
-      // Write the compressed version to disk.
-      fs.writeFile(path.join(__dirname, "lib", "json3.min.js"), compressed, writeSource);
-    }
+    // Post-processes the compressed source and writes the result to disk.
+    function compressSource(exception, compressed) {
+      if (exception) {
+        console.log(exception);
+      } else {
+        // Extract the JSON 3 header and clean up the minified source.
+        compressed = extractComments(source)[0] + '\n' + postprocessSource(compressed);
+        // Write the compressed version to disk.
+        fs.writeFile(path.join(__dirname, "lib", "json3.min.js"), compressed, writeSource);
+      }
 
-    // Checks the `gzip`-ped size of the compressed version by shelling out to the
-    // Unix `gzip` executable.
-    function writeSource(exception) {
-      console.log(exception || "Compressed version generated successfully.");
-      // Automatically check the `gzip`-ped size of the compressed version.
-      gzip(compressed, function (exception, results) {
-        console.log("Compressed version size: %d bytes.", results.length);
-      });
+      // Checks the `gzip`-ped size of the compressed version by shelling out to the
+      // Unix `gzip` executable.
+      function writeSource(exception) {
+        console.log(exception || "Compressed version generated successfully.");
+        // Automatically check the `gzip`-ped size of the compressed version.
+        zlib.gzip(compressed, function (exception, results) {
+          console.log("Compressed version size: %d bytes.", results.length);
+        });
+      }
     }
-  }
+  });
 });
 
 // Internal: Extracts line and block comments from a JavaScript `source`
@@ -308,4 +323,204 @@ function postprocessSource(source) {
   // `define` pragma.
   var result = source.replace(/^(var [^;]*;)\s*(\(function\([^)]*\)\{)/m, '\n;$2$1');
   return result.replace(definePattern, 'typeof define==="function"&&define.amd');
+}
+
+// Internal: Lazily downloads the Closure Compiler.
+function getCompiler(callback) {
+  var hasCompiler = false,
+      isFinalized = false,
+      eTag;
+
+  var prePending = 2,
+      preDone = false;
+
+  var postPending = 2,
+      postDone = false;
+
+  // Step one: determine if the Closure Compiler has already been downloaded.
+  fs.stat(closurePath, function getStats(error, stats) {
+    if (error) {
+      if (error.code != "ENOENT") {
+        return updatePre(error);
+      }
+      return updatePre();
+    }
+    if (!stats.isFile()) {
+      return updatePre(new Error(util.format("`%s` must be a file.", closurePath)));
+    }
+    hasCompiler = true;
+    console.log('The Closure Compiler has already been downloaded.');
+    updatePre();
+  });
+
+  // Step two: Retrieve the locally-cached `ETag` from the previous download.
+  fs.readFile(closureETag, "utf8", function readETag(error, source) {
+    if (error) {
+      if (error.code != "ENOENT") {
+        return updatePre(error);
+      }
+      return updatePre();
+    }
+    eTag = source;
+    updatePre();
+  });
+
+  // Step three: download the Closure Compiler.
+  function download() {
+    var headers = {
+      "user-agent": util.format("JSON/%s", package.version)
+    };
+    if (eTag && hasCompiler) {
+      headers["if-none-match"] = eTag;
+    }
+    var request = https.request({
+      "hostname": "dl.google.com",
+      "port": 443,
+      "path": "/closure-compiler/compiler-latest.tar.gz",
+      "headers": headers,
+      "agent": false // Disable keep-alive.
+    });
+
+    request.on("response", onResponse);
+    function onResponse(response) {
+      request.removeListener("response", onResponse);
+      request.removeListener("error", onError);
+
+      if (response.statusCode == 304) {
+        // If the cached `ETag` matches that of the entity, there is no
+        // need to download the Compiler tarball or extract the `.jar`.
+        // Skip all post-processing steps.
+        console.log('No updates available.');
+        return finalize();
+      }
+
+      // Step four: write the new `ETag` to disk.
+      var eTag = response.headers.etag;
+      saveETag(eTag);
+
+      // Step five: extract the Compiler `.jar` from the downloaded
+      // tarball using `node-tar`'s streaming `.tar` parser.
+      var parser = new tar.Parse();
+
+      parser.on("entry", onEntry);
+      function onEntry(entry) {
+        if (path.basename(entry.path) != "compiler.jar") {
+          return;
+        }
+        parser.removeListener("entry", onEntry);
+
+        // Step six: write the Compiler to disk.
+        console.log('Extracting the Closure Compiler...');
+        var writeStream = fs.createWriteStream(closurePath);
+
+        writeStream.on("close", onClose);
+        function onClose() {
+          writeStream.removeListener("close", onClose);
+          writeStream.removeListener("error", onError);
+          // The Compiler has been successfully downloaded.
+          hasCompiler = true;
+          updatePost();
+        }
+
+        writeStream.on("error", onError);
+        function onError(error) {
+          writeStream.removeListener("close", onClose);
+          writeStream.removeListener("error", onError);
+          updatePost(error);
+        }
+
+        entry.pipe(writeStream);
+      }
+
+      parser.on("error", onError);
+      function onError(error) {
+        parser.removeListener("entry", onEntry);
+        parser.removeListener("error", onError);
+        parser.removeListener("end", onEnd);
+        updatePost(error);
+      }
+
+      // Clean up attached event handlers.
+      parser.on("end", onEnd);
+      function onEnd() {
+        parser.removeListener("entry", onEntry);
+        parser.removeListener("error", onError);
+        parser.removeListener("end", onEnd);
+      }
+
+      // Begin downloading the Compiler tarball.
+      console.log('Downloading the Closure Compiler...');
+      response.pipe(zlib.createGunzip()).pipe(parser);
+    }
+
+    request.on("error", onError);
+    function onError(error) {
+      request.removeListener("response", onResponse);
+      request.removeListener("error", onError);
+      // Connection errors are not fatal, as it is possible to use the
+      // previously-downloaded copy of Closure Compiler. If a cached copy
+      // is not available, the `hasCompiler` flag will be set to `false`,
+      // and `finalize` will yield an error to the `callback`.
+      console.log('A new version of the Closure Compiler could not be downloaded.');
+      updatePost();
+    }
+
+    console.log('Updating the Closure Compiler...');
+    request.end();
+  }
+
+  function finalize(error) {
+    if (isFinalized) {
+      return;
+    }
+    isFinalized = true;
+    if (error) {
+      return callback(error);
+    }
+    if (!hasCompiler) {
+      return callback(new Error("The Closure Compiler is required to build JSON 3."));
+    }
+    callback();
+  }
+
+  function saveETag(eTag) {
+    fs.writeFile(closureETag, eTag, function writeETag(error) {
+      if (error) {
+        // This error is not fatal. If the write fails, the Compiler will be
+        // downloaded again when `getCompiler` is called.
+        console.log("The Closure Compiler `ETag` could not be written to disk.");
+      }
+      updatePost();
+    });
+  }
+
+  function updatePre(error) {
+    if (preDone) {
+      return;
+    }
+    if (error) {
+      preDone = true;
+      return finalize(error);
+    }
+    prePending--;
+    if (!prePending) {
+      preDone = true;
+      download();
+    }
+  }
+
+  function updatePost(error) {
+    if (postDone) {
+      return;
+    }
+    if (error) {
+      postDone = true;
+      return finalize(error);
+    }
+    postPending--;
+    if (!postPending) {
+      postDone = true;
+      finalize();
+    }
+  }
 }
