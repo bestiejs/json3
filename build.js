@@ -33,6 +33,8 @@ var definePattern = RegExp('(?:' +
 ')' +
 // `&&`.
 '\\s*&&\\s*(?:' +
+  // `!!` (optional Boolean coercion)
+  '(?:!!)?' +
   // `define`.
   'define\\s*(?:' +
     // `.amd`.
@@ -61,6 +63,8 @@ var definePattern = RegExp('(?:' +
     // `&&` (optional Boolean test for `define.amd`).
     '\\s*&&\\s*' +
     '(?:' +
+      // `!!` (optional Boolean coercion)
+      '(?:!!)?' +
       // `define.amd`.
       'define\\.\\s*amd|' +
       // `define["amd"] | define['amd']`.
@@ -199,7 +203,7 @@ getCompiler(function hasCompiler(error) {
       return;
     }
 
-    console.log("Development version size: %d bytes.", Buffer.byteLength(source));
+    console.log("Development version size: %d KB.", Math.round(Buffer.byteLength(source) / 1024 * 100) / 100);
     // Shell out to the Closure Compiler. Requires Java 6 or higher.
     var error = [], errorLength = 0;
     var output = [], outputLength = 0;
@@ -236,14 +240,11 @@ getCompiler(function hasCompiler(error) {
         // Write the compressed version to disk.
         fs.writeFile(path.join(__dirname, "lib", "json3.min.js"), compressed, writeSource);
       }
-
-      // Checks the `gzip`-ped size of the compressed version by shelling out to the
-      // Unix `gzip` executable.
+      // Checks the `gzip`-ped size of the compressed version.
       function writeSource(exception) {
         console.log(exception || "Compressed version generated successfully.");
-        // Automatically check the `gzip`-ped size of the compressed version.
         zlib.gzip(compressed, function (exception, results) {
-          console.log("Compressed version size: %d bytes.", results.length);
+          console.log("Compressed version size: %d KB.", Math.round(results.length / 1024 * 100) / 100);
         });
       }
     }
