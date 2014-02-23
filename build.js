@@ -334,7 +334,7 @@ function getCompiler(callback) {
   var prePending = 2,
       preDone = false;
 
-  var postPending = 2,
+  var postPending = 1,
       postDone = false;
 
   // Step one: determine if the Closure Compiler has already been downloaded.
@@ -484,6 +484,7 @@ function getCompiler(callback) {
   }
 
   function saveETag(eTag) {
+    postPending++;
     fs.writeFile(closureETag, eTag, function writeETag(error) {
       if (error) {
         // This error is not fatal. If the write fails, the Compiler will be
