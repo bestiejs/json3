@@ -1,5 +1,6 @@
 node_modules
 coverage
+vendor/closure-compiler*
 vendor/tar/test
 vendor/tar/examples
 vendor/tar/.*
