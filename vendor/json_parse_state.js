@@ -1,6 +1,6 @@
 /*
     json_parse_state.js
-    2011-02-23
+    2013-05-26
 
     Public Domain.
 
@@ -46,7 +46,7 @@
     NOT CONTROL.
 */
 
-/*jslint regexp: false*/
+/*jslint regexp: true, unparam: true */
 
 /*members "", "\"", ",", "\/", ":", "[", "\\", "]", acomma, avalue, b,
     call, colon, container, exec, f, false, firstavalue, firstokey,
@@ -325,7 +325,7 @@ var json_parse = (function () {
 //  r[0] contains everything that matched, including any initial whitespace.
 //  r[1] contains any punctuation that was matched, or true, false, or null.
 //  r[2] contains a matched number, still in string form.
-//  r[3] contains a matched string, without quotes but with ecapement.
+//  r[3] contains a matched string, without quotes but with escapement.
 
                 if (r[1]) {
 
