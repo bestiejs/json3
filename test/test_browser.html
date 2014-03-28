@@ -33,15 +33,28 @@
         return;
       }
 
-      var previousJSON = root.JSON;
       libraryPath = "../lib/json3" + (Spec.hasKey(queryParams, "minified") ? ".min" : "");
+
+      var previousJSON = root.JSON;
+      var previousJSON3 = root.JSON3 = {};
 
       addNoConflictTest = function (testSuite) {
         testSuite.addTest("`noConflict`", function () {
-          var JSON3 = root.JSON3.noConflict();
+          var currentJSON3 = root.JSON3;
+          this.notStrictEqual(currentJSON3, previousJSON3, "JSON 3 should overwrite the previous value of the `JSON3` object");
+
+          var JSON3 = currentJSON3.noConflict();
           this.strictEqual(root.JSON, previousJSON, "`noConflict` should restore the previous value of the `JSON` object");
-          this.strictEqual(root.JSON3, JSON3, "`noConflict` should return the `JSON3` object");
-          this.done(2);
+          this.strictEqual(currentJSON3, JSON3, "`noConflict` should return the `JSON3` object");
+          this.strictEqual(root.JSON3, previousJSON3, "`noConflict` should restore the previous value of the `JSON3` object");
+
+          root.JSON3 = {};
+          var noConflictTwice = currentJSON3.noConflict();
+          this.strictEqual(noConflictTwice, JSON3, "`noConflict` should return the `JSON3` object when invoked multiple times");
+          this.notStrictEqual(root.JSON3, previousJSON3, "`noConflict` should not restore `JSON` and `JSON3` when invoked more than once");
+
+          root.JSON3 = JSON3;
+          this.done(6);
         });
       };
 

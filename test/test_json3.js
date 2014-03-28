@@ -15,7 +15,7 @@
       root.load(path.replace(/\.js$/, "") + ".js");
     }
     return root[module] || null;
-  };
+  }
 
   // The ExtendScript engine doesn't support named exceptions.
   var supportsNamedExceptions = new SyntaxError().name == "SyntaxError";
