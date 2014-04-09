@@ -1,6 +1,6 @@
 {
   "name": "json3",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "main": "lib/json3.min.js",
   "repository": {
     "type": "git",

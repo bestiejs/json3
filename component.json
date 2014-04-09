@@ -1,7 +1,7 @@
 {
   "name": "json3",
   "repo": "bestiejs/json3",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "A modern JSON implementation compatible with nearly all JavaScript platforms.",
   "license": "MIT",
   "scripts": ["index.js", "lib/json3.js", "lib/json3.min.js"],
