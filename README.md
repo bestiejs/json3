@@ -2,7 +2,7 @@
 
 ![JSON 3 Logo](http://bestiejs.github.io/json3/page/logo.png)
 
-[![Build Status](https://secure.travis-ci.org/bestiejs/json3.png)](http://travis-ci.org/bestiejs/json3)
+[![Build Status](https://secure.travis-ci.org/bestiejs/json3.png?branch=gh-pages)](http://travis-ci.org/bestiejs/json3)
 
 **JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.3.1**.
 
