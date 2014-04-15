@@ -1,5 +1,19 @@
 # JSON3 Changelog
 
+## 3.1.0
+
+ * Switched to `bestiejs` organisation
+ * Added support for a list of properties as the `filter` argument for `JSON.stringify`
+ * Fixed Firefox 4 and 4.0.1 allowing non-standard extensions to `JSON.parse`
+
+## 3.0.0
+
+ * Renamed `JSON3` to `JSON`
+ * Removed `JSON3.Version`
+ * Added minified version of library
+ * Created a [GitHub Project Page](http://bestiejs.github.io/json3)
+ * Preserved alphanumeric order when iterating over shadowed properties on objects
+
 ## 0.8.5
 
  * Avoided relying on native functions `Math.abs`, and `isFinite`, and native constructors `String`, `Number`, `Object`, and `Array`
