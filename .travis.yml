@@ -31,4 +31,8 @@ before_install:
   - "[ $BIN == 'ringo' ] && sudo ln -s /opt/ringojs-0.9/bin/ringo /usr/local/bin/ringo && sudo chmod +x /usr/local/bin/ringo || true"
 install: true
 script:
-  - "[ $BIN == 'istanbul' ] && $BIN cover ./test/test_json3.js || cd test && $BIN ./test_json3.js"
+  - "[ $BIN != 'istanbul' ] || $BIN cover ./test/test_json3.js"
+  - "[ $BIN == 'istanbul' ] || node build.js"
+  - "[ $BIN == 'istanbul' ] || cd ./test"
+  - "[ $BIN == 'istanbul' ] || $BIN ./test_json3.js"
+  - "[ $BIN == 'istanbul' ] || $BIN ./test_json3.js ../lib/json3.min.js"
