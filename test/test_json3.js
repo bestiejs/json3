@@ -576,7 +576,35 @@
   } else {
     var Spec = load("Spec", "./../vendor/spec");
     var Newton = load("Newton", "./../vendor/newton");
-    var JSON3 = load("JSON3", "../lib/json3");
+    // The file path of the JSON3 file to test.
+    var filePath = (function() {
+      var min = 0,
+          result = root.arguments || [];
+
+      if (isPhantom) {
+        result = phantom.args;
+      } else if (typeof system == "object") {
+        min = 1;
+        result = system.args;
+      } else if (typeof process == "object" && process.argv) {
+        min = 2;
+        result = process.argv;
+      }
+      var last = result[result.length - 1];
+      result = (result.length > min && !/test_json3(?:\.js)?$/.test(last)) ? last : "../lib/json3";
+
+      if (!isLoader) {
+        try {
+          result = require("fs").realpathSync(result);
+        } catch(e) { }
+
+        try {
+          result = require.resolve(result);
+        } catch(e) { }
+      }
+      return result;
+    }());
+    var JSON3 = load("JSON3", filePath);
 
     var testSuite = defineTests(JSON3, Spec, Newton);
     JSON3.testSuite = testSuite;

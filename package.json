@@ -18,6 +18,10 @@
     "name": "Kit Cambridge",
     "email": "github@kitcambridge.be",
     "web": "http://kitcambridge.be/"
+  }, {
+    "name": "Benjamin Tan",
+    "email": "demoneaux@gmail.com",
+    "web": "http://d10.github.io/"
   }],
   "contributors": [{
     "name": "Mangled Deutz",
@@ -31,10 +35,6 @@
     "name": "Oskar Schöldström",
     "email": "public@oxy.fi",
     "web": "http://oxy.fi/"
-  }, {
-    "name": "Benjamin Tan",
-    "email": "demoneaux@gmail.com",
-    "web": "http://d10.github.io/"
   }, {
     "name": "Kiryl Yermakou",
     "email": "rma4ok@gmail.com",
@@ -50,7 +50,7 @@
     "type": "git",
     "url": "git://github.com/bestiejs/json3.git"
   },
-  "files": ["README.md", "LICENSE", "lib/json3.js"],
+  "files": ["README.md", "LICENSE", "lib/json3.js", "lib/json3.min.js"],
   "jam": {
     "main": "./lib/json3.js",
     "includes": ["README.md", "LICENSE", "lib/json3.js", "lib/json3.min.js"]
