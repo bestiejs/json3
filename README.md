@@ -21,7 +21,7 @@ The project is [hosted on GitHub](http://git.io/json3), along with the [unit tes
 
 # Changes from JSON 2 #
 
-JSON 3...
+JSON 3…
 
 * Correctly serializes primitive wrapper objects.
 * Throws a `TypeError` when serializing cyclic structures (JSON 2 recurses until the call stack overflows).
@@ -29,7 +29,7 @@ JSON 3...
 
 **As of v3.2.3**, JSON 3 is compatible with [Prototype](http://prototypejs.org) 1.6.1 and older.
 
-In contrast to JSON 2, JSON 3 **does not**...
+In contrast to JSON 2, JSON 3 **does not**…
 
 * Add `toJSON()` methods to the `Boolean`, `Number`, and `String` prototypes. These are not part of any standard, and are made redundant by the design of the `stringify()` implementation.
 * Add `toJSON()` or `toISOString()` methods to `Date.prototype`. See the note about date serialization below.
