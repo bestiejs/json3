@@ -1,8 +1,8 @@
 # JSON 3 #
 
-![JSON 3 Logo](http://bestiejs.github.io/json3/page/logo.png)
+![JSON 3 Logo](https://bestiejs.github.io/json3/page/logo.png)
 
-[![Build Status](https://secure.travis-ci.org/bestiejs/json3.png?branch=gh-pages)](http://travis-ci.org/bestiejs/json3)
+[![Build Status](https://api.travis-ci.org/bestiejs/json3.png?branch=gh-pages)](https://travis-ci.org/bestiejs/json3)
 
 **JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.3.2**.
 
@@ -11,7 +11,7 @@
 
 Special thanks to [cdnjs](http://cdnjs.com/libraries/json3/) and [jsDelivr](http://www.jsdelivr.com/#!json3) for hosting CDN copies of JSON 3.
 
-[JSON](http://json.org/) is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by [Douglas Crockford](http://www.crockford.com/), the format was standardized in the [fifth edition](http://es5.github.com/) of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
+[JSON](http://json.org/) is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by [Douglas Crockford](http://www.crockford.com/), the format was standardized in the [fifth edition](http://es5.github.io/) of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.
 
 JSON 3 exposes two functions: `stringify()` for [serializing](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/stringify) a JavaScript value to JSON, and `parse()` for [producing](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/parse) a JavaScript value from a JSON source string. It is a **drop-in replacement** for [JSON 2](http://json.org/js). The functions behave exactly as described in the ECMAScript spec, **except** for the date serialization discrepancy noted below.
 
@@ -104,23 +104,23 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 
 ## Web Browsers
 
-- Windows [Internet Explorer](http://www.microsoft.com/windows/internet-explorer), version 6.0 and higher
-- Mozilla [Firefox](http://www.mozilla.com/firefox), version 1.0 and higher
-- Apple [Safari](http://www.apple.com/safari), version 2.0 and higher
-- [Opera](http://www.opera.com) 7.02 and higher
+- Windows [Internet Explorer](http://windows.microsoft.com/en-us/internet-explorer/download-ie), version 6.0 and higher
+- Mozilla [Firefox](https://www.mozilla.org/en-US/firefox/new/), version 1.0 and higher
+- Apple [Safari](http://www.apple.com/safari/), version 2.0 and higher
+- [Opera](http://www.opera.com/) 7.02 and higher
 - [Mozilla](http://sillydog.org/narchive/gecko.php) 1.0, [Netscape](http://sillydog.org/narchive/) 6.2.3, and [SeaMonkey](http://www.seamonkey-project.org/) 1.0 and higher
 
 ## CommonJS Environments
 
 - [Node](http://nodejs.org/) 0.2.6 and higher
 - [RingoJS](http://ringojs.org/) 0.4 and higher
-- [Narwhal](http://narwhaljs.org/) 0.3.2 and higher
+- [Narwhal](https://github.com/280north/narwhal) 0.3.2 and higher
 
 ## JavaScript Engines
 
-- Mozilla [Rhino](http://www.mozilla.org/rhino) 1.5R5 and higher
+- Mozilla [Rhino](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino) 1.5R5 and higher
 - WebKit [JSC](https://trac.webkit.org/wiki/JSC)
-- Google [V8](http://code.google.com/p/v8)
+- Google [V8](http://code.google.com/p/v8/)
 
 ## Known Incompatibilities
 
@@ -147,8 +147,8 @@ Check out a working copy of the JSON 3 source code with [Git](http://git-scm.com
     $ git clone git://github.com/bestiejs/json3.git
     $ cd json3
 
-If you’d like to contribute a feature or bug fix, you can [fork](http://help.github.com/fork-a-repo/) JSON 3, commit your changes, and [send a pull request](http://help.github.com/send-pull-requests/). Please make sure to update the unit tests in the `test` directory as well.
+If you’d like to contribute a feature or bug fix, you can [fork](https://help.github.com/fork-a-repo/) JSON 3, commit your changes, and [send a pull request](https://help.github.com/send-pull-requests/). Please make sure to update the unit tests in the `test` directory as well.
 
-Alternatively, you can use the [GitHub issue tracker](https://github.com/bestiejs/json3/issues) to submit bug reports, feature requests, and questions, or send tweets to [@kitcambridge](http://twitter.com/kitcambridge).
+Alternatively, you can use the [GitHub issue tracker](https://github.com/bestiejs/json3/issues) to submit bug reports, feature requests, and questions, or send tweets to [@kitcambridge](https://twitter.com/kitcambridge) and [@demoneaux](https://twitter.com/demoneaux).
 
 JSON 3 is released under the [MIT License](http://kit.mit-license.org/).
