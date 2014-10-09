@@ -30,8 +30,8 @@
 
 ## 0.5.0
 
- * Fixed `Prim.stringify`'s handling of the `width` argument
- * Added Microsoft's ES5 Conformance Tests to the test suite
+ * Fixed `Prim.stringify`’s handling of the `width` argument
+ * Added Microsoft’s ES5 Conformance Tests to the test suite
 
 ## 0.2.0
 
