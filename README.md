@@ -84,6 +84,8 @@ JSON 3 is defined as an [anonymous module](https://github.com/amdjs/amdjs-api/wi
 
 To avoid issues with third-party scripts, **JSON 3 is exported to the global scope even when used with a module loader**. If this behavior is undesired, `JSON3.noConflict()` can be used to restore the global `JSON` object to its original value.
 
+**Note:** If you intend to use JSON3 alongside another module, **please do not simply concatenate these modules together**, as that would cause multiple `define` calls in one script, resulting in errors in AMD loaders. The `r.js` build optimizer can be used instead if you need a single compressed file for production.
+
 ## CommonJS Environments
 
     var JSON3 = require("./path/to/json3");
