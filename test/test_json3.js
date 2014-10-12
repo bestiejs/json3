@@ -259,7 +259,7 @@
     });
 
     testSuite.addTest("`stringify`", function () {
-      var expected = 29;
+      var expected = 30;
 
       // Special values.
       this.serializes("null", null, "`null` is represented literally");
@@ -303,6 +303,12 @@
       this.serializes('"-271821-04-20T00:00:00.000Z"', new Date(-8.64e15), "The minimum valid date value should serialize correctly");
       this.serializes('"+275760-09-13T00:00:00.000Z"', new Date(8.64e15), "The maximum valid date value should serialize correctly");
       this.serializes('"+010000-01-01T00:00:00.000Z"', new Date(Date.UTC(10000, 0, 1)), "https://bugs.ecmascript.org/show_bug.cgi?id=119");
+
+      value = new Date();
+      value.toJSON = function () {
+        return "date";
+      };
+      this.serializes('"date"', value);
 
       // Tests based on research by @Yaffle. See kriskowal/es5-shim#111.
       this.serializes('"1969-12-31T23:59:59.999Z"', new Date(-1), "Millisecond values < 1000 should be serialized correctly");
