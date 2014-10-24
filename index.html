@@ -17,15 +17,15 @@
     </ul>
     <div id="content">
       <h1 id="-a-name-section_1-a-json-3"><a name="section_1"></a>JSON 3</h1>
-<p><img src="http://bestiejs.github.io/json3/page/logo.png" alt="JSON 3 Logo" class="logo"></p>
-<p><a href="http://travis-ci.org/bestiejs/json3" class="travis-ci"><img src="https://secure.travis-ci.org/bestiejs/json3.png?branch=gh-pages" alt="Build Status"></a></p>
+<p><img src="https://bestiejs.github.io/json3/page/logo.png" alt="JSON 3 Logo" class="logo"></p>
+<p><a href="https://travis-ci.org/bestiejs/json3" class="travis-ci"><img src="https://api.travis-ci.org/bestiejs/json3.png?branch=gh-pages" alt="Build Status"></a></p>
 <p><strong>JSON 3</strong> is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is <strong>3.3.2</strong>.</p>
 <ul>
 <li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.js">Development Version</a> <em>(43 KB; uncompressed with comments)</em></li>
 <li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js">Production Version</a> <em>(3.5 KB; compressed and <code>gzip</code>-ped)</em></li>
 </ul>
 <p>Special thanks to <a href="http://cdnjs.com/libraries/json3/">cdnjs</a> and <a href="http://www.jsdelivr.com/#!json3">jsDelivr</a> for hosting CDN copies of JSON 3.</p>
-<p><a href="http://json.org/">JSON</a> is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by <a href="http://www.crockford.com/">Douglas Crockford</a>, the format was standardized in the <a href="http://es5.github.com/">fifth edition</a> of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.</p>
+<p><a href="http://json.org/">JSON</a> is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by <a href="http://www.crockford.com/">Douglas Crockford</a>, the format was standardized in the <a href="http://es5.github.io/">fifth edition</a> of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.</p>
 <p>JSON 3 exposes two functions: <code>stringify()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/stringify">serializing</a> a JavaScript value to JSON, and <code>parse()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/parse">producing</a> a JavaScript value from a JSON source string. It is a <strong>drop-in replacement</strong> for <a href="http://json.org/js">JSON 2</a>. The functions behave exactly as described in the ECMAScript spec, <strong>except</strong> for the date serialization discrepancy noted below.</p>
 <p>The JSON 3 parser does <strong>not</strong> use <code>eval</code> or regular expressions. This provides security and performance benefits in obsolete and mobile environments, where the margin is particularly significant. The complete <a href="http://jsperf.com/json3">benchmark suite</a> is available on <a href="http://jsperf.com/">jsPerf</a>.</p>
 <p>The project is <a href="http://git.io/json3">hosted on GitHub</a>, along with the <a href="http://bestiejs.github.io/json3/test/test_browser.html">unit tests</a>. It is part of the <a href="https://github.com/bestiejs">BestieJS</a> family, a collection of best-in-class JavaScript libraries that promote cross-platform support, specification precedents, unit testing, and plenty of documentation.</p>
@@ -80,6 +80,7 @@
   });
 </span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
 </code></pre><p>To avoid issues with third-party scripts, <strong>JSON 3 is exported to the global scope even when used with a module loader</strong>. If this behavior is undesired, <code>JSON3.noConflict()</code> can be used to restore the global <code>JSON</code> object to its original value.</p>
+<p><strong>Note:</strong> If you intend to use JSON3 alongside another module, <strong>please do not simply concatenate these modules together</strong>, as that would cause multiple <code>define</code> calls in one script, resulting in errors in AMD loaders. The <code>r.js</code> build optimizer can be used instead if you need a single compressed file for production.</p>
 <h2 id="commonjs-environments">CommonJS Environments</h2>
 <pre><code><span class="hljs-keyword">var</span> JSON3 = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./path/to/json3"</span>);
 JSON3.parse(<span class="hljs-string">"[1, 2, 3]"</span>);
@@ -92,23 +93,23 @@ JSON3.parse(<span class="hljs-string">"[1, 2, 3]"</span>);
 <p>JSON 3 has been <strong>tested</strong> with the following web browsers, CommonJS environments, and JavaScript engines.</p>
 <h2 id="web-browsers">Web Browsers</h2>
 <ul>
-<li>Windows <a href="http://www.microsoft.com/windows/internet-explorer">Internet Explorer</a>, version 6.0 and higher</li>
-<li>Mozilla <a href="http://www.mozilla.com/firefox">Firefox</a>, version 1.0 and higher</li>
-<li>Apple <a href="http://www.apple.com/safari">Safari</a>, version 2.0 and higher</li>
-<li><a href="http://www.opera.com">Opera</a> 7.02 and higher</li>
+<li>Windows <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">Internet Explorer</a>, version 6.0 and higher</li>
+<li>Mozilla <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>, version 1.0 and higher</li>
+<li>Apple <a href="http://www.apple.com/safari/">Safari</a>, version 2.0 and higher</li>
+<li><a href="http://www.opera.com/">Opera</a> 7.02 and higher</li>
 <li><a href="http://sillydog.org/narchive/gecko.php">Mozilla</a> 1.0, <a href="http://sillydog.org/narchive/">Netscape</a> 6.2.3, and <a href="http://www.seamonkey-project.org/">SeaMonkey</a> 1.0 and higher</li>
 </ul>
 <h2 id="commonjs-environments">CommonJS Environments</h2>
 <ul>
 <li><a href="http://nodejs.org/">Node</a> 0.2.6 and higher</li>
 <li><a href="http://ringojs.org/">RingoJS</a> 0.4 and higher</li>
-<li><a href="http://narwhaljs.org/">Narwhal</a> 0.3.2 and higher</li>
+<li><a href="https://github.com/280north/narwhal">Narwhal</a> 0.3.2 and higher</li>
 </ul>
 <h2 id="javascript-engines">JavaScript Engines</h2>
 <ul>
-<li>Mozilla <a href="http://www.mozilla.org/rhino">Rhino</a> 1.5R5 and higher</li>
+<li>Mozilla <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino">Rhino</a> 1.5R5 and higher</li>
 <li>WebKit <a href="https://trac.webkit.org/wiki/JSC">JSC</a></li>
-<li>Google <a href="http://code.google.com/p/v8">V8</a></li>
+<li>Google <a href="http://code.google.com/p/v8/">V8</a></li>
 </ul>
 <h2 id="known-incompatibilities">Known Incompatibilities</h2>
 <ul>
@@ -131,8 +132,8 @@ JSON3.parse(<span class="hljs-string">"[1, 2, 3]"</span>);
 <p>Check out a working copy of the JSON 3 source code with <a href="http://git-scm.com/">Git</a>:</p>
 <pre><code>$ git clone git://github.com/bestiejs/json3.git
 $ <span class="hljs-built_in">cd</span> json3
-</code></pre><p>If you’d like to contribute a feature or bug fix, you can <a href="http://help.github.com/fork-a-repo/">fork</a> JSON 3, commit your changes, and <a href="http://help.github.com/send-pull-requests/">send a pull request</a>. Please make sure to update the unit tests in the <code>test</code> directory as well.</p>
-<p>Alternatively, you can use the <a href="https://github.com/bestiejs/json3/issues">GitHub issue tracker</a> to submit bug reports, feature requests, and questions, or send tweets to <a href="http://twitter.com/kitcambridge">@kitcambridge</a>.</p>
+</code></pre><p>If you’d like to contribute a feature or bug fix, you can <a href="https://help.github.com/fork-a-repo/">fork</a> JSON 3, commit your changes, and <a href="https://help.github.com/send-pull-requests/">send a pull request</a>. Please make sure to update the unit tests in the <code>test</code> directory as well.</p>
+<p>Alternatively, you can use the <a href="https://github.com/bestiejs/json3/issues">GitHub issue tracker</a> to submit bug reports, feature requests, and questions, or send tweets to <a href="https://twitter.com/kitcambridge">@kitcambridge</a> and <a href="https://twitter.com/demoneaux">@demoneaux</a>.</p>
 <p>JSON 3 is released under the <a href="http://kit.mit-license.org/">MIT License</a>.</p>
 
     </div>
