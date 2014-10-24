@@ -2,7 +2,7 @@
   "name": "json3",
   "version": "3.3.2",
   "description": "A modern JSON implementation compatible with nearly all JavaScript platforms.",
-  "homepage": "http://bestiejs.github.io/json3",
+  "homepage": "https://bestiejs.github.io/json3",
   "main": "./lib/json3",
   "keywords": ["json", "spec", "ecma", "es5", "lexer", "parser", "stringify"],
   "licenses": [{
@@ -21,7 +21,7 @@
   }, {
     "name": "Benjamin Tan",
     "email": "demoneaux@gmail.com",
-    "web": "http://d10.github.io/"
+    "web": "https://d10.github.io/"
   }],
   "contributors": [{
     "name": "Mangled Deutz",

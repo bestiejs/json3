@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/* JSON 3 Builder | http://bestiejs.github.io/json3 */
+/* JSON 3 Builder | https://bestiejs.github.io/json3 */
 var fs = require("fs"),
     https = require("https"),
     path = require("path"),
