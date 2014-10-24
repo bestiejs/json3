@@ -84,6 +84,25 @@ var definePattern = RegExp('(?:' +
   ')?' +
 ')', 'g');
 
+// List of properties to prevent the Closure Compiler from minifying.
+var propertyWhitelist = [
+  'Date',
+  'JSON',
+  'JSON3',
+  'Math',
+  'Number',
+  'Object',
+  'String',
+  'SyntaxError',
+  'TypeError',
+  'global',
+  'parse',
+  'runInContext',
+  'self',
+  'stringify',
+  'window'
+];
+
 function PageRenderer(options) {
   marked.Renderer.call(this);
   if (options) {
@@ -351,7 +370,12 @@ function extractComments(source) {
 }
 
 function preprocessSource(source) {
-  return source.replace(definePattern, 'typeof define === "function" && define["amd"]');
+  source = source.replace(definePattern, 'typeof define === "function" && define["amd"]');
+  // Add brackets to whitelisted properties so the Closure Compiler won't minify them.
+  // https://developers.google.com/closure/compiler/docs/api-tutorial3#export
+  return source.replace(RegExp('(["\'])(?:(?!\\1)[^\\n\\\\]|\\\\.)*\\1|\\.(' + propertyWhitelist.join('|') + ')\\b', 'g'), function(match, quote, prop) {
+    return quote ? match : "['" + prop + "']";
+  });
 }
 
 function postprocessSource(source) {
