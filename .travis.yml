@@ -22,6 +22,7 @@ branches:
     - gh-pages
     - dev
 before_install:
+  - "npm install npm -g"
   - "[ $BIN == 'istanbul' ] && npm i -g istanbul@\"~0.1.0\" || true"
   - "[ $BIN == 'narwhal' ] && wget https://github.com/280north/narwhal/archive/v0.3.2.zip && sudo unzip v0.3.2 -d /opt/ && rm v0.3.2.zip || true"
   - "[ $BIN == 'narwhal' ] && sudo ln -s /opt/narwhal-0.3.2/bin/narwhal /usr/local/bin/narwhal && sudo chmod +x /usr/local/bin/narwhal || true"
@@ -29,7 +30,8 @@ before_install:
   - "[ $BIN == 'rhino' ] && echo -e '#!/bin/sh\\njava -jar /opt/rhino-1.7R5/js.jar $@' | sudo tee /usr/local/bin/rhino && sudo chmod +x /usr/local/bin/rhino || true"
   - "[ $BIN == 'ringo' ] && wget http://ringojs.org/downloads/ringojs-0.9.zip && sudo unzip ringojs-0.9 -d /opt && rm ringojs-0.9.zip || true"
   - "[ $BIN == 'ringo' ] && sudo ln -s /opt/ringojs-0.9/bin/ringo /usr/local/bin/ringo && sudo chmod +x /usr/local/bin/ringo || true"
-install: true
+install:
+  - "npm install"
 script:
   - "[ $BIN != 'istanbul' ] || $BIN cover ./test/test_json3.js"
   - "[ $BIN == 'istanbul' ] || node build.js"

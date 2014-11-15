@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>JSON 3 Unit Tests</title>
-    <link rel="stylesheet" href="../vendor/newton.css" media="screen">
-    <script src="../vendor/spec.js"></script>
-    <script src="../vendor/newton.js"></script>
+    <link rel="stylesheet" href="../node_modules/spec/src/newton.css" media="screen">
+    <script src="../node_modules/spec/lib/spec.js"></script>
+    <script src="../node_modules/spec/lib/newton.js"></script>
     <script>
     var curl, queryParams;
     (function () {
@@ -18,7 +18,7 @@
         // Load RequireJS or `curl.js`. `document.write` is used because older
         // versions of Safari and Chrome do not support DOM script injection.
         curl = { "apiName": "require" };
-        document.write('<script src="../vendor/' + (queryParams.amd == "require" ? "require" : "curl") + '.js"><\/script>');
+        document.write('<script src="../node_modules/' + (queryParams.amd == "require" ? "requirejs/require" : "curl-amd/dist/curl/curl") + '.js"><\/script>');
       }
 
       if (Spec.hasKey(queryParams, "prototype")) {
@@ -81,8 +81,8 @@
           // not. Both accept a `paths` map of module paths to relative paths.
           "paths": {
             "json": libraryPath,
-            "spec": "../vendor/spec",
-            "newton": "../vendor/newton"
+            "spec": "../node_modules/spec/lib/spec",
+            "newton": "../node_modules/spec/lib/newton"
           },
           // Thwart aggressive resource caching. RequireJS only.
           "urlArgs": "async=" + (+new Date())

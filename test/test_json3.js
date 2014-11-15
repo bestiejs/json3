@@ -580,8 +580,8 @@
   if (isLoader) {
     define(["json", "spec", "newton"], defineTests);
   } else {
-    var Spec = load("Spec", "./../vendor/spec");
-    var Newton = load("Newton", "./../vendor/newton");
+    var Spec = load("Spec", "./../node_modules/spec/lib/spec");
+    var Newton = load("Newton", "./../node_modules/spec/lib/newton");
     // The file path of the JSON3 file to test.
     var filePath = (function() {
       var min = 0,

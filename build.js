@@ -10,10 +10,10 @@ var fs = require("fs"),
     zlib = require("zlib");
 
 var vendorPath = path.join(__dirname, "vendor"),
-    highlightAuto = require(path.join(vendorPath, "highlight")).highlightAuto,
-    marked = require(path.join(vendorPath, "marked")),
+    highlightAuto = require("highlight.js").highlightAuto,
+    marked = require("marked"),
     package = require(path.join(__dirname, "package.json")),
-    tar = require(path.join(vendorPath, "tar"));
+    tar = require("tar");
 
 // The path to the Closure Compiler `.jar` file and ETag.
 var closurePath = path.join(vendorPath, "closure-compiler.jar"),
