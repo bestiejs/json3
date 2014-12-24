@@ -45,7 +45,7 @@
 
  * Use `object.hasOwnProperty(prop)` instead of `Object#hasOwnProperty.call(object, prop)` when iterating over host objects [Issue #18].
  * Minification improvements; avoid munging the AMD `define` pragma [Issue #22; PR #25].
- * Use character codes instead of strings in `lex()`. Optimize for valid source strings Issue #23; PR #27].
+ * Use character codes instead of strings in `lex()`. Optimize for valid source strings [Issue #23; PR #27].
  * Support Adobe ExtendScript [Issue #29].
  * Handle serializing ExtendScript host objects that throw exceptions [Issue #30; PR #31].
  * Support Browserify and RequireJS by exporting for CommonJS and AMD [PR #33].
@@ -143,7 +143,7 @@
 ### 2012-02-18
 
  * Fixed `Prim.stringify`’s handling of the `width` argument
- * Added Microsoft’s [ES5 Conformance Tests]() to the test suite
+ * Added Microsoft’s [ES5 Conformance Tests](https://es5conform.codeplex.com/) to the test suite
 
 ## 0.2.0
 

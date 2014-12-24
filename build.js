@@ -84,39 +84,72 @@ var definePattern = RegExp('(?:' +
   ')?' +
 ')', 'g');
 
-var renderer = new marked.Renderer();
+function PageRenderer(options) {
+  marked.Renderer.call(this);
+  if (options) {
+    this.issueFormatters = options.issueFormatters;
+    this.imgClasses = options.imgClasses;
+    this.linkClasses = options.linkClasses;
+  }
+}
 
-renderer.image = function image(src, title, alt) {
-  var result = '<img src="' + src + '" alt="' + alt + '"';
-  if (title) {
-    result += ' title="' + title + '"';
+util.inherits(PageRenderer, marked.Renderer);
+
+PageRenderer.issuePattern = /(\s*|[\[])\s*(issue|pr)\s*#(\d+)([;\]]|\s*)/gi;
+
+PageRenderer.prototype.issueFormatters = null;
+PageRenderer.prototype.imgClasses = null;
+PageRenderer.prototype.linkClasses = null;
+
+PageRenderer.prototype.listitem = function listitem(text) {
+  var self = this;
+  if (this.issueFormatters) {
+    text = text.replace(PageRenderer.issuePattern, function linkIssue(match, pre, type, id, post) {
+      var getURI = self.issueFormatters[type.toLowerCase()];
+      if (!getURI) {
+        return match;
+      }
+      return pre + util.format('<a href="%s">#%s</a>',
+        getURI(id), id) + post;
+    });
   }
-  if (path.basename(src) == 'logo.png') {
-    result += ' class="logo"';
-  }
-  return result + '>';
+  return marked.Renderer.prototype.listitem.call(this, text);
 };
 
-renderer.link = function link(href, title, textContent) {
-  var uri = url.parse(href);
-  if (this.options && this.options.sanitize) {
-    var protocol = uri.protocol;
-    if (protocol == 'javascript:') {
-      return '';
+PageRenderer.prototype.image = function image(src, title, alt) {
+  var attrs = [util.format('src="%s" alt="%s"', src, alt)];
+  if (title) {
+    attrs.push(util.format('title="%s"', title));
+  }
+  if (this.imgClasses) {
+    var className = this.imgClasses[path.basename(src)];
+    if (className) {
+      attrs.push(util.format('class="%s"', className));
     }
   }
-  var result = '<a href="' + href + '"';
-  if (title) {
-    result += ' title="' + title + '"';
-  }
-  if (uri.hostname == 'travis-ci.org') {
-    result += ' class="travis-ci"';
-  }
-  return result + '>' + textContent + '</a>';
+  return util.format('<img %s>', attrs.join(" "));
 };
 
+PageRenderer.prototype.link = function link(href, title, text) {
+  var uri = url.parse(href);
+  if (this.options && this.options.sanitize && uri.protocol == "javascript") {
+    return '';
+  }
+  var attrs = [util.format('href="%s"', href)];
+  if (title) {
+    attrs.push(util.format('title="%s"', title));
+  }
+  if (this.linkClasses) {
+    var className = this.linkClasses[uri.hostname];
+    if (className) {
+      attrs.push(util.format('class="%s"', className));
+    }
+  }
+  return util.format("<a %s>%s</a>", attrs.join(" "), text);
+}
+
 marked.setOptions({
-  "renderer": renderer,
+  // "renderer": renderer,
   "smartypants": true,
   "highlight": function highlight(source) {
     return highlightAuto(source).value;
@@ -154,22 +187,38 @@ function main() {
 }
 
 function genIndex() {
-  genPage("JSON 3", indexPageDest, indexPageSrc, function afterGen(err) {
+  var r = new PageRenderer({
+    imgClasses: { "logo.png": "logo" },
+    linkClasses: { "travis-ci.org": "travis-ci" }
+  });
+  genPage("JSON 3", indexPageDest, indexPageSrc,
+    { "renderer": r }, function afterGen(err) {
     console.log(err || "GitHub project page generated successfully.");
   });
 }
 
 function genContrib() {
+  var r = new PageRenderer();
   genPage("Contribute | JSON 3", contribPageDest, contribPageSrc,
-    function afterGen(err) {
+    { "renderer": r }, function afterGen(err) {
 
     console.log(err || "Contributing page generated successfully.");
   });
 }
 
 function genRel() {
+  var r = new PageRenderer({
+    issueFormatters: {
+      issue: function formatIssue(id) {
+        return "https://github.com/bestiejs/json3/issues/" + id;
+      },
+      pr: function formatPR(id) {
+        return "https://github.com/bestiejs/json3/pull/" + id;
+      }
+    }
+  });
   genPage("Releases | JSON 3", relPageDest, relPageSrc,
-    function afterGen(err) {
+    {"renderer": r }, function afterGen(err) {
 
     console.log(err || "Change log generated successfully.");
   });
@@ -567,7 +616,7 @@ function genNav(source) {
   };
 }
 
-function buildPage(title, template, src) {
+function buildPage(title, template, src, options) {
   var parts = genNav(src);
   return template.replace(/<%=\s*(.+?)\s*%>/g, function interpolate(match, section) {
     if (section == "title") {
@@ -578,15 +627,15 @@ function buildPage(title, template, src) {
       return parts.navigation.join("\n");
     }
     if (section == "source") {
-      // Convert the read me to HTML and insert it into the page body.
-      return marked(parts.lines.join("\n"));
+      // Convert the page to HTML and insert it into the body.
+      return marked(parts.lines.join("\n"), options);
     }
     return "";
   });
 }
 
 // Generates a GitHub project page using the template.
-function genPage(title, destPath, srcPath, callback) {
+function genPage(title, destPath, srcPath, options, callback) {
   var pendingReads = 2;
   var contents = { "src": null, "tmpl": null };
   function afterRead(err, content, prop) {
@@ -604,7 +653,7 @@ function genPage(title, destPath, srcPath, callback) {
       return;
     }
     // Interpolate the page template.
-    var page = buildPage(title, contents.tmpl, contents.src);
+    var page = buildPage(title, contents.tmpl, contents.src, options);
     // Write the page to disk.
     fs.writeFile(destPath, page, callback);
   }
