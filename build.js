@@ -23,10 +23,12 @@ var closurePath = path.join(vendorPath, "closure-compiler.jar"),
 var pageTemplatePath = path.join(path.join(__dirname, "page", "page.html"));
 
 var indexPageSrc = path.join(__dirname, "README.md"),
-    contribPageSrc = path.join(__dirname, "CONTRIBUTING.md");
+    contribPageSrc = path.join(__dirname, "CONTRIBUTING.md"),
+    relPageSrc = path.join(__dirname, "CHANGELOG.md");
 
 var indexPageDest = path.join(__dirname, "index.html"),
-    contribPageDest = path.join(__dirname, "contribute.html");
+    contribPageDest = path.join(__dirname, "contribute.html"),
+    relPageDest = path.join(__dirname, "changes.html");
 
 // The Closure Compiler options: enable advanced optimizations and suppress all
 // warnings apart from syntax and optimization errors.
@@ -147,6 +149,7 @@ main();
 function main() {
   genIndex();
   genContrib();
+  genRel();
   minify();
 }
 
@@ -161,6 +164,14 @@ function genContrib() {
     function afterGen(err) {
 
     console.log(err || "Contributing page generated successfully.");
+  });
+}
+
+function genRel() {
+  genPage("Releases | JSON 3", relPageDest, relPageSrc,
+    function afterGen(err) {
+
+    console.log(err || "Change log generated successfully.");
   });
 }
 
