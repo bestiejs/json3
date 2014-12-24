@@ -19,6 +19,15 @@ var vendorPath = path.join(__dirname, "vendor"),
 var closurePath = path.join(vendorPath, "closure-compiler.jar"),
     closureETag = path.join(vendorPath, "closure-compiler-etag.txt");
 
+// The path to the project page template.
+var pageTemplatePath = path.join(path.join(__dirname, "page", "page.html"));
+
+var indexPageSrc = path.join(__dirname, "README.md"),
+    contribPageSrc = path.join(__dirname, "CONTRIBUTING.md");
+
+var indexPageDest = path.join(__dirname, "index.html"),
+    contribPageDest = path.join(__dirname, "contribute.html");
+
 // The Closure Compiler options: enable advanced optimizations and suppress all
 // warnings apart from syntax and optimization errors.
 var closureOptions = ["--compilation_level=ADVANCED_OPTIMIZATIONS", "--warning_level=QUIET"];
@@ -133,144 +142,90 @@ if (!Buffer.concat) {
   };
 }
 
-// Generate the GitHub project page.
-fs.readFile(path.join(__dirname, "README.md"), "utf8", function readInfo(exception, source) {
-  if (exception) {
-    console.log(exception);
-  } else {
-    // Read the project page template.
-    fs.readFile(path.join(__dirname, "page", "page.html"), "utf8", readTemplate);
-  }
+main();
 
-  // Interpolates the page template and writes the result to disk.
-  function readTemplate(exception, page) {
-    var headers, lines, lastSection, lastLevel, navigation;
-    if (exception) {
-      console.log(exception);
-    } else {
-      // Generate the page navigation. Ported from `mdtoc.rb` by Sam
-      // Stephenson.
-      headers = [];
-      lines = source.split(/\r?\n/);
-      // First pass: Scan the Markdown source looking for titles of the format:
-      // `### Title ###`. Record the line number, header level (number of
-      // octothorpes), and text of each matching title.
-      lines.forEach(function (line, index) {
-        var match = /^(\#{1,6})\s+(.+?)\s+\1$/.exec(line);
-        if (match) {
-          headers.push([index, match[1].length, match[2]]);
-        }
-      });
-      // Second pass: Iterate over all matched titles and compute their
-      // corresponding section numbers. Then replace the titles with annotated
-      // anchors.
-      headers.forEach(function (value) {
-        var index = value[0], level = value[1], text = value[2], section, length;
-        if (lastSection) {
-          // Clone the last section metadata array.
-          section = lastSection.slice(0);
-          if (lastLevel < level) {
-            section.push(1);
-          } else {
-            length = lastLevel - level;
-            while (length--) {
-              section.pop();
-            }
-            section[section.length - 1] += 1;
-          }
-        } else {
-          section = [1];
-        }
-        lines[index] = Array(level + 1).join("#") + "<a name=\"section_" + section.join(".") + "\"></a>" + text;
-        value.push(section);
-        lastSection = section;
-        lastLevel = level;
-      });
-      // Third pass: Iterate over matched titles once more to produce the table of
-      // contents.
-      navigation = headers.map(function (value) {
-        var index = value[0], level = value[1], text = value[2], section = value[3], name = section.join(".");
-        return "<li><a href=\"#section_" + name + "\">" + text + "</a></li>";
-      });
-      navigation.push("");
-      // Write the page source to disk.
-      fs.writeFile(path.join(__dirname, "index.html"), page.replace(/<%=\s*(.+?)\s*%>/g, function interpolate(match, data) {
-        switch (data) {
-          case "navigation":
-            // Insert the table of contents directly into the template.
-            return navigation.join("\n");
-          case "source":
-            // Convert the read me to HTML and insert it into the page body.
-            return marked(lines.join("\n"));
-        }
-        return "";
-      }), function writePage(exception) {
-        console.log(exception || "GitHub project page generated successfully.");
-      });
-    }
-  }
-});
+function main() {
+  genIndex();
+  genContrib();
+  minify();
+}
+
+function genIndex() {
+  genPage("JSON 3", indexPageDest, indexPageSrc, function afterGen(err) {
+    console.log(err || "GitHub project page generated successfully.");
+  });
+}
+
+function genContrib() {
+  genPage("Contribute | JSON 3", contribPageDest, contribPageSrc,
+    function afterGen(err) {
+
+    console.log(err || "Contributing page generated successfully.");
+  });
+}
 
 // Compress JSON 3 using the Closure Compiler.
-getCompiler(function hasCompiler(error) {
-  if (error) {
-    console.log(error);
-    return;
-  }
-
-  fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource(error, source) {
+function minify() {
+  getCompiler(function hasCompiler(error) {
     if (error) {
       console.log(error);
       return;
     }
 
-    console.log("Development version size: %d KB.", Math.round(Buffer.byteLength(source) / 1024 * 100) / 100);
-    // Shell out to the Closure Compiler. Requires Java 7 or higher.
-    var error = [], errorLength = 0;
-    var output = [], outputLength = 0;
-    var compiler = spawn("java", ["-jar", closurePath].concat(closureOptions));
-    compiler.stdout.on("data", function onData(data) {
-      // Append the data to the output stream.
-      output.push(data);
-      outputLength += data.length;
-    });
-    compiler.stderr.on("data", function onError(data) {
-      // Append the error message to the error stream.
-      error.push(data);
-      errorLength += data.length;
-    });
-    compiler.on("exit", function onExit(status) {
-      var exception;
-      // `status` specifies the process exit code.
-      if (status) {
-        exception = new Error(Buffer.concat(error, errorLength));
-        exception.status = status;
+    fs.readFile(path.join(__dirname, "lib", "json3.js"), "utf8", function readSource(error, source) {
+      if (error) {
+        console.log(error);
+        return;
       }
-      compressSource(exception, '' + Buffer.concat(output, outputLength));
-    });
-    // Proxy the preprocessed source to the Closure Compiler.
-    compiler.stdin.end(preprocessSource(source));
 
-    // Post-processes the compressed source and writes the result to disk.
-    function compressSource(exception, compressed) {
-      if (exception) {
-        console.log(exception);
-      } else {
-        // Extract the JSON 3 header and clean up the minified source.
-        compressed = extractComments(source)[0] + '\n' + postprocessSource(compressed);
-        // Write the compressed version to disk.
-        fs.writeFile(path.join(__dirname, "lib", "json3.min.js"), compressed, writeSource);
+      console.log("Development version size: %d KB.", Math.round(Buffer.byteLength(source) / 1024 * 100) / 100);
+      // Shell out to the Closure Compiler. Requires Java 7 or higher.
+      var error = [], errorLength = 0;
+      var output = [], outputLength = 0;
+      var compiler = spawn("java", ["-jar", closurePath].concat(closureOptions));
+      compiler.stdout.on("data", function onData(data) {
+        // Append the data to the output stream.
+        output.push(data);
+        outputLength += data.length;
+      });
+      compiler.stderr.on("data", function onError(data) {
+        // Append the error message to the error stream.
+        error.push(data);
+        errorLength += data.length;
+      });
+      compiler.on("exit", function onExit(status) {
+        var exception;
+        // `status` specifies the process exit code.
+        if (status) {
+          exception = new Error(Buffer.concat(error, errorLength));
+          exception.status = status;
+        }
+        compressSource(exception, '' + Buffer.concat(output, outputLength));
+      });
+      // Proxy the preprocessed source to the Closure Compiler.
+      compiler.stdin.end(preprocessSource(source));
+
+      // Post-processes the compressed source and writes the result to disk.
+      function compressSource(exception, compressed) {
+        if (exception) {
+          console.log(exception);
+        } else {
+          // Extract the JSON 3 header and clean up the minified source.
+          compressed = extractComments(source)[0] + '\n' + postprocessSource(compressed);
+          // Write the compressed version to disk.
+          fs.writeFile(path.join(__dirname, "lib", "json3.min.js"), compressed, writeSource);
+        }
+        // Checks the `gzip`-ped size of the compressed version.
+        function writeSource(exception) {
+          console.log(exception || "Compressed version generated successfully.");
+          zlib.gzip(compressed, function (exception, results) {
+            console.log("Compressed version size: %d KB.", Math.round(results.length / 1024 * 100) / 100);
+          });
+        }
       }
-      // Checks the `gzip`-ped size of the compressed version.
-      function writeSource(exception) {
-        console.log(exception || "Compressed version generated successfully.");
-        zlib.gzip(compressed, function (exception, results) {
-          console.log("Compressed version size: %d KB.", Math.round(results.length / 1024 * 100) / 100);
-        });
-      }
-    }
+    });
   });
-});
+}
 
 // Internal: Extracts line and block comments from a JavaScript `source`
 // string. Returns an array containing the comments.
@@ -546,4 +501,108 @@ function getCompiler(callback) {
       finalize();
     }
   }
+}
+
+// Generates the navigation section for a Markdown document.
+// Ported from `mdtoc.rb` by Sam Stephenson.
+function genNav(source) {
+  var headers = [];
+  var lines = source.split(/\r?\n/);
+  // First pass: Scan the Markdown source looking for titles of the format:
+  // `### Title ###`. Record the line number, header level (number of
+  // octothorpes), and text of each matching title.
+  lines.forEach(function (line, index) {
+    var match = /^(\#{1,6})\s+(.+?)\s+\1$/.exec(line);
+    if (match) {
+      headers.push([index, match[1].length, match[2]]);
+    }
+  });
+  // Second pass: Iterate over all matched titles and compute their
+  // corresponding section numbers. Then replace the titles with annotated
+  // anchors.
+  var lastSection, lastLevel;
+  headers.forEach(function (value) {
+    var index = value[0], level = value[1], text = value[2], section, length;
+    if (lastSection) {
+      // Clone the last section metadata array.
+      section = lastSection.slice(0);
+      if (lastLevel < level) {
+        section.push(1);
+      } else {
+        length = lastLevel - level;
+        while (length--) {
+          section.pop();
+        }
+        section[section.length - 1] += 1;
+      }
+    } else {
+      section = [1];
+    }
+    lines[index] = Array(level + 1).join("#") + "<a name=\"section_" + section.join(".") + "\"></a>" + text;
+    value.push(section);
+    lastSection = section;
+    lastLevel = level;
+  });
+  // Third pass: Iterate over matched titles once more to produce the table of
+  // contents.
+  var navigation = headers.map(function (value) {
+    var index = value[0], level = value[1], text = value[2], section = value[3], name = section.join(".");
+    return "<li><a href=\"#section_" + name + "\">" + text + "</a></li>";
+  });
+  navigation.push("");
+  return {
+    "navigation": navigation,
+    "lines": lines
+  };
+}
+
+function buildPage(title, template, src) {
+  var parts = genNav(src);
+  return template.replace(/<%=\s*(.+?)\s*%>/g, function interpolate(match, section) {
+    if (section == "title") {
+      return title;
+    }
+    if (section == "navigation") {
+      // Insert the table of contents directly into the template.
+      return parts.navigation.join("\n");
+    }
+    if (section == "source") {
+      // Convert the read me to HTML and insert it into the page body.
+      return marked(parts.lines.join("\n"));
+    }
+    return "";
+  });
+}
+
+// Generates a GitHub project page using the template.
+function genPage(title, destPath, srcPath, callback) {
+  var pendingReads = 2;
+  var contents = { "src": null, "tmpl": null };
+  function afterRead(err, content, prop) {
+    if (pendingReads === 0) {
+      return;
+    }
+    if (err) {
+      pendingReads = 0;
+      callback(err);
+      return;
+    }
+    pendingReads--;
+    contents[prop] = content;
+    if (pendingReads > 0) {
+      return;
+    }
+    // Interpolate the page template.
+    var page = buildPage(title, contents.tmpl, contents.src);
+    // Write the page to disk.
+    fs.writeFile(destPath, page, callback);
+  }
+  fs.readFile(srcPath, "utf8", function afterReadSrc(err, src) {
+    afterRead(err, src, "src");
+  });
+  fs.readFile(pageTemplatePath, "utf8",
+    function afterReadTemplate(err, template) {
+
+    afterRead(err, template, "tmpl");
+  });
 }

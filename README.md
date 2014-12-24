@@ -147,8 +147,6 @@ Check out a working copy of the JSON 3 source code with [Git](http://git-scm.com
     $ git clone git://github.com/bestiejs/json3.git
     $ cd json3
 
-If you’d like to contribute a feature or bug fix, you can [fork](https://help.github.com/fork-a-repo/) JSON 3, commit your changes, and [send a pull request](https://help.github.com/send-pull-requests/). Please make sure to update the unit tests in the `test` directory as well.
-
-Alternatively, you can use the [GitHub issue tracker](https://github.com/bestiejs/json3/issues) to submit bug reports, feature requests, and questions, or send tweets to [@kitcambridge](https://twitter.com/kitcambridge) and [@demoneaux](https://twitter.com/demoneaux).
+We &#9829; bug reports, suggestions, questions, and pull requests! Please see our [contribution guidelines](https://bestiejs.github.io/json3/contribute.html) if you'd like to contribute.
 
 JSON 3 is released under the [MIT License](http://kit.mit-license.org/).

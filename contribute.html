@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Contribute | JSON 3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="page/style.css" media="screen">
+  </head>
+  <body>
+    <ul id="navigation">
+      <li><a href="#section_1">Issues</a></li>
+<li><a href="#section_2">Pull Requests</a></li>
+<li><a href="#section_2.1">Tests</a></li>
+<li><a href="#section_2.2">Project Page and Minification</a></li>
+
+    </ul>
+    <div id="content">
+      <h1 id="contributing-to-json-3">Contributing to JSON 3</h1>
+<h2 id="-a-name-section_1-a-issues"><a name="section_1"></a>Issues</h2>
+<p>Please use the <a href="https://github.com/bestiejs/json3/issues">GitHub issue tracker</a> to submit bug reports, feature requests, and questions. For bug reports, please specify the earliest version of JSON 3 that exhibits the issue and, if applicable, the steps to reproduce. You can also send tweets to <a href="http://twitter.com/kitcambridge">@kitcambridge</a> and <a href="http://twitter.com/demoneaux">@demoneaux</a>.</p>
+<h2 id="-a-name-section_2-a-pull-requests"><a name="section_2"></a>Pull Requests</h2>
+<p>If you’d like to contribute a feature or bug fix, you can <a href="http://help.github.com/fork-a-repo/">fork</a> JSON 3, commit your changes, and <a href="http://help.github.com/send-pull-requests/">send a pull request</a> <strong>against the <code>dev</code> branch</strong>. Please make sure to update the unit tests in the <code>test</code> directory as well.</p>
+<p><strong>Please do not send pull requests against <code>gh-pages</code></strong>; this branch is reserved for releases, builder updates, and project page changes.</p>
+<h3 id="-a-name-section_2-1-a-tests"><a name="section_2.1"></a>Tests</h3>
+<p>JSON 3 uses <a href="https://github.com/kitcambridge/spec">Spec</a> for its unit tests.</p>
+<p><code>test/test_json3.js</code> contains conformance tests for <code>parse</code> and <code>stringify</code>. This script can be invoked directly by any supported <a href="https://bestiejs.github.io/json3/#commonjs-environments">CommonJS implementation</a> or <a href="https://bestiejs.github.io/json3/#javascript-engines">JavaScript engine</a>, and is loaded by the ExtendScript (<code>test/test_extendscript.jsx</code>) and browser (<code>test/test_browser.html</code>) harnesses.</p>
+<p>Unless you’re adding an environment-specific test (e.g., testing <a href="http://requirejs.org/">RequireJS</a> or <a href="https://github.com/cujojs/curl"><code>curl.js</code></a> support), you’ll likely only need to update <code>test/test_json3.js</code>.</p>
+<p>The tests are randomized before execution to avoid dependencies on global state. If you really need them, you can add order-dependent tests after the <code>testSuite.shuffle()</code> call in <code>test/test_json3.js</code>.</p>
+<p>To add a test:</p>
+<pre><code>testSuite.addTest(<span class="hljs-string">"Test Name"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> {</span>
+  t.ok(<span class="hljs-literal">true</span>, <span class="hljs-string">"Tests whether an expression is truthy"</span>);
+  t.notOk(<span class="hljs-literal">NaN</span>, <span class="hljs-string">"Tests whether an expression is falsy"</span>);
+
+  <span class="hljs-comment">// Equality assertions.</span>
+  <span class="hljs-keyword">this</span>.equal(<span class="hljs-number">1</span>, <span class="hljs-string">"1"</span>, <span class="hljs-string">"=="</span>); <span class="hljs-comment">// `this == t`.</span>
+  t.notEqual(<span class="hljs-string">"a"</span>, <span class="hljs-string">"b"</span>, <span class="hljs-string">"!="</span>);
+
+  t.strictEqual(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-string">"==="</span>);
+  <span class="hljs-keyword">this</span>.notStrictEqual(<span class="hljs-number">1</span>, <span class="hljs-string">"1"</span>, <span class="hljs-string">"!=="</span>);
+
+  <span class="hljs-comment">// Deep equality.</span>
+  <span class="hljs-keyword">this</span>.deepEqual([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-literal">NaN</span>, { <span class="hljs-string">"hello"</span>: <span class="hljs-string">"world"</span> }],
+    [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-literal">NaN</span>, { <span class="hljs-string">"hello"</span>: <span class="hljs-string">"world"</span> }], <span class="hljs-string">"Spec.equals(a, b)"</span>);
+
+  <span class="hljs-keyword">this</span>.notDeepEqual([<span class="hljs-string">"1"</span>, <span class="hljs-number">2</span>, <span class="hljs-literal">NaN</span>], [<span class="hljs-number">1</span>, <span class="hljs-string">"2"</span>, <span class="hljs-literal">NaN</span>],
+    <span class="hljs-string">"!Spec.equals(a, b)"</span>);
+
+  <span class="hljs-comment">// Errors.</span>
+  t.error(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">"universe has imploded"</span>);
+  }, <span class="hljs-string">"Tests whether a function throws an exception"</span>);
+
+  t.error(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">"omg, everything is exploding"</span>);
+  }, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err, test)</span> {</span>
+    <span class="hljs-comment">// `test == t`.</span>
+    <span class="hljs-keyword">return</span> err.message.indexOf(<span class="hljs-string">"omg"</span>) &gt; -<span class="hljs-number">1</span>;
+  }, <span class="hljs-string">"Tests whether a function throws a specific exception"</span>);
+
+  t.noError(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+  }, <span class="hljs-string">"Ensures a function does not throw an exception"</span>);
+
+  <span class="hljs-comment">// Performs a deep comparison of `JSON.parse(src)` and `struct`.</span>
+  <span class="hljs-keyword">var</span> struct = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, { a: <span class="hljs-string">"b"</span> }];
+  <span class="hljs-keyword">var</span> src = <span class="hljs-string">'[1,2,{"a":"b"}]'</span>;
+  t.parses(struct, src,
+    <span class="hljs-string">"Spec.equals(JSON.parse(src), struct)"</span>);
+
+  <span class="hljs-comment">// Ensures `JSON.stringify(struct)` produces the given output.</span>
+  t.serializes(src, struct,
+    <span class="hljs-string">"JSON.stringify(struct) == src"</span>);
+
+  <span class="hljs-comment">// Ensures invalid input is not parsed.</span>
+  <span class="hljs-keyword">var</span> invalid = <span class="hljs-string">'[1,2'</span>;
+  t.parseError(invalid,
+    <span class="hljs-string">"Ensures `JSON.parse(invalid) throws a syntax error"</span>);
+
+  <span class="hljs-comment">// Ensures `JSON.stringify()` does not attempt to serialize</span>
+  <span class="hljs-comment">// cyclic structures.</span>
+  <span class="hljs-keyword">var</span> cycle = {};
+  cycle.a = cycle;
+  t.cyclicError(cycle,
+    <span class="hljs-string">"Ensures `JSON.stringify(cycle)` throws a `TypeError`"</span>);
+
+  <span class="hljs-comment">// Optionally specifies the expected number of assertions.</span>
+  t.done(<span class="hljs-number">15</span>);
+});
+</code></pre><h3 id="-a-name-section_2-2-a-project-page-and-minification"><a name="section_2.2"></a>Project Page and Minification</h3>
+<p>The builder (<code>build.js</code>) is a Node script that:</p>
+<ul>
+<li>Regenerates the <a href="https://bestiejs.github.io/json3/">GitHub project page</a> from <code>README.md</code>…</li>
+<li>Downloads the <a href="https://developers.google.com/closure/compiler/">Closure Compiler</a> if it’s not already on your system, and…</li>
+<li>Minifies <code>lib/json3.js</code>.</li>
+</ul>
+<p>You don’t need to run the builder before submitting your pull request; we’ll do this before each release.</p>
+
+    </div>
+    <div id="footer">
+      <p>&copy; 2012-2015 <a href="http://kitcambridge.be/">Kit Cambridge</a>, <a href="https://d10.github.io/">Benjamin Tan</a>.</p>
+    </div>
+  </body>
+</html>
