@@ -1,18 +1,18 @@
 /* Earl Grey | http://kitcambridge.github.com/earlgrey | Copyright 2011-2012, Kit Cambridge | http://creativecommons.org/licenses/by/3.0 */
 html {
-  font: 12px/24px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif;
+  font: 14px/28px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif;
   background: url(background.png);
 }
 
 body {
   width: 80%;
-  margin: 20px auto;
-  border: 3px solid #eee;
+  margin: 24px auto;
+  border: 6px solid #eee;
   background: #fff;
 }
 
 #content {
-  padding: 25px;
+  padding: 28px;
   text-align: justify;
 }
 
@@ -22,8 +22,13 @@ p, ul, ol {
 }
 
 ul, ol {
+  list-style: none inside;
+  border-left: 4px solid #666;
   color: #333;
-  margin: auto auto auto 25px;
+}
+
+li {
+  margin: auto auto auto 12px;
 }
 
 a {
@@ -64,7 +69,7 @@ h1, h2, h3 {
 }
 
 h1 {
-  font: 24px Palatino, Georgia, Times, "Times New Roman", serif;
+  font: 32px Palatino, Georgia, Times, "Times New Roman", serif;
   color: #900;
 }
 
@@ -76,11 +81,11 @@ h2, h3 {
 }
 
 h2 {
-  font-size: 14px;
+  font-size: 18px;
 }
 
 h3 {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 table {
@@ -110,7 +115,7 @@ th {
   width: 100%;
   background: #333;
   padding: 0;
-  margin: 0 0 10px 0;
+  margin: 0 0 24px 0;
 }
 
 #navigation li {
@@ -121,7 +126,7 @@ th {
   display: inline-block;
   color: #fff;
   padding: 5px 5% 5px;
-  height: 20px;
+  height: 28px;
   text-decoration: none;
   text-align: center;
 }
@@ -138,7 +143,7 @@ th {
 }
 
 pre, code, tt {
-  font: normal 12px/24px Menlo, Monaco, Consolas, "Lucida Console", monospace;
+  font: normal 14px/28px Menlo, Monaco, Consolas, "Lucida Console", monospace;
 }
 
 pre {
