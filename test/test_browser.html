@@ -27,6 +27,77 @@
     }());
     </script>
     <script>
+    var initSauceLabs = function () {};
+
+    (function () {
+      if (!(typeof Spec == "object" && Spec || typeof Newton == "object" && Newton)) {
+	return;
+      }
+
+      if (queryParams && Spec.hasKey(queryParams, "saucelabs")) {
+        var test_results = {
+              "passed": 0,
+              "failed": 0,
+              "total": 0,
+              "duration": 0,
+              "tests": []
+            },
+            startTime, endTime, testStartTime, testEndTime;
+
+        initSauceLabs = function (testSuite) {
+          testSuite.on("all", function (event) {
+            switch (event.type) {
+              case "start":
+                startTime = testStartTime = new Date();
+                break;
+              case "assertion":
+                // testEndTime = new Date();
+                // test_results.total++;
+                // test_results.passed++;
+                // test_results.tests.push({
+                //   "name": event.message,
+                //   "result": true,
+                //   "message": event.message,
+                //   "duration": testEndTime - testStartTime
+                // });
+                testStartTime = new Date(); // testEndTime;
+                testEndTime = null;
+                break;
+              case "failure":
+                testEndTime = new Date();
+                test_results.total++;
+                test_results.failed++;
+                test_results.tests.push({
+                  "name": event.message,
+                  "result": false,
+                  "message": event.message,
+                  "duration": testEndTime - testStartTime
+                });
+                testStartTime = testEndTime;
+                testEndTime = null;
+                break;
+              case "complete":
+                endTime = new Date();
+                test_results.total++;
+                test_results.passed++;
+                test_results.tests.push({
+                  "name": "Tests completed.",
+                  "result": true,
+                  "message": "Tests completed.",
+                  "duration": endTime - testStartTime
+                });
+                test_results.duration = endTime - startTime;
+                window.global_test_results = test_results;
+                break;
+              default:
+                break;
+            }
+          });
+        };
+      }
+    }());
+    </script>
+    <script>
     var libraryPath, isAMD, addNoConflictTest;
     (function (root) {
       if (!(typeof Spec == "object" && Spec || typeof Newton == "object" && Newton)) {
@@ -92,11 +163,13 @@
             test.equal(JSON3.stringify(1), "1", "JSON 3 should be exported as an asynchronous module");
             test.done(2);
           });
+          initSauceLabs(testSuite);
           addNoConflictTest(testSuite);
           testSuite.run();
         });
       } else {
         var testSuite = root.JSON3.testSuite;
+        initSauceLabs(testSuite);
         addNoConflictTest(testSuite);
         testSuite.run();
       }
