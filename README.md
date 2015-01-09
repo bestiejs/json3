@@ -4,7 +4,7 @@
 
 [![Build Status](https://api.travis-ci.org/bestiejs/json3.png?branch=gh-pages)](https://travis-ci.org/bestiejs/json3)
 
-**JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is **3.3.2**.
+**JSON 3** is a modern JSON implementation compatible with a variety of JavaScript platforms. The current version is **3.3.2**.
 
 - [Development Version](http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.js) *(43 KB; uncompressed with comments)*
 - [Production Version](http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js) *(3.5 KB; compressed and `gzip`-ped)*
@@ -107,7 +107,7 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 
 - Windows [Internet Explorer](http://windows.microsoft.com/en-us/internet-explorer/download-ie), version 6.0 and higher
 - Mozilla [Firefox](https://www.mozilla.org/en-US/firefox/new/), version 1.0 and higher
-- Apple [Safari](http://www.apple.com/safari/), version 2.0 and higher
+- Apple [Safari](http://www.apple.com/safari/), version 3.0 and higher
 - [Opera](http://www.opera.com/) 7.02 and higher
 - [Mozilla](http://sillydog.org/narchive/gecko.php) 1.0, [Netscape](http://sillydog.org/narchive/) 6.2.3, and [SeaMonkey](http://www.seamonkey-project.org/) 1.0 and higher
 
@@ -134,11 +134,12 @@ JSON 3 assumes that the following methods exist and function as described in the
 - The `Number`, `String`, `Array`, `Object`, `Date`, `SyntaxError`, and `TypeError` constructors.
 - `String.fromCharCode`
 - `Object#toString`
+- `Object#hasOwnProperty`
 - `Function#call`
 - `Math.floor`
 - `Number#toString`
 - `Date#valueOf`
-- `String.prototype`: `indexOf`, `charCodeAt`, `charAt`, `slice`.
+- `String.prototype`: `indexOf`, `charCodeAt`, `charAt`, `slice`, `replace`.
 - `Array.prototype`: `push`, `pop`, `join`.
 
 # Contribute #

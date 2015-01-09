@@ -19,7 +19,7 @@
       <h1 id="-a-name-section_1-a-json-3"><a name="section_1"></a>JSON 3</h1>
 <p><img src="https://bestiejs.github.io/json3/page/logo.png" alt="JSON 3 Logo" class="logo"></p>
 <p><a href="https://travis-ci.org/bestiejs/json3" class="travis-ci"><img src="https://api.travis-ci.org/bestiejs/json3.png?branch=gh-pages" alt="Build Status"></a></p>
-<p><strong>JSON 3</strong> is a modern JSON implementation compatible with a variety of JavaScript platforms, including Internet Explorer 6, Opera 7, Safari 2, and Netscape 6. The current version is <strong>3.3.2</strong>.</p>
+<p><strong>JSON 3</strong> is a modern JSON implementation compatible with a variety of JavaScript platforms. The current version is <strong>3.3.2</strong>.</p>
 <ul>
 <li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.js">Development Version</a> <em>(43 KB; uncompressed with comments)</em></li>
 <li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js">Production Version</a> <em>(3.5 KB; compressed and <code>gzip</code>-ped)</em></li>
@@ -83,20 +83,20 @@
 </code></pre><p>To avoid issues with third-party scripts, <strong>JSON 3 is exported to the global scope even when used with a module loader</strong>. If this behavior is undesired, <code>JSON3.noConflict()</code> can be used to restore the global <code>JSON</code> object to its original value.</p>
 <p><strong>Note:</strong> If you intend to use JSON3 alongside another module, <strong>please do not simply concatenate these modules together</strong>, as that would cause multiple <code>define</code> calls in one script, resulting in errors in AMD loaders. The <code>r.js</code> build optimizer can be used instead if you need a single compressed file for production.</p>
 <h2 id="commonjs-environments">CommonJS Environments</h2>
-<pre><code><span class="hljs-keyword">var</span> JSON3 = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./path/to/json3"</span>);
-JSON3.parse(<span class="hljs-string">"[1, 2, 3]"</span>);
+<pre><code>var JSO<span class="hljs-label">N3</span> = require<span class="hljs-comment">("./path/to/json3")</span>;
+JSO<span class="hljs-label">N3</span>.parse<span class="hljs-comment">("[1, 2, 3]")</span>;
 <span class="hljs-comment">// =&gt; [1, 2, 3]</span>
 </code></pre><h2 id="javascript-engines">JavaScript Engines</h2>
 <pre><code>load(<span class="hljs-string">"path/to/json3.js"</span>);
-<span class="hljs-built_in">JSON</span>.stringify({<span class="hljs-string">"Hello"</span>: <span class="hljs-number">123</span>, <span class="hljs-string">"Good-bye"</span>: <span class="hljs-number">456</span>}, [<span class="hljs-string">"Hello"</span>], <span class="hljs-string">"\t"</span>);
-<span class="hljs-comment">// =&gt; '{\n\t"Hello": 123\n}'</span>
+<span class="hljs-constant">JSON.</span>stringify({<span class="hljs-string">"Hello"</span><span class="hljs-symbol">:</span> <span class="hljs-number">123</span>, <span class="hljs-string">"Good-bye"</span><span class="hljs-symbol">:</span> <span class="hljs-number">456</span>}, [<span class="hljs-string">"Hello"</span>], <span class="hljs-string">"\t"</span>);
+<span class="hljs-regexp">//</span> =&gt; <span class="hljs-string">'{\n\t"Hello": 123\n}'</span>
 </code></pre><h1 id="-a-name-section_4-a-compatibility"><a name="section_4"></a>Compatibility</h1>
 <p>JSON 3 has been <strong>tested</strong> with the following web browsers, CommonJS environments, and JavaScript engines.</p>
 <h2 id="web-browsers">Web Browsers</h2>
 <ul>
 <li>Windows <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">Internet Explorer</a>, version 6.0 and higher</li>
 <li>Mozilla <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>, version 1.0 and higher</li>
-<li>Apple <a href="http://www.apple.com/safari/">Safari</a>, version 2.0 and higher</li>
+<li>Apple <a href="http://www.apple.com/safari/">Safari</a>, version 3.0 and higher</li>
 <li><a href="http://www.opera.com/">Opera</a> 7.02 and higher</li>
 <li><a href="http://sillydog.org/narchive/gecko.php">Mozilla</a> 1.0, <a href="http://sillydog.org/narchive/">Netscape</a> 6.2.3, and <a href="http://www.seamonkey-project.org/">SeaMonkey</a> 1.0 and higher</li>
 </ul>
@@ -122,11 +122,12 @@ JSON3.parse(<span class="hljs-string">"[1, 2, 3]"</span>);
 <li>The <code>Number</code>, <code>String</code>, <code>Array</code>, <code>Object</code>, <code>Date</code>, <code>SyntaxError</code>, and <code>TypeError</code> constructors.</li>
 <li><code>String.fromCharCode</code></li>
 <li><code>Object#toString</code></li>
+<li><code>Object#hasOwnProperty</code></li>
 <li><code>Function#call</code></li>
 <li><code>Math.floor</code></li>
 <li><code>Number#toString</code></li>
 <li><code>Date#valueOf</code></li>
-<li><code>String.prototype</code>: <code>indexOf</code>, <code>charCodeAt</code>, <code>charAt</code>, <code>slice</code>.</li>
+<li><code>String.prototype</code>: <code>indexOf</code>, <code>charCodeAt</code>, <code>charAt</code>, <code>slice</code>, <code>replace</code>.</li>
 <li><code>Array.prototype</code>: <code>push</code>, <code>pop</code>, <code>join</code>.</li>
 </ul>
 <h1 id="-a-name-section_5-a-contribute"><a name="section_5"></a>Contribute</h1>
