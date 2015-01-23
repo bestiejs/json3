@@ -114,6 +114,7 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 ## CommonJS Environments
 
 - [Node](http://nodejs.org/) 0.2.6 and higher
+- [io.js](https://iojs.org/) 1.0.3 and higher
 - [RingoJS](http://ringojs.org/) 0.4 and higher
 - [Narwhal](https://github.com/280north/narwhal) 0.3.2 and higher
 
