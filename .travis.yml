@@ -19,7 +19,7 @@ git:
 branches:
   only:
     - gh-pages
-    - dev
+    - master
 before_install:
   - "npm install npm -g"
   - "[ $BIN == 'istanbul' ] && npm i -g istanbul@\"~0.1.0\" || true"
