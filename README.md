@@ -106,21 +106,22 @@ JSON 3 has been **tested** with the following web browsers, CommonJS environment
 ## Web Browsers
 
 - Windows [Internet Explorer](http://windows.microsoft.com/en-us/internet-explorer/download-ie), version 6.0 and higher
-- Mozilla [Firefox](https://www.mozilla.org/en-US/firefox/new/), version 1.0 and higher
+- Google [Chrome](http://www.google.com/chrome), version 19.0 and higher
+- Mozilla [Firefox](https://www.mozilla.org/en-US/firefox/new/), version 2.0 and higher
 - Apple [Safari](http://www.apple.com/safari/), version 3.0 and higher
-- [Opera](http://www.opera.com/) 7.02 and higher
-- [Mozilla](http://sillydog.org/narchive/gecko.php) 1.0, [Netscape](http://sillydog.org/narchive/) 6.2.3, and [SeaMonkey](http://www.seamonkey-project.org/) 1.0 and higher
+- [Opera](http://www.opera.com/) 8.54 and higher
+- [SeaMonkey](http://www.seamonkey-project.org/) 1.0 and higher
 
 ## CommonJS Environments
 
-- [Node](http://nodejs.org/) 0.2.6 and higher
+- [Node](http://nodejs.org/) 0.6.21 and higher
 - [io.js](https://iojs.org/) 1.0.3 and higher
-- [RingoJS](http://ringojs.org/) 0.4 and higher
-- [Narwhal](https://github.com/280north/narwhal) 0.3.2 and higher
+- [RingoJS](http://ringojs.org/) 0.9 and higher
+- [Narwhal](https://github.com/280north/narwhal) 0.3.2
 
 ## JavaScript Engines
 
-- Mozilla [Rhino](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino) 1.5R5 and higher
+- Mozilla [Rhino](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino) 1.7R3 and higher
 - WebKit [JSC](https://trac.webkit.org/wiki/JSC)
 - Google [V8](http://code.google.com/p/v8/)
 
