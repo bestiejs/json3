@@ -11,7 +11,7 @@
       <li><a href="#section_1">Issues</a></li>
 <li><a href="#section_2">Pull Requests</a></li>
 <li><a href="#section_2.1">Tests</a></li>
-<li><a href="#section_2.2">Project Page and Minification</a></li>
+<li><a href="#section_2.2">Builds</a></li>
 
     </ul>
     <div id="content">
@@ -86,15 +86,18 @@
   <span class="hljs-comment">// Optionally specifies the expected number of assertions.</span>
   t.done(<span class="hljs-number">15</span>);
 });
-</code></pre><h3 id="-a-name-section_2-2-a-project-page-and-minification"><a name="section_2.2"></a>Project Page and Minification</h3>
+</code></pre><h3 id="-a-name-section_2-2-a-builds"><a name="section_2.2"></a>Builds</h3>
 <p>The builder (<code>build.js</code>) is a Node script that:</p>
 <ul>
 <li>Regenerates the <a href="https://bestiejs.github.io/json3/">GitHub project pages</a>…</li>
 <li>Builds <code>lib/json3.js</code> using <a href="https://webpack.github.io/">webpack</a>, and…</li>
 <li>Minifies <code>lib/json3.js</code> using the <a href="https://developers.google.com/closure/compiler/">Closure Compiler</a>.</li>
 </ul>
-<p>You don’t need to run the builder before submitting your pull request; we’ll do this before each release.</p>
-
+<p>You’ll need <a href="https://nodejs.org/">Node</a> (or <a href="https://iojs.org">io.js</a>), <a href="https://docs.npmjs.com/getting-started/installing-node">npm</a>, and <a href="http://bower.io/">Bower</a> installed to run the build script. To update the development dependencies and build JSON 3:</p>
+<pre><code><span class="hljs-variable">$ </span>npm install
+<span class="hljs-variable">$ </span>bower install
+<span class="hljs-variable">$ </span>node build
+</code></pre>
     </div>
     <div id="footer">
       <p>&copy; 2012-2015 <a href="http://kitcambridge.be/">Kit Cambridge</a>, <a href="https://d10.github.io/">Benjamin Tan</a>.</p>

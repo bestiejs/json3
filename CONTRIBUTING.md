@@ -82,7 +82,7 @@ To add a test:
       t.done(15);
     });
 
-### Project Page and Minification ###
+### Builds ###
 
 The builder (`build.js`) is a Node script that:
 
@@ -90,4 +90,8 @@ The builder (`build.js`) is a Node script that:
 * Builds `lib/json3.js` using [webpack](https://webpack.github.io/), and...
 * Minifies `lib/json3.js` using the [Closure Compiler](https://developers.google.com/closure/compiler/).
 
-You don't need to run the builder before submitting your pull request; we'll do this before each release.
+You'll need [Node](https://nodejs.org/) (or [io.js](https://iojs.org)), [npm](https://docs.npmjs.com/getting-started/installing-node), and [Bower](http://bower.io/) installed to run the build script. To update the development dependencies and build JSON 3:
+
+    $ npm install
+    $ bower install
+    $ node build
