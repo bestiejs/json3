@@ -8,8 +8,10 @@ var attempt = require("./attempt"),
 module.exports = makeRunInContext;
 function makeRunInContext(root) {
   // Public: Initializes JSON 3 using the given `context` object, attaching the
-  // `stringify` and `parse` functions to the specified `exports` object.
-  function runInContext(context, exports) {
+  // `stringify` and `parse` functions to the specified `exports` object. If
+  // `preventNoConflict` is `true`, the exported `noConflict` function will be
+  // a no-op.
+  function runInContext(context, exports, preventNoConflict) {
     context || (context = root.Object());
     exports || (exports = root.Object());
 
@@ -20,7 +22,8 @@ function makeRunInContext(root) {
         SyntaxError = context.SyntaxError || root.SyntaxError,
         TypeError = context.TypeError || root.TypeError,
         Math = context.Math || root.Math,
-        nativeJSON = context.JSON || root.JSON;
+        nativeJSON = context.JSON || root.JSON,
+        prevJSON3 = context.JSON3 || root.JSON3;
 
     // Delegate to the native `stringify` and `parse` implementations.
     if (typeof nativeJSON == "object" && nativeJSON) {
@@ -201,19 +204,22 @@ function makeRunInContext(root) {
       return;
     }
 
-    var forOwn = makeForOwn(getClass, Object.prototype.hasOwnProperty);
+    var hasOwnProp = Object.prototype.hasOwnProperty;
+    var forOwn = makeForOwn(getClass, hasOwnProp);
 
     if (!has("json-stringify")) {
       exports.stringify = makeStringify(getClass, forOwn, TypeError);
     }
 
-    if (!has("date-serialization")) {
+    var needsDateToJSON = !has("date-serialization");
+    var prevDateToJSON;
+    if (needsDateToJSON) {
       var UTCDate;
       if (!has("extended-years")) {
         UTCDate = makeUTCDate(Math.floor);
       }
       var serializeDate = makeSerializeDate(UTCDate);
-      // TODO: Revert via `JSON3.noConflict()`.
+      prevDateToJSON = Date.prototype.toJSON;
       Date.prototype.toJSON = function() {
         return serializeDate(this);
       };
@@ -223,6 +229,21 @@ function makeRunInContext(root) {
       // Detect incomplete support for accessing string characters by index.
       var charIndexBuggy = has("bug-string-char-index");
       exports.parse = makeParse(charIndexBuggy, String.fromCharCode, SyntaxError, getClass, forOwn);
+    }
+
+    // Public: Restores the original value of the global `JSON` object and
+    // returns a reference to the `JSON3` object.
+    exports.noConflict = noConflict;
+    function noConflict() {
+      if (!preventNoConflict) {
+        preventNoConflict = true;
+        root.JSON = nativeJSON;
+        root.JSON3 = prevJSON3;
+        if (needsDateToJSON) {
+          Date.prototype.toJSON = prevDateToJSON;
+        }
+      }
+      return exports;
     }
 
     exports.runInContext = runInContext;
