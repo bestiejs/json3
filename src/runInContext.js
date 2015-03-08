@@ -1,5 +1,4 @@
 var attempt = require("./attempt"),
-    makeUTCDate = require("./date"),
     makeForOwn = require("./forOwn"),
     makeParse = require("./parse"),
     makeSerializeDate = require("./serializeDate"),
@@ -214,11 +213,8 @@ function makeRunInContext(root) {
     var needsDateToJSON = !has("date-serialization");
     var prevDateToJSON;
     if (needsDateToJSON) {
-      var UTCDate;
-      if (!has("extended-years")) {
-        UTCDate = makeUTCDate(Math.floor);
-      }
-      var serializeDate = makeSerializeDate(UTCDate);
+      var hasExtendedYears = has("extended-years");
+      var serializeDate = makeSerializeDate(hasExtendedYears, Math.floor);
       prevDateToJSON = Date.prototype.toJSON;
       Date.prototype.toJSON = function() {
         return serializeDate(this);
