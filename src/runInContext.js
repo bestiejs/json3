@@ -205,21 +205,18 @@ function makeRunInContext(root) {
 
     if (!has("json-stringify")) {
       exports.stringify = makeStringify(getClass, forOwn, TypeError);
-    } else if (!has("date-serialization")) {
-      // For environments with `JSON.stringify` but buggy date serialization,
-      // we override the native `Date#toJSON` implementation with a
-      // spec-compliant one.
+    }
+
+    if (!has("date-serialization")) {
       var UTCDate;
       if (!has("extended-years")) {
         UTCDate = makeUTCDate(Math.floor);
       }
       var serializeDate = makeSerializeDate(UTCDate);
-      if (has("json-stringify")) {
-        // TODO: Revert via `JSON3.noConflict()`.
-        Date.prototype.toJSON = function() {
-          return serializeDate(this);
-        };
-      }
+      // TODO: Revert via `JSON3.noConflict()`.
+      Date.prototype.toJSON = function() {
+        return serializeDate(this);
+      };
     }
 
     if (!has("json-parse")) {
