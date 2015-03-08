@@ -3,8 +3,8 @@ var attempt = require("./attempt"),
 
 var undefined;
 
-module.exports = createStringify;
-function createStringify(getClass, forOwn, newTypeError) {
+module.exports = makeStringify;
+function makeStringify(getClass, forOwn, newTypeError) {
   // Public: `JSON.stringify` serializes a JavaScript `value` as a JSON string.
   // The optional `filter` argument may specify either a function that alters
   // how object and array members are serialized, or an array of strings and
@@ -26,7 +26,7 @@ function createStringify(getClass, forOwn, newTypeError) {
     if (width) {
       className = getClass.call(width);
       if (className == "[object Number]") {
-        // Convert the `width` to an integer and create a string containing
+        // Convert the `width` to an integer and make a string containing
         // `width` number of space characters.
         if ((width -= width % 1) > 0) {
           for (whitespace = "", width > 10 && (width = 10); whitespace.length < width; whitespace += " ");

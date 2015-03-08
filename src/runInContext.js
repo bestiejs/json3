@@ -1,9 +1,9 @@
 var attempt = require("./attempt"),
-    createUTCDate = require("./date"),
-    createForOwn = require("./forOwn"),
-    createParse = require("./parse"),
-    createSerializeDate = require("./serializeDate"),
-    createStringify = require("./stringify");
+    makeUTCDate = require("./date"),
+    makeForOwn = require("./forOwn"),
+    makeParse = require("./parse"),
+    makeSerializeDate = require("./serializeDate"),
+    makeStringify = require("./stringify");
 
 module.exports = makeRunInContext;
 function makeRunInContext(root) {
@@ -201,19 +201,19 @@ function makeRunInContext(root) {
       return;
     }
 
-    var forOwn = createForOwn(getClass, Object.prototype.hasOwnProperty);
+    var forOwn = makeForOwn(getClass, Object.prototype.hasOwnProperty);
 
     if (!has("json-stringify")) {
-      exports.stringify = createStringify(getClass, forOwn, TypeError);
+      exports.stringify = makeStringify(getClass, forOwn, TypeError);
     } else if (!has("date-serialization")) {
       // For environments with `JSON.stringify` but buggy date serialization,
       // we override the native `Date#toJSON` implementation with a
       // spec-compliant one.
       var UTCDate;
       if (!has("extended-years")) {
-        UTCDate = createUTCDate(Math.floor);
+        UTCDate = makeUTCDate(Math.floor);
       }
-      var serializeDate = createSerializeDate(UTCDate);
+      var serializeDate = makeSerializeDate(UTCDate);
       if (has("json-stringify")) {
         // TODO: Revert via `JSON3.noConflict()`.
         Date.prototype.toJSON = function() {
@@ -225,7 +225,7 @@ function makeRunInContext(root) {
     if (!has("json-parse")) {
       // Detect incomplete support for accessing string characters by index.
       var charIndexBuggy = has("bug-string-char-index");
-      exports.parse = createParse(charIndexBuggy, String.fromCharCode, SyntaxError, getClass, forOwn);
+      exports.parse = makeParse(charIndexBuggy, String.fromCharCode, SyntaxError, getClass, forOwn);
     }
 
     exports.runInContext = runInContext;

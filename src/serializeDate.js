@@ -25,8 +25,8 @@ function toISOString(v) {
   );
 }
 
-module.exports = createSerializeDate;
-function createSerializeDate(UTCDate) {
+module.exports = makeSerializeDate;
+function makeSerializeDate(UTCDate) {
   // Internal: Serializes a date object.
   function serializeDate(value) {
     var epochTime = +value;

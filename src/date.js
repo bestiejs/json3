@@ -13,8 +13,8 @@ function getDay(floor, year, month) {
     floor((year - 1601 + month) / 400);
 }
 
-module.exports = createUTCDate;
-function createUTCDate(floor) {
+module.exports = makeUTCDate;
+function makeUTCDate(floor) {
   // UTCDate decomposes a `Date` value and exposes a subset of the
   // `Date` API. This is used to obtain the year, month, date, hours,
   // minutes, seconds, and milliseconds if the `getUTC*` methods are

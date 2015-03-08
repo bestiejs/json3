@@ -1,5 +1,5 @@
-module.exports = createParse;
-function createParse(charIndexBuggy, fromCharCode, newSyntaxError, getClass, forOwn) {
+module.exports = makeParse;
+function makeParse(charIndexBuggy, fromCharCode, newSyntaxError, getClass, forOwn) {
   // Public: `JSON.parse` parses a JSON source string. See
   // ES 5.1 section 15.12.2.
   function parse(source, callback) {

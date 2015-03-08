@@ -4,8 +4,8 @@ var hasDontEnumBug = require("./hasDontEnumBug");
 var dontEnums = ["valueOf", "toString", "toLocaleString",
   "propertyIsEnumerable", "isPrototypeOf", "hasOwnProperty", "constructor"];
 
-module.exports = createForOwn;
-function createForOwn(getClass, isProperty) {
+module.exports = makeForOwn;
+function makeForOwn(getClass, isProperty) {
   // Internal: Normalizes the `for...in` iteration algorithm across
   // environments. Each enumerated key is yielded to a `callback` function.
   var forOwn;
