@@ -63,5 +63,13 @@
   "-W053": true,
   "-W086": true,
 
-  "predef": ["define", "environment", "Packages", "Benchmark", "_", "phantom"]
+  "globals": {
+    "define": false,
+    "environment": false,
+    "Packages": false,
+    "phantom": false,
+
+    "Benchmark": true,
+    "_": true
+  }
 }

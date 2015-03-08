@@ -6,7 +6,7 @@ Please use the [GitHub issue tracker](https://github.com/bestiejs/json3/issues) 
 
 ## Pull Requests ##
 
-If you'd like to contribute a feature or bug fix, you can [fork](http://help.github.com/fork-a-repo/) JSON 3, commit your changes, and [send a pull request](http://help.github.com/send-pull-requests/) **against the `dev` branch**. Please make sure to update the unit tests in the `test` directory as well.
+If you'd like to contribute a feature or bug fix, you can [fork](http://help.github.com/fork-a-repo/) JSON 3, commit your changes, and [send a pull request](http://help.github.com/send-pull-requests/) **against the `master` branch**. Please make sure to update the unit tests in the `test` directory as well.
 
 **Please do not send pull requests against `gh-pages`**; this branch is reserved for releases, builder updates, and project page changes.
 
@@ -86,8 +86,8 @@ To add a test:
 
 The builder (`build.js`) is a Node script that:
 
-* Regenerates the [GitHub project page](https://bestiejs.github.io/json3/) from `README.md`...
-* Downloads the [Closure Compiler](https://developers.google.com/closure/compiler/) if it's not already on your system, and...
-* Minifies `lib/json3.js`.
+* Regenerates the [GitHub project pages](https://bestiejs.github.io/json3/)...
+* Builds `lib/json3.js` using [webpack](https://webpack.github.io/), and...
+* Minifies `lib/json3.js` using the [Closure Compiler](https://developers.google.com/closure/compiler/).
 
 You don't need to run the builder before submitting your pull request; we'll do this before each release.
