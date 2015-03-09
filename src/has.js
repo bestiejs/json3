@@ -120,7 +120,7 @@ function makeHas(stringify, parse, Date, Number, String) {
     }
     if (name == "json-parse") {
       // Test `JSON.parse`.
-      var parse = parse, isSupported = typeof parse == "function";
+      var isSupported = typeof parse == "function";
       if (isSupported) {
         isSupported = !!attempt(function () {
           // FF 3.1b1, b2 will throw an exception if a bare literal is provided.

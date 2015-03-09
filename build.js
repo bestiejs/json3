@@ -17,7 +17,7 @@ var WrapperPlugin = require("./build/wrapper");
 
 function main() {
   async.auto({
-    pages: function pages(callback) {
+    pages: function pages(nextTask) {
       writePages([{
         "title": "JSON 3",
         "src": path.join(__dirname, "README.md"),
@@ -51,14 +51,14 @@ function main() {
             }
           })
         }
-      }], callback);
+      }], nextTask);
     },
 
-    build: function build(callback) {
+    build: function build(nextTask) {
       var compiler = webpack({
         context: path.join(__dirname, "src"),
         entry: {
-          json3: "./runInContext.js",
+          json3: "./runInContext.js"
         },
         output: {
           path: path.join(__dirname, "lib"),
@@ -86,23 +86,25 @@ function main() {
       compiler.run(function afterRun(err, stats) {
         if (err) {
           console.error("Error building JSON 3: %s", err);
-          callback(err);
+          nextTask(err);
         }
         console.log(stats.toString());
-        callback();
+        nextTask();
       });
     },
 
-    compress: ["build", function compress(callback) {
+    compress: ["build", function compress(nextTask) {
       var srcPath = path.join(__dirname, "lib", "json3.js");
       var destPath = path.join(__dirname, "lib", "json3.min.js");
       writeMinified(srcPath, destPath, function afterMinify(err, fileSizes) {
         if (err) {
           console.error("Error compressing JSON 3: %s", err);
+          nextTask(err);
           return;
         }
         console.log("Development size: %d KB; compressed size: %d KB",
           fileSizes.src, fileSizes.dest);
+        nextTask();
       });
     }]
   }, function afterBuild(err) {
@@ -115,18 +117,18 @@ function main() {
 }
 
 function writePages(pages, callback) {
-  async.each(pages, function eachPage(page, callback) {
+  async.each(pages, function eachPage(page, nextPage) {
     genPage(page.title, page.dest, page.src, page.markedOptions, afterGen);
     function afterGen(err) {
       if (err) {
         console.log("Error generating project page %j: %s", page.title, err);
-        callback(err);
+        nextPage(err);
         return;
       }
       console.log("Project page %j generated successfully.", page.title);
-      callback();
+      nextPage();
     }
-  });
+  }, callback);
 }
 
 // Compress JSON 3 using the Closure Compiler.
@@ -160,20 +162,20 @@ function writeMinified(srcPath, destPath, callback) {
     ].join("\n"));
     async.each([
       // Write the compressed version to disk.
-      function write(callback) {
-        fs.writeFile(destPath, minSrc, callback);
+      function write(nextFunc) {
+        fs.writeFile(destPath, minSrc, nextFunc);
       },
       // Calculate the `gzip`-ped size of the compressed version.
-      function gzipSize(callback) {
+      function gzipSize(nextFunc) {
         zlib.gzip(minSrc, function afterGzip(err, results) {
           if (!err) {
             fileSizes.dest = getKilobytes(results.length);
           }
-          callback();
+          nextFunc();
         });
       }
-    ], function eachFunc(func, callback) {
-      func(callback);
+    ], function eachFunc(func, nextFunc) {
+      func(nextFunc);
     }, function afterFinish(err) {
       if (err) {
         callback(err);
