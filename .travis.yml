@@ -4,6 +4,9 @@ node_js:
 env:
   global:
     - BIN="node" ISTANBUL=false OPTION="" IOJS_VERSION="v1.0.3" NPM_VERSION="^2.0.0"
+    - SAUCE_LABS=false
+    - secure: SHFzZkQEn7wRdNfqVpi/RPRdISS1AYTr5gKTR4wtR1X1x5q/r9Mf1/tXvi2DLuUMl+3O8yuN455229UnwMQiT8ZiDCnq0rTLzZ1nIJJLvMCvvbsMRgJJd+T82JVUA0gZe+AJXbglWo8p6x7TTMVbvwwIbi/yVt0EDaxobFqPGnk=
+    - secure: kFXfRIg/NQnjIkWAFeLyKQNB9inmfCwbpZiqi3n9K+mKGfjZefWX43tJEPtDw//hQPH0QgEoRx9hQy+4dMuuYzKBIYWuDDwdDYhDpGUaamCCSpjX5jUtG5Rz29tM6t9vU6r369eeR2wcENDP4nEdPtCkr5n7el14no60WGPLNK0=
   matrix:
     - BIN="node"
     - BIN="iojs"
@@ -16,6 +19,8 @@ matrix:
   include:
     - node_js: "0.8"
       env: NPM_VERSION="~1.4.0"
+    - node_js: '0.10'
+      env: BIN="node" SAUCE_LABS=true
 git:
   depth: 10
 branches:
@@ -26,6 +31,7 @@ before_install:
   - "nvm use $TRAVIS_NODE_VERSION"
   - "npm config set loglevel error"
   - "npm i -g npm@\"$NPM_VERSION\""
+  - "[ $SAUCE_LABS == false ] || npm i chalk@\"^0.5.1\" ecstatic@\"^0.5.6\" request@\"^2.34.0\" sauce-tunnel@\"^2.0.0\" lodash@\"^3.5.0\""
 # - "[ $BIN == 'istanbul' ] && npm i -g istanbul@\"~0.1.0\" || true"
   - "[ $BIN == 'iojs'    ] && wget https://iojs.org/dist/${IOJS_VERSION}/iojs-${IOJS_VERSION}-linux-x64.tar.xz && sudo tar xJf iojs-${IOJS_VERSION}-linux-x64.tar.xz -C /opt && rm iojs-${IOJS_VERSION}-linux-x64.tar.xz || true"
   - "[ $BIN == 'iojs'    ] && sudo ln -s /opt/iojs-${IOJS_VERSION}-linux-x64/bin/iojs /usr/local/bin/iojs && sudo chmod +x /usr/local/bin/iojs || true"
@@ -43,3 +49,6 @@ script:
   - "$BIN ./test_json3.js"
   - "$BIN ./test_json3.js ../lib/json3.min.js"
 # - "[ $BIN != 'istanbul' ] || $BIN cover ./test/test_json3.js"
+  - '[ $SAUCE_LABS == false ] || cd ..'
+  - '[ $SAUCE_LABS == false ] || $BIN ./test/saucelabs.js name="json3 tests" runner="test/test_browser.html?saucelabs=true" tags="development" framework="custom"'
+  - '[ $SAUCE_LABS == false ] || $BIN ./test/saucelabs.js name="json3 tests" runner="test/test_browser.html?saucelabs=true&minified=true" tags="minified" framework="custom"'
