@@ -13,12 +13,7 @@
     "parser",
     "stringify"
   ],
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://kit.mit-license.org/"
-    }
-  ],
+  "license": "MIT",
   "author": {
     "name": "Kit Cambridge",
     "email": "github@kitcambridge.be",

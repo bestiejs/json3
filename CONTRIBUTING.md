@@ -2,7 +2,7 @@
 
 ## Issues ##
 
-Please use the [GitHub issue tracker](https://github.com/bestiejs/json3/issues) to submit bug reports, feature requests, and questions. For bug reports, please specify the earliest version of JSON 3 that exhibits the issue and, if applicable, the steps to reproduce. You can also send tweets to [@kitcambridge](http://twitter.com/kitcambridge) and [@demoneaux](http://twitter.com/demoneaux).
+Please use the [GitHub issue tracker](https://github.com/bestiejs/json3/issues) to submit bug reports, feature requests, and questions. For bug reports, please specify the earliest version of JSON 3 that exhibits the issue and, if applicable, the steps to reproduce. You can also reach out to [@kitcambridge](https://git.io/kit) and [@demoneaux](https://twitter.com/demoneaux).
 
 ## Pull Requests ##
 
