@@ -11,7 +11,7 @@
       <li><a href="#section_1">Issues</a></li>
 <li><a href="#section_2">Pull Requests</a></li>
 <li><a href="#section_2.1">Tests</a></li>
-<li><a href="#section_2.2">Project Page and Minification</a></li>
+<li><a href="#section_2.2">Builds</a></li>
 
     </ul>
     <div id="content">
@@ -19,7 +19,7 @@
 <h2 id="-a-name-section_1-a-issues"><a name="section_1"></a>Issues</h2>
 <p>Please use the <a href="https://github.com/bestiejs/json3/issues">GitHub issue tracker</a> to submit bug reports, feature requests, and questions. For bug reports, please specify the earliest version of JSON 3 that exhibits the issue and, if applicable, the steps to reproduce. You can also reach out to <a href="https://git.io/kit">@kitcambridge</a> and <a href="https://twitter.com/demoneaux">@demoneaux</a>.</p>
 <h2 id="-a-name-section_2-a-pull-requests"><a name="section_2"></a>Pull Requests</h2>
-<p>If you’d like to contribute a feature or bug fix, you can <a href="http://help.github.com/fork-a-repo/">fork</a> JSON 3, commit your changes, and <a href="http://help.github.com/send-pull-requests/">send a pull request</a> <strong>against the <code>dev</code> branch</strong>. Please make sure to update the unit tests in the <code>test</code> directory as well.</p>
+<p>If you’d like to contribute a feature or bug fix, you can <a href="http://help.github.com/fork-a-repo/">fork</a> JSON 3, commit your changes, and <a href="http://help.github.com/send-pull-requests/">send a pull request</a> <strong>against the <code>master</code> branch</strong>. Please make sure to update the unit tests in the <code>test</code> directory as well.</p>
 <p><strong>Please do not send pull requests against <code>gh-pages</code></strong>; this branch is reserved for releases, builder updates, and project page changes.</p>
 <h3 id="-a-name-section_2-1-a-tests"><a name="section_2.1"></a>Tests</h3>
 <p>JSON 3 uses <a href="https://github.com/kitcambridge/spec">Spec</a> for its unit tests.</p>
@@ -27,7 +27,7 @@
 <p>Unless you’re adding an environment-specific test (e.g., testing <a href="http://requirejs.org/">RequireJS</a> or <a href="https://github.com/cujojs/curl"><code>curl.js</code></a> support), you’ll likely only need to update <code>test/test_json3.js</code>.</p>
 <p>The tests are randomized before execution to avoid dependencies on global state. If you really need them, you can add order-dependent tests after the <code>testSuite.shuffle()</code> call in <code>test/test_json3.js</code>.</p>
 <p>To add a test:</p>
-<pre><code>testSuite.addTest(<span class="hljs-string">"Test Name"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> {</span>
+<pre><code>testSuite.addTest(<span class="hljs-string">"Test Name"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> </span>{
   t.ok(<span class="hljs-literal">true</span>, <span class="hljs-string">"Tests whether an expression is truthy"</span>);
   t.notOk(<span class="hljs-literal">NaN</span>, <span class="hljs-string">"Tests whether an expression is falsy"</span>);
 
@@ -46,18 +46,18 @@
     <span class="hljs-string">"!Spec.equals(a, b)"</span>);
 
   <span class="hljs-comment">// Errors.</span>
-  t.error(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+  t.error(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">"universe has imploded"</span>);
   }, <span class="hljs-string">"Tests whether a function throws an exception"</span>);
 
-  t.error(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+  t.error(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">"omg, everything is exploding"</span>);
-  }, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err, test)</span> {</span>
+  }, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(err, test)</span> </span>{
     <span class="hljs-comment">// `test == t`.</span>
     <span class="hljs-keyword">return</span> err.message.indexOf(<span class="hljs-string">"omg"</span>) &gt; -<span class="hljs-number">1</span>;
   }, <span class="hljs-string">"Tests whether a function throws a specific exception"</span>);
 
-  t.noError(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+  t.noError(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
   }, <span class="hljs-string">"Ensures a function does not throw an exception"</span>);
 
@@ -86,15 +86,18 @@
   <span class="hljs-comment">// Optionally specifies the expected number of assertions.</span>
   t.done(<span class="hljs-number">15</span>);
 });
-</code></pre><h3 id="-a-name-section_2-2-a-project-page-and-minification"><a name="section_2.2"></a>Project Page and Minification</h3>
+</code></pre><h3 id="-a-name-section_2-2-a-builds"><a name="section_2.2"></a>Builds</h3>
 <p>The builder (<code>build.js</code>) is a Node script that:</p>
 <ul>
-<li>Regenerates the <a href="https://bestiejs.github.io/json3/">GitHub project page</a> from <code>README.md</code>…</li>
-<li>Downloads the <a href="https://developers.google.com/closure/compiler/">Closure Compiler</a> if it’s not already on your system, and…</li>
-<li>Minifies <code>lib/json3.js</code>.</li>
+<li>Regenerates the <a href="https://bestiejs.github.io/json3/">GitHub project pages</a>…</li>
+<li>Builds <code>lib/json3.js</code> using <a href="https://webpack.github.io/">webpack</a>, and…</li>
+<li>Minifies <code>lib/json3.js</code> using the <a href="https://developers.google.com/closure/compiler/">Closure Compiler</a>.</li>
 </ul>
-<p>You don’t need to run the builder before submitting your pull request; we’ll do this before each release.</p>
-
+<p>You’ll need <a href="https://nodejs.org/">Node</a> (or <a href="https://iojs.org">io.js</a>), <a href="https://docs.npmjs.com/getting-started/installing-node">npm</a>, and <a href="http://bower.io/">Bower</a> installed to run the build script. To update the development dependencies and build JSON 3:</p>
+<pre><code><span class="hljs-variable">$ </span>npm install
+<span class="hljs-variable">$ </span>bower install
+<span class="hljs-variable">$ </span>node build
+</code></pre>
     </div>
     <div id="footer">
       <p>&copy; 2012-2015 <a href="http://kitcambridge.be/">Kit Cambridge</a>, <a href="https://d10.github.io/">Benjamin Tan</a>.</p>

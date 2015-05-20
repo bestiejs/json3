@@ -43,6 +43,8 @@ before_install:
   - "[ $BIN == 'ringo'   ] && sudo ln -s /opt/ringojs-0.9/bin/ringo /usr/local/bin/ringo && sudo chmod +x /usr/local/bin/ringo || true"
 install:
   - "npm install"
+  - "npm install -g bower"
+  - "bower install"
 script:
   - "node build.js"
   - "cd ./test"

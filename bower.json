@@ -34,5 +34,8 @@
   "authors": [
     "Kit Cambridge <github@kitcambridge.be>"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "closure-compiler": "https://dl.google.com/closure-compiler/compiler-latest.tar.gz"
+  }
 }

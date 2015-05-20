@@ -150,6 +150,8 @@ Check out a working copy of the JSON 3 source code with [Git](http://git-scm.com
 
     $ git clone git://github.com/bestiejs/json3.git
     $ cd json3
+    $ npm install
+    $ bower install
 
 We &#9829; bug reports, suggestions, questions, and pull requests! Please see our [contribution guidelines](https://bestiejs.github.io/json3/contribute.html) if you'd like to contribute.
 
