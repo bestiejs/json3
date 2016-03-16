@@ -33,7 +33,7 @@ before_install:
   - "npm i -g npm@\"$NPM_VERSION\""
   - "[ $SAUCE_LABS == false ] || npm i chalk@\"^0.5.1\" ecstatic@\"^0.5.6\" request@\"^2.34.0\" sauce-tunnel@\"^2.0.0\" lodash@\"^3.5.0\""
 # - "[ $BIN == 'istanbul' ] && npm i -g istanbul@\"~0.1.0\" || true"
-  - "[ $BIN == 'iojs'    ] && wget https://iojs.org/dist/${IOJS_VERSION}/iojs-${IOJS_VERSION}-linux-x64.tar.xz && sudo tar xJf iojs-${IOJS_VERSION}-linux-x64.tar.xz -C /opt && rm iojs-${IOJS_VERSION}-linux-x64.tar.xz || true"
+  - "[ $BIN == 'iojs'    ] && curl -O https://iojs.org/dist/${IOJS_VERSION}/iojs-${IOJS_VERSION}-linux-x64.tar.xz && sudo tar xJf iojs-${IOJS_VERSION}-linux-x64.tar.xz -C /opt && rm iojs-${IOJS_VERSION}-linux-x64.tar.xz || true"
   - "[ $BIN == 'iojs'    ] && sudo ln -s /opt/iojs-${IOJS_VERSION}-linux-x64/bin/iojs /usr/local/bin/iojs && sudo chmod +x /usr/local/bin/iojs || true"
   - "[ $BIN == 'narwhal' ] && wget https://github.com/280north/narwhal/archive/v0.3.2.zip && sudo unzip v0.3.2 -d /opt/ && rm v0.3.2.zip || true"
   - "[ $BIN == 'narwhal' ] && sudo ln -s /opt/narwhal-0.3.2/bin/narwhal /usr/local/bin/narwhal && sudo chmod +x /usr/local/bin/narwhal || true"
