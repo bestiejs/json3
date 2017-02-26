@@ -443,7 +443,7 @@ function getCompiler(callback) {
 
       parser.on("entry", onEntry);
       function onEntry(entry) {
-        if (path.basename(entry.path) != "compiler.jar") {
+        if (path.extname(entry.path) != ".jar") {
           return;
         }
         parser.removeListener("entry", onEntry);
@@ -600,7 +600,7 @@ function genNav(source) {
     } else {
       section = [1];
     }
-    lines[index] = Array(level + 1).join("#") + "<a name=\"section_" + section.join(".") + "\"></a>" + text;
+    lines[index] = Array(level + 1).join("#") + " " + text + "<a name=\"section_" + section.join(".") + "\"></a>";
     value.push(section);
     lastSection = section;
     lastLevel = level;
