@@ -146,10 +146,23 @@ pre, code, tt {
   font: normal 14px/28px Menlo, Monaco, Consolas, "Lucida Console", monospace;
 }
 
-pre {
-  background-color: #f8f8ff;
+pre, .banner {
   padding: 10px;
   border: 1px solid #eee;
+}
+
+.banner {
+  background-color: #642832;
+  color: #fff;
+}
+
+#content .banner a:hover, #content .banner a:focus {
+  background: #fff;
+  color: #000;
+}
+
+pre {
+  background-color: #f8f8ff;
   word-wrap: break-word;
   white-space: pre-wrap;
 }

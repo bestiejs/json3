@@ -9,51 +9,41 @@
   <body>
     <ul id="navigation">
       <li><a href="#section_1">JSON 3</a></li>
-<li><a href="#section_2">Changes from JSON 2</a></li>
-<li><a href="#section_3">Usage</a></li>
-<li><a href="#section_4">Compatibility</a></li>
-<li><a href="#section_5">Contribute</a></li>
+<li><a href="#section_1.1">About</a></li>
+<li><a href="#section_2">Usage</a></li>
+<li><a href="#section_3">Compatibility</a></li>
+<li><a href="#section_4">Contribute</a></li>
 
     </ul>
     <div id="content">
-      <h1 id="-a-name-section_1-a-json-3"><a name="section_1"></a>JSON 3</h1>
+      <h1 id="json-3-a-name-section_1-a-">JSON 3<a name="section_1"></a></h1>
 <p><img src="https://bestiejs.github.io/json3/page/logo.png" alt="JSON 3 Logo" class="logo"></p>
 <p><a href="https://travis-ci.org/bestiejs/json3" class="travis-ci"><img src="https://api.travis-ci.org/bestiejs/json3.png?branch=gh-pages" alt="Build Status"></a></p>
-<p><strong>JSON 3</strong> is a modern JSON implementation compatible with a variety of JavaScript platforms. The current version is <strong>3.3.2</strong>.</p>
+<p><strong>JSON 3</strong> is a JSON polyfill for older JavaScript platforms. The current version is <strong>3.3.2</strong>.</p>
 <ul>
 <li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.js">Development Version</a> <em>(43 KB; uncompressed with comments)</em></li>
 <li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js">Production Version</a> <em>(3.5 KB; compressed and <code>gzip</code>-ped)</em></li>
 <li><a href="https://bestiejs.github.io/json3/changes.html">Change Log</a></li>
 </ul>
 <p>Special thanks to <a href="http://cdnjs.com/libraries/json3/">cdnjs</a> and <a href="http://www.jsdelivr.com/#!json3">jsDelivr</a> for hosting CDN copies of JSON 3.</p>
+<h2 id="call-for-maintainers">Call for Maintainers</h2>
+<p class="banner">If you’d like to maintain JSON 3, please reply to the <a href="https://github.com/bestiejs/json3/issues/90">GitHub issue</a>.</p>
+
+<h2 id="about-a-name-section_1-1-a-">About<a name="section_1.1"></a></h2>
 <p><a href="http://json.org/">JSON</a> is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by <a href="http://www.crockford.com/">Douglas Crockford</a>, the format was standardized in the <a href="http://es5.github.io/">fifth edition</a> of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.</p>
-<p>JSON 3 exposes two functions: <code>stringify()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/stringify">serializing</a> a JavaScript value to JSON, and <code>parse()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/parse">producing</a> a JavaScript value from a JSON source string. It is a <strong>drop-in replacement</strong> for <a href="http://json.org/js">JSON 2</a>. The functions behave exactly as described in the ECMAScript spec, <strong>except</strong> for the date serialization discrepancy noted below.</p>
-<p>The JSON 3 parser does <strong>not</strong> use <code>eval</code> or regular expressions. This provides security and performance benefits in obsolete and mobile environments, where the margin is particularly significant. The complete <a href="http://jsperf.com/json3">benchmark suite</a> is available on <a href="http://jsperf.com/">jsPerf</a>.</p>
+<p>JSON 3 exposes two functions: <code>stringify()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/stringify">serializing</a> a JavaScript value to JSON, and <code>parse()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/parse">producing</a> a JavaScript value from a JSON source string. The JSON 3 parser uses recursive descent instead of <code>eval</code> and regular expressions, which makes it slower on older platforms compared to <a href="http://json.org/js">JSON 2</a>. The functions behave exactly as described in the ECMAScript spec, <strong>except</strong> for the date serialization discrepancy noted below.</p>
 <p>The project is <a href="http://git.io/json3">hosted on GitHub</a>, along with the <a href="http://bestiejs.github.io/json3/test/test_browser.html">unit tests</a>. It is part of the <a href="https://github.com/bestiejs">BestieJS</a> family, a collection of best-in-class JavaScript libraries that promote cross-platform support, specification precedents, unit testing, and plenty of documentation.</p>
-<h1 id="-a-name-section_2-a-changes-from-json-2"><a name="section_2"></a>Changes from JSON 2</h1>
-<p>JSON 3…</p>
-<ul>
-<li>Correctly serializes primitive wrapper objects.</li>
-<li>Throws a <code>TypeError</code> when serializing cyclic structures (JSON 2 recurses until the call stack overflows).</li>
-<li>Utilizes <strong>feature tests</strong> to detect broken or incomplete <em>native</em> JSON implementations (JSON 2 only checks for the presence of the native functions). The tests are only executed once at runtime, so there is no additional performance cost when parsing or serializing values.</li>
-</ul>
-<p><strong>As of v3.2.3</strong>, JSON 3 is compatible with <a href="http://prototypejs.org">Prototype</a> 1.6.1 and older.</p>
-<p>In contrast to JSON 2, JSON 3 <strong>does not</strong>…</p>
-<ul>
-<li>Add <code>toJSON()</code> methods to the <code>Boolean</code>, <code>Number</code>, and <code>String</code> prototypes. These are not part of any standard, and are made redundant by the design of the <code>stringify()</code> implementation.</li>
-<li>Add <code>toJSON()</code> or <code>toISOString()</code> methods to <code>Date.prototype</code>. See the note about date serialization below.</li>
-</ul>
 <h2 id="date-serialization">Date Serialization</h2>
 <p><strong>JSON 3 deviates from the specification in one important way</strong>: it does not define <code>Date#toISOString()</code> or <code>Date#toJSON()</code>. This preserves CommonJS compatibility and avoids polluting native prototypes. Instead, date serialization is performed internally by the <code>stringify()</code> implementation: if a date object does not define a custom <code>toJSON()</code> method, it is serialized as a <a href="http://es5.github.com/#x15.9.1.15">simplified ISO 8601 date-time string</a>.</p>
-<p><strong>Several native <code>Date#toJSON()</code> implementations produce date time strings that do <em>not</em> conform to the grammar outlined in the spec</strong>. For instance, all versions of Safari 4, as well as JSON 2, fail to serialize extended years correctly. Furthermore, JSON 2 and older implementations omit the milliseconds from the date-time string (optional in ES 5, but required in 5.1). Finally, in all versions of Safari 4 and 5, serializing an invalid date will produce the string <code>&quot;Invalid Date&quot;</code>, rather than <code>null</code>. Because these environments exhibit other serialization bugs, however, JSON 3 will override the native <code>stringify()</code> implementation.</p>
+<p><strong>Several native <code>Date#toJSON()</code> implementations produce date time strings that do <em>not</em> conform to the grammar outlined in the spec</strong>. In these environments, JSON 3 will override the native <code>stringify()</code> implementation. There is an <a href="https://github.com/bestiejs/json3/issues/73">issue</a> on file to make these tests less strict.</p>
 <p>Portions of the date serialization code are adapted from the <a href="https://github.com/Yaffle/date-shim"><code>date-shim</code></a> project.</p>
-<h1 id="-a-name-section_3-a-usage"><a name="section_3"></a>Usage</h1>
+<h1 id="usage-a-name-section_2-a-">Usage<a name="section_2"></a></h1>
 <h2 id="web-browsers">Web Browsers</h2>
 <pre><code><span class="hljs-tag">&lt;<span class="hljs-title">script</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">"//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js"</span>&gt;</span><span class="javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-title">script</span>&gt;</span><span class="javascript">
   <span class="hljs-built_in">JSON</span>.stringify({<span class="hljs-string">"Hello"</span>: <span class="hljs-number">123</span>});
   <span class="hljs-comment">// =&gt; '{"Hello":123}'</span>
-  <span class="hljs-built_in">JSON</span>.parse(<span class="hljs-string">"[[1, 2, 3], 1, 2, 3, 4]"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key, value)</span> {</span>
+  <span class="hljs-built_in">JSON</span>.parse(<span class="hljs-string">"[[1, 2, 3], 1, 2, 3, 4]"</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key, value)</span> </span>{
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> value == <span class="hljs-string">"number"</span>) {
       value = value % <span class="hljs-number">2</span> ? <span class="hljs-string">"Odd"</span> : <span class="hljs-string">"Even"</span>;
     }
@@ -75,7 +65,7 @@
     <span class="hljs-string">"paths"</span>: {
       <span class="hljs-string">"json3"</span>: <span class="hljs-string">"./path/to/json3"</span>
     }
-  }, [<span class="hljs-string">"json3"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(JSON)</span> {</span>
+  }, [<span class="hljs-string">"json3"</span>], <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(JSON)</span> </span>{
     <span class="hljs-built_in">JSON</span>.parse(<span class="hljs-string">"[1, 2, 3]"</span>);
     <span class="hljs-comment">// =&gt; [1, 2, 3]</span>
   });
@@ -90,25 +80,27 @@ JSO<span class="hljs-label">N3</span>.parse<span class="hljs-comment">("[1, 2, 3
 <pre><code>load(<span class="hljs-string">"path/to/json3.js"</span>);
 <span class="hljs-constant">JSON.</span>stringify({<span class="hljs-string">"Hello"</span><span class="hljs-symbol">:</span> <span class="hljs-number">123</span>, <span class="hljs-string">"Good-bye"</span><span class="hljs-symbol">:</span> <span class="hljs-number">456</span>}, [<span class="hljs-string">"Hello"</span>], <span class="hljs-string">"\t"</span>);
 <span class="hljs-regexp">//</span> =&gt; <span class="hljs-string">'{\n\t"Hello": 123\n}'</span>
-</code></pre><h1 id="-a-name-section_4-a-compatibility"><a name="section_4"></a>Compatibility</h1>
+</code></pre><h1 id="compatibility-a-name-section_3-a-">Compatibility<a name="section_3"></a></h1>
 <p>JSON 3 has been <strong>tested</strong> with the following web browsers, CommonJS environments, and JavaScript engines.</p>
 <h2 id="web-browsers">Web Browsers</h2>
 <ul>
 <li>Windows <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">Internet Explorer</a>, version 6.0 and higher</li>
-<li>Mozilla <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>, version 1.0 and higher</li>
+<li>Google <a href="http://www.google.com/chrome">Chrome</a>, version 19.0 and higher</li>
+<li>Mozilla <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>, version 2.0 and higher</li>
 <li>Apple <a href="http://www.apple.com/safari/">Safari</a>, version 3.0 and higher</li>
-<li><a href="http://www.opera.com/">Opera</a> 7.02 and higher</li>
-<li><a href="http://sillydog.org/narchive/gecko.php">Mozilla</a> 1.0, <a href="http://sillydog.org/narchive/">Netscape</a> 6.2.3, and <a href="http://www.seamonkey-project.org/">SeaMonkey</a> 1.0 and higher</li>
+<li><a href="http://www.opera.com/">Opera</a> 8.54 and higher</li>
+<li><a href="http://www.seamonkey-project.org/">SeaMonkey</a> 1.0 and higher</li>
 </ul>
 <h2 id="commonjs-environments">CommonJS Environments</h2>
 <ul>
-<li><a href="http://nodejs.org/">Node</a> 0.2.6 and higher</li>
-<li><a href="http://ringojs.org/">RingoJS</a> 0.4 and higher</li>
-<li><a href="https://github.com/280north/narwhal">Narwhal</a> 0.3.2 and higher</li>
+<li><a href="http://nodejs.org/">Node</a> 0.6.21 and higher</li>
+<li><a href="https://iojs.org/">io.js</a> 1.0.3 and higher</li>
+<li><a href="http://ringojs.org/">RingoJS</a> 0.9 and higher</li>
+<li><a href="https://github.com/280north/narwhal">Narwhal</a> 0.3.2</li>
 </ul>
 <h2 id="javascript-engines">JavaScript Engines</h2>
 <ul>
-<li>Mozilla <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino">Rhino</a> 1.5R5 and higher</li>
+<li>Mozilla <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino">Rhino</a> 1.7R3 and higher</li>
 <li>WebKit <a href="https://trac.webkit.org/wiki/JSC">JSC</a></li>
 <li>Google <a href="http://code.google.com/p/v8/">V8</a></li>
 </ul>
@@ -130,10 +122,10 @@ JSO<span class="hljs-label">N3</span>.parse<span class="hljs-comment">("[1, 2, 3
 <li><code>String.prototype</code>: <code>indexOf</code>, <code>charCodeAt</code>, <code>charAt</code>, <code>slice</code>, <code>replace</code>.</li>
 <li><code>Array.prototype</code>: <code>push</code>, <code>pop</code>, <code>join</code>.</li>
 </ul>
-<h1 id="-a-name-section_5-a-contribute"><a name="section_5"></a>Contribute</h1>
+<h1 id="contribute-a-name-section_4-a-">Contribute<a name="section_4"></a></h1>
 <p>Check out a working copy of the JSON 3 source code with <a href="http://git-scm.com/">Git</a>:</p>
-<pre><code>$ git clone git://github.com/bestiejs/json3.git
-$ <span class="hljs-built_in">cd</span> json3
+<pre><code>$ git clone gi<span class="hljs-variable">t:</span>//github.<span class="hljs-keyword">com</span>/bestiejs/json3.git
+$ <span class="hljs-keyword">cd</span> json3
 </code></pre><p>We &#9829; bug reports, suggestions, questions, and pull requests! Please see our <a href="https://bestiejs.github.io/json3/contribute.html">contribution guidelines</a> if you’d like to contribute.</p>
 <p>JSON 3 is released under the <a href="http://kit.mit-license.org/">MIT License</a>.</p>
 
