@@ -14,7 +14,7 @@ Special thanks to [cdnjs](http://cdnjs.com/libraries/json3/) and [jsDelivr](http
 
 ## Call for Maintainers
 
-<p class="banner">If you'd like to maintain JSON 3, please reply to the [GitHub issue](https://github.com/bestiejs/json3/issues/90).</p>
+<p class="banner">If you'd like to maintain JSON 3, please reply to the <a href="https://github.com/bestiejs/json3/issues/90">GitHub issue</a>.</p>
 
 ## About ##
 
