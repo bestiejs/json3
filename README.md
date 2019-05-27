@@ -1,20 +1,14 @@
+# 🚨 Unmaintained 🚨
+
+<p class="banner">JSON 3 is **deprecated** and **no longer maintained**. Please don't use it in new projects, and migrate existing projects to use the native `JSON.parse` and `JSON.stringify` instead.</p>
+
+Thanks to everyone who contributed patches or found it useful! ❤️
+
 # JSON 3 #
 
-![JSON 3 Logo](https://bestiejs.github.io/json3/page/logo.png)
+ [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
-[![Build Status](https://api.travis-ci.org/bestiejs/json3.png?branch=gh-pages)](https://travis-ci.org/bestiejs/json3)
-
-**JSON 3** is a JSON polyfill for older JavaScript platforms. The current version is **3.3.2**.
-
-- [Development Version](http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.js) *(43 KB; uncompressed with comments)*
-- [Production Version](http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js) *(3.5 KB; compressed and `gzip`-ped)*
-- [Change Log](https://bestiejs.github.io/json3/changes.html)
-
-Special thanks to [cdnjs](http://cdnjs.com/libraries/json3/) and [jsDelivr](http://www.jsdelivr.com/#!json3) for hosting CDN copies of JSON 3.
-
-## Call for Maintainers
-
-<p class="banner">If you'd like to maintain JSON 3, please reply to the <a href="https://github.com/bestiejs/json3/issues/90">GitHub issue</a>.</p>
+**JSON 3** was a JSON polyfill for older JavaScript platforms.
 
 ## About ##
 
@@ -132,14 +126,3 @@ JSON 3 assumes that the following methods exist and function as described in the
 - `Date#valueOf`
 - `String.prototype`: `indexOf`, `charCodeAt`, `charAt`, `slice`, `replace`.
 - `Array.prototype`: `push`, `pop`, `join`.
-
-# Contribute #
-
-Check out a working copy of the JSON 3 source code with [Git](http://git-scm.com/):
-
-    $ git clone git://github.com/bestiejs/json3.git
-    $ cd json3
-
-We &#9829; bug reports, suggestions, questions, and pull requests! Please see our [contribution guidelines](https://bestiejs.github.io/json3/contribute.html) if you'd like to contribute.
-
-JSON 3 is released under the [MIT License](http://kit.mit-license.org/).

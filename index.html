@@ -12,23 +12,16 @@
 <li><a href="#section_1.1">About</a></li>
 <li><a href="#section_2">Usage</a></li>
 <li><a href="#section_3">Compatibility</a></li>
-<li><a href="#section_4">Contribute</a></li>
 
     </ul>
     <div id="content">
-      <h1 id="json-3-a-name-section_1-a-">JSON 3<a name="section_1"></a></h1>
-<p><img src="https://bestiejs.github.io/json3/page/logo.png" alt="JSON 3 Logo" class="logo"></p>
-<p><a href="https://travis-ci.org/bestiejs/json3" class="travis-ci"><img src="https://api.travis-ci.org/bestiejs/json3.png?branch=gh-pages" alt="Build Status"></a></p>
-<p><strong>JSON 3</strong> is a JSON polyfill for older JavaScript platforms. The current version is <strong>3.3.2</strong>.</p>
-<ul>
-<li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.js">Development Version</a> <em>(43 KB; uncompressed with comments)</em></li>
-<li><a href="http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js">Production Version</a> <em>(3.5 KB; compressed and <code>gzip</code>-ped)</em></li>
-<li><a href="https://bestiejs.github.io/json3/changes.html">Change Log</a></li>
-</ul>
-<p>Special thanks to <a href="http://cdnjs.com/libraries/json3/">cdnjs</a> and <a href="http://www.jsdelivr.com/#!json3">jsDelivr</a> for hosting CDN copies of JSON 3.</p>
-<h2 id="call-for-maintainers">Call for Maintainers</h2>
-<p class="banner">If you’d like to maintain JSON 3, please reply to the <a href="https://github.com/bestiejs/json3/issues/90">GitHub issue</a>.</p>
+      <h1 id="-unmaintained-">🚨 Unmaintained 🚨</h1>
+<p class="banner">JSON 3 is <strong>deprecated</strong> and <strong>no longer maintained</strong>. Please don’t use it in new projects, and migrate existing projects to use the native <code>JSON.parse</code> and <code>JSON.stringify</code> instead.</p>
 
+<p>Thanks to everyone who contributed patches or found it useful! ❤️</p>
+<h1 id="json-3-a-name-section_1-a-">JSON 3<a name="section_1"></a></h1>
+<p> <a href="http://unmaintained.tech/"><img src="http://unmaintained.tech/badge.svg" alt="No Maintenance Intended"></a></p>
+<p><strong>JSON 3</strong> was a JSON polyfill for older JavaScript platforms.</p>
 <h2 id="about-a-name-section_1-1-a-">About<a name="section_1.1"></a></h2>
 <p><a href="http://json.org/">JSON</a> is a language-independent data interchange format based on a loose subset of the JavaScript grammar. Originally popularized by <a href="http://www.crockford.com/">Douglas Crockford</a>, the format was standardized in the <a href="http://es5.github.io/">fifth edition</a> of the ECMAScript specification. The 5.1 edition, ratified in June 2011, incorporates several modifications to the grammar pertaining to the serialization of dates.</p>
 <p>JSON 3 exposes two functions: <code>stringify()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/stringify">serializing</a> a JavaScript value to JSON, and <code>parse()</code> for <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/JSON/parse">producing</a> a JavaScript value from a JSON source string. The JSON 3 parser uses recursive descent instead of <code>eval</code> and regular expressions, which makes it slower on older platforms compared to <a href="http://json.org/js">JSON 2</a>. The functions behave exactly as described in the ECMAScript spec, <strong>except</strong> for the date serialization discrepancy noted below.</p>
@@ -52,7 +45,7 @@
   <span class="hljs-comment">// =&gt; [["Odd", "Even", "Odd"], "Odd", "Even", "Odd", "Even"]</span>
 </span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
 </code></pre><p><strong>When used in a web browser</strong>, JSON 3 exposes an additional <code>JSON3</code> object containing the <code>noConflict()</code> and <code>runInContext()</code> functions, as well as aliases to the <code>stringify()</code> and <code>parse()</code> functions.</p>
-<h3 id="-noconflict-and-runincontext-"><code>noConflict</code> and <code>runInContext</code></h3>
+<h3 id="noconflict-and-runincontext"><code>noConflict</code> and <code>runInContext</code></h3>
 <ul>
 <li><code>JSON3.noConflict()</code> restores the original value of the global <code>JSON</code> object and returns a reference to the <code>JSON3</code> object.</li>
 <li><code>JSON3.runInContext([context, exports])</code> initializes JSON 3 using the given <code>context</code> object (e.g., <code>window</code>, <code>global</code>, etc.), or the global object if omitted. If an <code>exports</code> object is specified, the <code>stringify()</code>, <code>parse()</code>, and <code>runInContext()</code> functions will be attached to it instead of a new object.</li>
@@ -122,12 +115,6 @@ JSO<span class="hljs-label">N3</span>.parse<span class="hljs-comment">("[1, 2, 3
 <li><code>String.prototype</code>: <code>indexOf</code>, <code>charCodeAt</code>, <code>charAt</code>, <code>slice</code>, <code>replace</code>.</li>
 <li><code>Array.prototype</code>: <code>push</code>, <code>pop</code>, <code>join</code>.</li>
 </ul>
-<h1 id="contribute-a-name-section_4-a-">Contribute<a name="section_4"></a></h1>
-<p>Check out a working copy of the JSON 3 source code with <a href="http://git-scm.com/">Git</a>:</p>
-<pre><code>$ git clone gi<span class="hljs-variable">t:</span>//github.<span class="hljs-keyword">com</span>/bestiejs/json3.git
-$ <span class="hljs-keyword">cd</span> json3
-</code></pre><p>We &#9829; bug reports, suggestions, questions, and pull requests! Please see our <a href="https://bestiejs.github.io/json3/contribute.html">contribution guidelines</a> if you’d like to contribute.</p>
-<p>JSON 3 is released under the <a href="http://kit.mit-license.org/">MIT License</a>.</p>
 
     </div>
     <div id="footer">

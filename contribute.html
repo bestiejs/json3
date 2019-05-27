@@ -8,20 +8,15 @@
   </head>
   <body>
     <ul id="navigation">
-      <li><a href="#section_1">Issues</a></li>
-<li><a href="#section_2">Pull Requests</a></li>
-<li><a href="#section_2.1">Tests</a></li>
-<li><a href="#section_2.2">Project Page and Minification</a></li>
+      <li><a href="#section_1">Tests</a></li>
+<li><a href="#section_2">Project Page and Minification</a></li>
 
     </ul>
     <div id="content">
       <h1 id="contributing-to-json-3">Contributing to JSON 3</h1>
-<h2 id="issues-a-name-section_1-a-">Issues<a name="section_1"></a></h2>
-<p>Please use the <a href="https://github.com/bestiejs/json3/issues">GitHub issue tracker</a> to submit bug reports, feature requests, and questions. For bug reports, please specify the earliest version of JSON 3 that exhibits the issue and, if applicable, the steps to reproduce. You can also reach out to <a href="https://git.io/kit">@kitcambridge</a> and <a href="https://twitter.com/demoneaux">@demoneaux</a>.</p>
-<h2 id="pull-requests-a-name-section_2-a-">Pull Requests<a name="section_2"></a></h2>
-<p>If you’d like to contribute a feature or bug fix, you can <a href="http://help.github.com/fork-a-repo/">fork</a> JSON 3, commit your changes, and <a href="http://help.github.com/send-pull-requests/">send a pull request</a> <strong>against the <code>dev</code> branch</strong>. Please make sure to update the unit tests in the <code>test</code> directory as well.</p>
-<p><strong>Please do not send pull requests against <code>gh-pages</code></strong>; this branch is reserved for releases, builder updates, and project page changes.</p>
-<h3 id="tests-a-name-section_2-1-a-">Tests<a name="section_2.1"></a></h3>
+<p class="banner">JSON 3 is <strong>no longer maintained</strong>. Please <a href="mailto:json3@yak.systems">drop me a line</a> if you’d like to take it over, or if you want to chat about the code or project.</p>
+
+<h3 id="tests-a-name-section_1-a-">Tests<a name="section_1"></a></h3>
 <p>JSON 3 uses <a href="https://github.com/kitcambridge/spec">Spec</a> for its unit tests.</p>
 <p><code>test/test_json3.js</code> contains conformance tests for <code>parse</code> and <code>stringify</code>. This script can be invoked directly by any supported <a href="https://bestiejs.github.io/json3/#commonjs-environments">CommonJS implementation</a> or <a href="https://bestiejs.github.io/json3/#javascript-engines">JavaScript engine</a>, and is loaded by the ExtendScript (<code>test/test_extendscript.jsx</code>) and browser (<code>test/test_browser.html</code>) harnesses.</p>
 <p>Unless you’re adding an environment-specific test (e.g., testing <a href="http://requirejs.org/">RequireJS</a> or <a href="https://github.com/cujojs/curl"><code>curl.js</code></a> support), you’ll likely only need to update <code>test/test_json3.js</code>.</p>
@@ -86,7 +81,7 @@
   <span class="hljs-comment">// Optionally specifies the expected number of assertions.</span>
   t.done(<span class="hljs-number">15</span>);
 });
-</code></pre><h3 id="project-page-and-minification-a-name-section_2-2-a-">Project Page and Minification<a name="section_2.2"></a></h3>
+</code></pre><h3 id="project-page-and-minification-a-name-section_2-a-">Project Page and Minification<a name="section_2"></a></h3>
 <p>The builder (<code>build.js</code>) is a Node script that:</p>
 <ul>
 <li>Regenerates the <a href="https://bestiejs.github.io/json3/">GitHub project page</a> from <code>README.md</code>…</li>

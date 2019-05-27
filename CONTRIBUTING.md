@@ -1,14 +1,6 @@
 # Contributing to JSON 3
 
-## Issues ##
-
-Please use the [GitHub issue tracker](https://github.com/bestiejs/json3/issues) to submit bug reports, feature requests, and questions. For bug reports, please specify the earliest version of JSON 3 that exhibits the issue and, if applicable, the steps to reproduce. You can also reach out to [@kitcambridge](https://git.io/kit) and [@demoneaux](https://twitter.com/demoneaux).
-
-## Pull Requests ##
-
-If you'd like to contribute a feature or bug fix, you can [fork](http://help.github.com/fork-a-repo/) JSON 3, commit your changes, and [send a pull request](http://help.github.com/send-pull-requests/) **against the `dev` branch**. Please make sure to update the unit tests in the `test` directory as well.
-
-**Please do not send pull requests against `gh-pages`**; this branch is reserved for releases, builder updates, and project page changes.
+<p class="banner">JSON 3 is **no longer maintained**. Please [drop me a line](mailto:json3@yak.systems) if you'd like to take it over, or if you want to chat about the code or project.</p>
 
 ### Tests ###
 
